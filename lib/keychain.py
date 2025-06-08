@@ -1,8 +1,5 @@
 import os
 import subprocess
-from dotenv import load_dotenv
-
-load_dotenv()  # fallback if Keychain fails
 
 def get_key(service_name: str) -> str:
     """Returns secret from macOS Keychain, or .env fallback."""

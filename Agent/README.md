@@ -22,3 +22,4 @@ Welcome to the **GringoOps Development Platform** — a multi-agent, AI-powered 
 ```bash
 # From terminal
 gringoops
+```
