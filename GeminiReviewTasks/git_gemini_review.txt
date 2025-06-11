@@ -1,0 +1,49 @@
+The review provided is a good start, but it can be made more specific and actionable.  Here's how we can improve the comments:
+
+* **Be more specific about regex shortcomings:** Instead of just saying "Instead of using regex...", explain *why* this is a problem.  Regex can be brittle for version parsing, especially across different Git versions which might change their output format.  Mentioning this makes the suggestion stronger.
+
+* **Provide example f-strings:** Show a before-and-after example of using f-strings.  This makes the suggestion clearer and easier to implement.
+
+* **Suggest *what* comments to add:** Instead of just saying "Add more detailed comments," suggest specific information that should be included in the comments. For example: "Document the expected format of the revision argument in `resolve_revision`," or "Explain the reason for the `try-except` block in `fetch_new`."
+
+* **Specify potential exceptions:**  Don't just say "Ensure all potential exceptions are handled." Be more specific about which exceptions are likely to occur.  For `resolve_revision`, this might include `subprocess.CalledProcessError` if the Git command fails, or `ValueError` if the input revision is invalid.  For `fetch_new`, it might include network-related exceptions.
+
+* **Give an example of breaking down a long line:** Instead of just saying "the `make_command` call could be split," provide an example of how this could be done.
+
+* **Consider suggesting unit tests:**  A good addition would be to recommend adding unit tests, particularly around the `resolve_revision` and `fetch_new` methods to ensure they handle different inputs and potential errors correctly.
+
+* **Mention error handling related to `subprocess`:**  When using `subprocess`, it's crucial to check the return code and handle non-zero return codes appropriately.  The review should explicitly mention this.
+
+
+
+**Example of an Improved Review:**
+
+The code is well-structured, but several improvements can enhance its robustness and maintainability.
+
+1. **`get_git_version` - Avoid Regex Parsing:** Instead of relying on potentially fragile regex parsing of the `git --version` output, use `subprocess.check_output(['git', '--version']).decode().strip()` and then split the string on spaces to extract the version number.  Regex parsing can break if the output format of `git --version` changes, whereas this approach is more resilient.
+
+2. **Use f-strings:**  Replace string concatenation with f-strings for improved readability.  For example, in `resolve_revision`, change `logger.warning("Revision " + rev + " not found")` to `logger.warning(f"Revision {rev} not found")`.
+
+3. **Improve Comments:** Add more context to the comments. In `resolve_revision`, document the expected format of the revision argument (e.g., branch name, commit hash, tag).  In `fetch_new`, explain the purpose of the `try-except` block and what specific errors it's designed to catch.
+
+4. **Handle Exceptions in `resolve_revision`:** Wrap the `subprocess` call in a `try-except` block to handle `subprocess.CalledProcessError` in case the Git command fails. Also, handle potential `ValueError` if the input revision is in an unexpected format.  Log the specific error encountered.
+
+5. **Handle Exceptions in `fetch_new`:**  Implement error handling for potential network errors or other exceptions that might occur during the fetch operation. Be specific about the types of exceptions you're catching.
+
+6. **Improve Readability in `fetch_new`:** Break down the long `make_command` call into multiple lines for better readability.  For example:
+
+   ```python
+   command = make_command(
+       "fetch",
+       remote,
+       branch,
+       "--tags",  # etc...
+   )
+   ```
+
+7. **Add Unit Tests:** Write unit tests for `resolve_revision` and `fetch_new` to ensure they handle various inputs, including valid and invalid revisions, and different error scenarios.
+
+8. **Check `subprocess` Return Codes:** Ensure that you're checking the return code from all `subprocess` calls. Handle non-zero return codes, which indicate an error, appropriately, and log informative error messages.
+
+
+By addressing these points, the code will be more robust, maintainable, and easier for others (and your future self) to understand.

@@ -1,3 +1,7 @@
+@st.cache_resource
+def load_whisper_model():
+    import whisper
+    return whisper.load_model("base")
 
 
 import streamlit as st
@@ -53,8 +57,7 @@ if audio_bytes:
     # Optionally: Trigger transcription here
     if st.button("🧠 Transcribe"):
         try:
-            import whisper
-            model = whisper.load_model("base")
+            model = load_whisper_model()
             result = model.transcribe(permanent_path)
             st.markdown("**📝 Transcription:**")
             st.write(result["text"])

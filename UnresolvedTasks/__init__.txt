@@ -1,0 +1,5 @@
+# File: __init__.py
+"""For modules related to installing packages.
+"""
+
+# TODO: Add code related to installing packages.

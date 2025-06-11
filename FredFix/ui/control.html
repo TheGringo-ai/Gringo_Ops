@@ -1,0 +1,44 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FredFix Control Panel</title>
+  <style>
+    body { font-family: sans-serif; background: #111; color: #eee; padding: 2rem; }
+    .toggle { margin-bottom: 1rem; }
+    #output { white-space: pre-wrap; background: #222; padding: 1rem; border-radius: 6px; }
+    input, button { font-size: 1rem; padding: 0.5rem; margin: 0.5rem 0; }
+  </style>
+</head>
+<body>
+  <h1>🛠️ FredFix Control Panel</h1>
+
+  <div class="toggle">
+    <label>
+      <input type="checkbox" id="memoryToggle" />
+      Enable Memory
+    </label>
+  </div>
+
+  <div>
+    <input type="text" id="commandInput" placeholder="Enter command..." size="50" />
+    <button onclick="sendCommand()">Run</button>
+  </div>
+
+  <h3>Output:</h3>
+  <div id="output">Awaiting input...</div>
+
+  <script>
+    function sendCommand() {
+      const command = document.getElementById("commandInput").value;
+      const memoryEnabled = document.getElementById("memoryToggle").checked;
+
+      // Placeholder: Replace with actual API call or IPC
+      document.getElementById("output").textContent = 
+        `Running: ${command}\nMemory: ${memoryEnabled ? "ON" : "OFF"}`;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+Let's break down these suggestions for improving `req_set.py`:
+
+1. **Dependency Management (pip._internal):**  The core issue is using `pip._internal`.  This is an implementation detail of `pip`, and it's subject to change without notice, breaking your code.  Instead of directly using `InstallRequirement`, consider these alternatives:
+    * **Packaging:** The `packaging` library provides a more stable and public API for working with package requirements. Look into `packaging.requirements.Requirement`.
+    * **Import Location:** Even if you *must* use `pip._internal` (which is highly discouraged), import it only within the function that absolutely needs it. This limits the scope of the dependency and makes it clearer where it's used.  This doesn't solve the fundamental instability problem, though.
+
+2. **Type Hinting:** Adding type hints significantly improves code clarity and maintainability. Use the `typing` module (e.g., `List`, `Dict`, `Optional`, etc.) to specify the types of variables, function arguments, and return values.  For example:
+
+   ```python
+   from typing import List, Optional
+
+   def add_unnamed_requirement(self, requirement: str) -> None:
+       ...
+   ```
+
+3. **Assert vs. Exceptions:** `assert` statements are for debugging and development.  They should not be relied upon for handling runtime errors in production code. Replace them with appropriate exceptions (e.g., `ValueError` if a requirement string is invalid, or a custom exception type for more specific errors).  This makes the code more robust and provides better error messages to users.
+
+4. **Unused Parameter (`check_supported_wheels`):**  If the `check_supported_wheels` parameter isn't used, remove it.  Dead code clutters the codebase.
+
+5. **More Informative Deprecation Warnings:** When using `warnings.warn` for deprecations, provide a clear and actionable message. Explain *why* the feature is deprecated, *what* the alternative is, and *when* the deprecated feature will be removed.  Example:
+
+   ```python
+   import warnings
+
+   warnings.warn(
+       "Legacy version specifiers are deprecated and will be removed in version 3.0. "
+       "Use PEP 440 compliant specifiers instead. See [link to documentation]",
+       DeprecationWarning,
+   )
+   ```
+
+6. **Docstrings:** Every method should have a docstring explaining its purpose, arguments, return values, and any exceptions it might raise. Use a standard docstring format like Google style, reStructuredText, or NumPy style for consistency.  Example:
+
+   ```python
+   def add_named_requirement(self, requirement: str) -> None:
+       """Adds a named requirement to the set.
+
+       Args:
+           requirement: The requirement string in the format 'name==version'.
+
+       Raises:
+           ValueError: If the requirement string is invalid.
+       """
+       ...
+   ```
+
+By addressing these points, you'll make `req_set.py` significantly more robust, maintainable, and user-friendly. Remember that using public and stable APIs is crucial for long-term stability and avoiding unexpected breakage.

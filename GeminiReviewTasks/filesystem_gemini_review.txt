@@ -1,0 +1,27 @@
+This code looks pretty good overall, with good type hinting and docstrings. Here are a few suggestions for improvement:
+
+1. **`check_path_owner()` simplification:** The loop to traverse up the directory tree seems overly complex.  Since you're ultimately checking write access for the user, a simpler approach would be to directly check write access on the given `path` using `os.access(path, os.W_OK)`.  The special handling for root user (uid 0) might be unnecessary as `os.access()` should already handle this correctly.  Consider simplifying the function like this:
+
+   ```python
+   def check_path_owner(path: str) -> bool:
+       if sys.platform == "win32":
+           return True
+       return os.access(path, os.W_OK)
+   ```
+
+2. **`adjacent_tmp_file()` robustness:** The code uses `os.fsync()` after `flush()`. While usually redundant,  explicitly calling `os.fsync()` can be beneficial for data durability, especially in critical scenarios. However, consider wrapping `os.fsync()` in a `try-except OSError` block.  Some file systems or file types may not support `fsync()`, and this can cause unexpected exceptions.
+
+3. **`replace()` clarity:** The `_replace_retry` decorator adds retry logic to `os.replace()`. The comment should explain *why* this retry logic is necessary.  What specific errors are being handled? Under what circumstances might `os.replace()` fail and require retrying? Adding this context would make the code more understandable.
+
+4. **`test_writable_dir()` efficiency (Windows):** The `_test_writable_dir_win()` function creates and deletes a temporary file multiple times to test writability.  It could be more efficient to attempt creating just one temporary file.  If that fails, assume the directory is not writable.
+
+5. **`find_files()` potential performance issue:**  Using a list comprehension inside the `os.walk()` loop (`result.extend(...)`) can be less memory-efficient for very large directories.  Consider using a generator to yield matching files one by one instead of building a potentially large list in memory.
+
+
+6. **Size functions consistency:**  `file_size()` returns an int or float.  Consider whether it should always return an int (since file sizes are generally whole numbers) or document clearly why a float might be returned. The same consideration applies to `directory_size()`.
+
+7. **Potential code duplication in size functions:** `format_file_size()` and `format_directory_size()` essentially call `format_size()` with the result of another function.  Consider whether it's worth having these separate functions, or if the caller can just directly use `format_size(file_size(...))` and `format_size(directory_size(...))`.
+
+
+
+By addressing these points, you can further improve the code's clarity, robustness, and efficiency.

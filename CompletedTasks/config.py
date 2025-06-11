@@ -1,0 +1,1 @@
+Task: Implement the functions in the `utils/translation.py`, `utils/quiz_generator.py`, `utils/pdf_exporter.py`, and `utils/logger.py` files as mentioned in the improvements section. Make sure the `generate_quiz` function returns a list of dictionaries in the correct format. Also, consider using a library like `reportlab` for PDF generation in the `export_training_pdf` function.

@@ -1,0 +1,59 @@
+The suggested improvements are good and would definitely enhance the code. Here's a more detailed breakdown of potential improvements and some additional suggestions:
+
+**General Enhancements:**
+
+* **Type Hinting Consistency:** While the `Optional` type hint is used, apply type hints consistently to all functions, even if they return `bool`.  For example, `_running_under_venv() -> bool`, `_running_under_legacy_virtualenv() -> bool`, etc.
+* **Docstring Clarity:** Docstrings are a good start.  However, make them more informative.  Instead of just "True if running inside...", explain *how* the determination is made (briefly). For example in `running_under_virtualenv()`:  "Returns True if running inside a virtual environment, False otherwise.  Checks for both venv and legacy virtualenv environments by examining sys.prefix and sys.real_prefix."
+* **Error Handling:** Consider raising custom exceptions rather than just logging a warning in `_no_global_under_venv()`. This provides more robust error handling and lets calling code react appropriately.
+* **Constant Naming:**  Rename `INCLUDE_SYSTEM_SITE_PACKAGES_REGEX` to `INCLUDE_SYSTEM_SITE_PACKAGES_PATTERN` since it's a compiled regular expression pattern, not just a string regex.
+
+
+**Specific Function Improvements:**
+
+* **`_get_pyvenv_cfg_lines()`:**
+    * Instead of returning `Optional[List[str]]`, consider returning a plain `List[str]`. If the file doesn't exist or can't be read, return an empty list (`[]`) instead of `None`. This simplifies the logic in the calling function.
+* **`_no_global_under_venv()`:**
+    * The warning message is good, but could be improved to include the actual path it tried to access.
+    * Handle the case where `pyvenv.cfg` exists but is empty more explicitly.  Right now, it would fall through and return `False`.  Perhaps log a debug message or a different warning in this scenario.
+* **`virtualenv_no_global()`:** This is the main public function.  Its docstring should be more comprehensive, explaining its purpose and the conditions under which it returns True or False.
+
+**Example Incorporating Some Suggestions:**
+
+```python
+import logging
+import os
+import re
+import site
+import sys
+from typing import List
+
+logger = logging.getLogger(__name__)
+INCLUDE_SYSTEM_SITE_PACKAGES_PATTERN = re.compile(r"include-system-site-packages\s*=\s*(?P<value>true|false)")
+
+def running_under_virtualenv() -> bool:
+    """Returns True if running inside a virtual environment, False otherwise.
+    Checks for both venv and legacy virtualenv environments using sys.prefix and sys.real_prefix."""
+    return _running_under_venv() or _running_under_legacy_virtualenv()
+
+# ... (other functions with similar improvements)
+
+def _get_pyvenv_cfg_lines() -> List[str]:
+    """Reads {sys.prefix}/pyvenv.cfg and returns its contents as a list of lines.
+       Returns an empty list if the file is not accessible.
+    """
+    pyvenv_cfg_file = os.path.join(sys.prefix, "pyvenv.cfg")
+    try:
+        with open(pyvenv_cfg_file, encoding="utf-8") as f:
+            return f.read().splitlines()
+    except OSError:
+        logger.warning(f"Could not access '{pyvenv_cfg_file}'. Assuming global site-packages are not accessible.")
+        return []
+
+def _no_global_under_venv() -> bool:
+    # ... (rest of the function logic with improved error handling)
+
+
+```
+
+
+By addressing these points, the code will be more robust, easier to understand, and maintain. Remember to thoroughly test any changes you make.
