@@ -4,7 +4,6 @@ FROM python:3.11-slim
 # Environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    STREAMLIT_SERVER_PORT=8501 \
     STREAMLIT_SERVER_HEADLESS=true
 
 # Set work directory
