@@ -1,0 +1,23 @@
+1. **Consider a more robust check for executable equivalence:**  `os.path.samefile` can fail if hardlinks or symlinks are involved. Consider using a more robust method like comparing the resolved absolute paths of the executables.
+
+2. **Error Handling:**  `shutil.which` can return `None`.  While the code implicitly handles this, adding explicit checks for `None` before using the result of `shutil.which` would improve readability and robustness. For example:
+
+   ```python
+   found_executable = shutil.which(exe_name)
+   if found_executable is not None and os.path.samefile(found_executable, exe):
+       return exe_name
+   ```
+
+3. **PATHEXT on Windows:** The code handles `.exe` extensions on Windows, but it should also consider other extensions present in the `PATHEXT` environment variable.  This would make it more robust for users who have non-standard executable extensions configured.
+
+4. **Shebang:**  The file lacks a shebang. Although it's primarily a library module, if there's any chance of this being directly executed, a shebang like `#!/usr/bin/env python3` should be added.
+
+5. **`_wrapper` function usefulness:**  The `_wrapper` function seems intended for transitional compatibility.  Consider adding a mechanism (e.g., an environment variable or command-line flag) to suppress the warning, especially for environments where fixing the underlying issue is not immediately feasible.  Also, document the expected timeframe for removal of this wrapper to set user expectations.
+
+6. **Testing:** The code could benefit from unit tests, especially the functions `get_best_invocation_for_this_pip` and `get_best_python_invocation` as they involve platform-specific behavior and interactions with the environment.
+
+7. **Documentation for `_EXECUTABLE_NAMES`:**  Add a docstring or comment explaining the rationale behind trying different `pip` executable names (pip, pipX, pipX.Y).
+
+8. **Clarity on "best" invocation:** The docstrings for the "get_best..." functions should clarify what "best" means in this context. Is it the shortest, the most likely to be on the user's PATH, or something else?  This would help users understand the logic.
+
+9. **Consider special cases for virtual environments:** Virtual environments usually have their own `python` executable. The logic might need to be adjusted to handle this case correctly, especially ensuring that the `pip` executable within the virtual environment is used.

@@ -1,0 +1,23 @@
+1. **Redundant `:none:` handling in `handle_mutual_excludes`:** The code specifically handles the case where `:all:` is present but `:none:` is not.  However, the `:none:` handling itself already clears the target set. Therefore, the special handling for the absence of `:none:` after `:all:` is redundant and can be removed.  The logic works correctly without it.
+
+2. **Inefficient set operations in `handle_mutual_excludes`:**  The line `target = target | {name}` creates a new set on each iteration inside the loop. This is less efficient than using `target.add(name)`.  Since `target` is already a set, and the goal is to ensure the `name` is present in the set, using `target.add(name)` directly avoids unnecessary set creation within the loop. While `target = {":all:"}` is correct, consider using  `target.clear()` and `target.add(":all:")` for consistency, especially if performance is critical. (Although this is a micro-optimization.)
+
+3. **Overly complex `get_allowed_formats` logic:** The `if`/`elif`/`else` structure can be simplified. Since the goal is to check `only_binary`, then `no_binary`, and finally fall back to the defaults, a more straightforward approach would be:
+
+   ```python
+   def get_allowed_formats(self, canonical_name: str) -> FrozenSet[str]:
+       if canonical_name in self.only_binary or ":all:" in self.only_binary:
+           return frozenset({"binary"})
+       elif canonical_name in self.no_binary or ":all:" in self.no_binary:
+           return frozenset({"source"})
+       return frozenset({"binary", "source"})
+   ```
+
+4. **Unnecessary `__eq__` implementation:**  The provided `__eq__` implementation checks if `self.__slots__ == other.__slots__`. This is redundant.  Python's default `__eq__`  (inherited from `object`) already handles slot equality correctly. Unless a specific comparison logic beyond comparing slot values is needed, the custom `__eq__` implementation can be removed.  Python will handle slot comparisons automatically.
+
+5. **Consider using sets internally (instead of frozensets):** Unless immutability is absolutely required *within* the `FormatControl` class, using regular sets (`self.no_binary` and `self.only_binary`) would be slightly more efficient.  The immutability provided by `frozenset` is primarily useful for set operations and hashing (e.g., as dictionary keys), but within the class itself, if you're not passing these sets to external functions that require immutability, regular sets will be slightly faster for adding and removing elements. Only return a `frozenset` from `get_allowed_formats`.
+
+6. **Type hints improvement for `handle_mutual_excludes`:** It modifies sets in place, so the return type should be `None`.  Consider adding type hints to `target` and `other` parameters to be explicit (e.g., `Set[str]`).
+
+
+By addressing these points, the code can become more concise, efficient, and easier to maintain.

@@ -1,0 +1,61 @@
+The updated code and the suggested improvements are correct and beneficial.  Adding the type hints improves readability and helps with static analysis. Here are some additional comments and potential improvements:
+
+* **Consider `Protocol` for `InstallRequirementProvider`:**  Instead of using `Callable`, consider using `typing.Protocol` (or `typing.Callable` if using older Python versions). This allows for more precise type checking and better IDE support.  This is especially helpful if there are specific methods you expect an `InstallRequirementProvider` to have beyond just being callable.
+
+* **Docstrings:**  Add docstrings to the `BaseResolver` class and its methods to explain their purpose and the expected behavior. Include information about the parameters and return values.
+
+* **Clarity on `check_supported_wheels`:** In the `resolve` method, the purpose of the `check_supported_wheels` parameter is unclear.  A docstring explaining its function would be valuable.
+
+* **`RequirementSet` vs. `List[InstallRequirement]` in `resolve`:** It might be worth considering why `resolve` returns a `RequirementSet` while `get_installation_order` operates on one and returns a `List[InstallRequirement]`. Is there a reason for this difference? Could there be a more unified approach?  This isn't necessarily a problem, but something to think about from a design perspective.
+
+* **Error Handling:**  The `NotImplementedError` is appropriate for an abstract base class. However, in concrete implementations of this class, consider raising more specific exceptions when encountering errors during resolution or determining installation order.
+
+Example incorporating some of these suggestions:
+
+```python
+from typing import Callable, List, Optional, Protocol
+
+from pip._internal.req.req_install import InstallRequirement
+from pip._internal.req.req_set import RequirementSet
+
+class InstallRequirementProvider(Protocol):  # Use Protocol for better type hinting
+    def __call__(self, name: str, req: Optional[InstallRequirement]) -> InstallRequirement: ...
+
+class BaseResolver:
+    """Base class for dependency resolution."""
+
+    def resolve(
+        self, root_reqs: List[InstallRequirement], check_supported_wheels: bool
+    ) -> RequirementSet:
+        """Resolves dependencies for the given requirements.
+
+        Args:
+            root_reqs: A list of top-level installation requirements.
+            check_supported_wheels:  Flag indicating whether to check for supported wheels.
+                 (Further explanation needed in concrete implementation docstrings.)
+
+        Returns:
+            A RequirementSet containing the resolved dependencies.
+
+        Raises:
+            NotImplementedError: This is an abstract method.
+        """
+        raise NotImplementedError()
+
+    def get_installation_order(
+        self, req_set: RequirementSet
+    ) -> List[InstallRequirement]:
+        """Determines the order in which the requirements should be installed.
+
+        Args:
+            req_set:  The resolved RequirementSet.
+
+        Returns:
+            A list of InstallRequirement objects in the order they should be installed.
+
+        Raises:
+            NotImplementedError: This is an abstract method.
+        """
+        raise NotImplementedError()
+
+```

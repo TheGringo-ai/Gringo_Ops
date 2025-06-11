@@ -1,0 +1,10 @@
+1. **Docstrings:** Both `generate_metadata` and `runner_with_spinner_message` need docstrings explaining their purpose, arguments, and return values.  For `generate_metadata`, details about what constitutes "metadata" and its format are important. For `runner_with_spinner_message`, explain how the spinner is used and what types of runners/functions are expected.
+
+2. **Type Hints for Return Values:**
+
+   * **`generate_metadata`**: The type hint depends on what this function returns.  Is it a dictionary, a string, a custom object, or something else?  Determine the correct type and add it. For example, if it returns a dictionary of strings, the type hint would be `-> dict[str, str]`.  If it returns a string, the type hint is `-> str`.
+
+   * **`runner_with_spinner_message`**:  This function likely returns the result of the `runner` function.  The type hint should match the return type of whatever function is passed as the `runner` argument. If `runner` can return different types, consider using `typing.Any` or `typing.Union` if you can narrow down the possibilities. If the function doesn't return anything, use `-> None`.
+
+
+These additions will improve readability and help with static analysis and catching potential errors early.

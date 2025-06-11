@@ -1,0 +1,75 @@
+1. **Duplicate `libc_ver` function:** The `libc_ver` function is defined twice. Remove the second definition.
+
+2. **Type Hinting for `libc_ver`:**  While the suggestion mentions adding type hints, they are already present (and correctly so) in the first definition of `libc_ver`.  Just remove the duplicate function and you're good.
+
+3. **Docstrings for helper functions:** The suggestion to add docstrings to `glibc_version_string_confstr` and `glibc_version_string_ctypes` is good and has been implemented.  These explain the different approaches clearly.
+
+4. **`List` vs. `Tuple`:** The suggestion to use `List` instead of `Tuple` is not warranted in this case. A `Tuple` is more appropriate for the return value of `libc_ver` because the size and meaning of each element are fixed (library name, version string).  A `List` implies mutability and a variable number of elements, which isn't the case here.  Keep the return type as a `Tuple`.
+
+5. **Minor Comment Improvement:** In `glibc_version_string_ctypes`, the comment "py2 / py3 compatibility" is slightly outdated. Since Python 2 is no longer supported, this can be simplified.
+
+
+Here's how the improved code would look (incorporating the removal of the duplicate function and a minor comment update):
+
+```python
+import os
+import sys
+from typing import Optional, Tuple
+
+
+def glibc_version_string() -> Optional[str]:
+    """Returns glibc version string, or None if not using glibc."""
+    return glibc_version_string_confstr() or glibc_version_string_ctypes()
+
+
+def glibc_version_string_confstr() -> Optional[str]:
+    """Primary implementation using os.confstr (faster and more reliable)."""
+    if sys.platform == "win32":
+        return None
+    try:
+        gnu_libc_version = os.confstr("CS_GNU_LIBC_VERSION")
+        if gnu_libc_version is None:
+            return None
+        # os.confstr("CS_GNU_LIBC_VERSION") returns a string like "glibc 2.17":
+        _, version = gnu_libc_version.split()
+    except (AttributeError, OSError, ValueError):
+        # os.confstr() or CS_GNU_LIBC_VERSION not available (or a bad value)...
+        return None
+    return version
+
+
+def glibc_version_string_ctypes() -> Optional[str]:
+    """Fallback implementation using ctypes (if os.confstr fails)."""
+    try:
+        import ctypes
+    except ImportError:
+        return None
+
+    process_namespace = ctypes.CDLL(None)  # Get the main program's namespace
+    try:
+        gnu_get_libc_version = process_namespace.gnu_get_libc_version
+    except AttributeError:
+        # Symbol doesn't exist -> not linked to glibc.
+        return None
+
+    gnu_get_libc_version.restype = ctypes.c_char_p
+    version_str = gnu_get_libc_version()
+    # Ensure string conversion:
+    if not isinstance(version_str, str):
+        version_str = version_str.decode("ascii")
+
+    return version_str
+
+
+def libc_ver() -> Tuple[str, str]:
+    """Try to determine the glibc version.
+
+    Returns a tuple of strings (lib, version) which default to empty strings
+    in case the lookup fails.
+    """
+    glibc_version = glibc_version_string()
+    if glibc_version is None:
+        return ("", "")
+    else:
+        return ("glibc", glibc_version)
+```

@@ -19,3 +19,30 @@ __pycache__/
 
 # VSCode config (optional)
 .vscode/
+
+# Additional virtualenv folders
+venv/
+env/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Python wheels
+*.whl
+
+# VSCode project settings
+.vscode/
+
+# Virtual environments
+venv/
+env/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Python wheels
+*.whl

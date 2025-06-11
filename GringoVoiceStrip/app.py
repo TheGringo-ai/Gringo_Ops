@@ -24,6 +24,12 @@ with tab1:
             result = model.transcribe(tmp_path)
             st.success("Done!")
             st.text_area("📝 Transcript", result["text"], height=300)
+            st.markdown(f"""
+                <script>
+                var msg = new SpeechSynthesisUtterance("{result['text']}");
+                window.speechSynthesis.speak(msg);
+                </script>
+            """, unsafe_allow_html=True)
 
 with tab2:
     audio_bytes = audio_recorder()
@@ -37,3 +43,9 @@ with tab2:
             result = model.transcribe(tmp_path)
             st.success("Done!")
             st.text_area("📝 Transcript", result["text"], height=300)
+            st.markdown(f"""
+                <script>
+                var msg = new SpeechSynthesisUtterance("{result['text']}");
+                window.speechSynthesis.speak(msg);
+                </script>
+            """, unsafe_allow_html=True)
