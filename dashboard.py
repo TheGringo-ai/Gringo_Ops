@@ -1,14 +1,15 @@
-import streamlit as st
-from FredFix.core.CreatorAgent import CreatorAgent
-from FredFix.core.repair_engine import repair_all_code
+import sys
 import os
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+import streamlit as st
+from core.CreatorAgent import CreatorAgent
+from core.repair_engine import repair_all_code
 
 st.set_page_config(page_title="Unified Dashboard", layout="wide")
 
 st.title("FredFix Unified Dashboard")
 st.markdown("Welcome to your unified AI agent interface.")
 
-# Placeholder UI
 col1, col2 = st.columns(2)
 
 with col1:

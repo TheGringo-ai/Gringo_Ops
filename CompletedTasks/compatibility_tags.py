@@ -1,1 +1,0 @@
-The file is valid and complete. The code provides a function `get_supported` that returns a list of supported tags based on the version, platform, implementation, and abis specified as arguments. The code makes use of various helper functions to handle different platforms and compatibility tags based on the inputs.
