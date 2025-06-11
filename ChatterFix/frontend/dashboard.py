@@ -1,50 +1,63 @@
-
-
-
-import streamlit as st
-import pandas as pd
+import sys
 import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), './FredFix')))
+name: Deploy to Google Cloud Run
 
-st.set_page_config(page_title="ChatterFix Dashboard", layout="wide")
+on:
+  push:
+    branches:
+      - main
 
-st.title("🔧 ChatterFix Maintenance Dashboard")
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-tab1, tab2, tab3, tab4 = st.tabs(["All Work Orders", "By Technician", "Overdue", "Completed"])
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-uploaded_file = st.file_uploader("Upload a Work Order Excel File", type=["xlsx", "xls"])
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
 
-if uploaded_file:
-    df = pd.read_excel(uploaded_file)
-    st.success("File successfully uploaded!")
-    with tab1:
-        st.subheader("📋 All Work Orders")
-        st.dataframe(df)
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-    with tab2:
-        if "Status" in df.columns and "Assigned" in df.columns:
-            st.subheader("🔍 Filter by Technician")
-            techs = df["Assigned"].dropna().unique()
-            selected_tech = st.selectbox("Choose Technician", techs)
+    - name: Authenticate with Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-            st.subheader("📆 Filter by Status")
-            status_filter = st.selectbox("Choose Status", ["All", "Open", "In Progress", "Completed", "Closed"])
-            
-            filtered_df = df[df["Assigned"] == selected_tech]
-            if status_filter != "All":
-                filtered_df = filtered_df[filtered_df["Status"] == status_filter]
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: unified-dashboard
+        install_components: 'gcloud'
 
-            st.dataframe(filtered_df)
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy unified-dashboard \
+          --source . \
+          --region us-central1 \
+          --platform managed \
+          --allow-unauthenticated \
+          --project unified-dashboard
 
-    with tab3:
-        if "Due Date" in df.columns:
-            st.subheader("🚨 Overdue Work Orders")
-            overdue_df = df[pd.to_datetime(df["Due Date"], errors='coerce') < pd.Timestamp.now()]
-            st.dataframe(overdue_df)
+    - name: Confirm Deployment
+      run: |
+        echo "✅ Deployment triggered. Verifying service status..."
+        sleep 10
+        curl --fail --silent --show-error https://unified-dashboard-<your-subdomain>-uc.a.run.app || echo "⚠️ Service ping failed. Check deployment logs."
 
-    with tab4:
-        if "Completed Date" in df.columns:
-            st.subheader("✅ Recently Completed Work Orders")
-            recent_completed = df.sort_values("Completed Date", ascending=False).head(10)
-            st.dataframe(recent_completed)
-else:
-    st.info("Please upload a work order spreadsheet to get started.")
+    - name: Auto-commit memory logs
+      run: |
+        if [ -f memory/log.txt ]; then
+          git config user.name "FredFix Auto"
+          git config user.email "bot@fredfix.io"
+          git add memory/log.txt
+          git commit -m "🧠 Memory log auto-commit post deploy"
+          git push origin main || echo "⚠️ Could not push memory logs."
+        fi

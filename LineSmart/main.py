@@ -1,5 +1,6 @@
-
 # File: Agent/agent.py
+
+# This file is part of the LineSmart submodule and is designed to work with the core Agent/agent.py
 
 # --- Imports for secrets and OpenAI ---
 from google.cloud import secretmanager
@@ -88,3 +89,25 @@ def write_rewritten_file(filename, content, log_content=None):
 # filename = "example.py"
 # log = "SyntaxError: invalid syntax on line 3"
 # write_rewritten_file(filename, rewritten_code, log_content=log)
+
+from pathlib import Path
+
+def scan_and_clean(cli_args):
+    """
+    Scans and processes all .py files recursively within the entire GringoOps folder,
+    excluding files specified in cli_args.
+    """
+    ROOT_DIR = Path(__file__).resolve().parents[2]
+    py_files = [f for f in ROOT_DIR.rglob("*.py") if f.is_file() and f.name not in cli_args]
+    for py_file in py_files:
+        # Process each Python file as needed
+        print(f"Processing file: {py_file}")
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Run cleanup for LineSmart or custom subfolder.")
+    parser.add_argument('--exclude', nargs='*', default=[], help="List of filenames to exclude from scan.")
+    args = parser.parse_args()
+
+    scan_and_clean(args.exclude)
