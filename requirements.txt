@@ -1,0 +1,9 @@
+ffmpeg-python
+numpy
+openai-whisper
+pydub
+scipy
+sounddevice
+streamlit
+torch
+watchdog
