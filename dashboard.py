@@ -1,32 +1,41 @@
 import streamlit as st
-import logging
+from FredFix.core.CreatorAgent import CreatorAgent
+from FredFix.core.repair_engine import repair_all_code
+import os
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+st.set_page_config(page_title="Unified Dashboard", layout="wide")
 
-from FredFix import registry
-from FredFix import scan_all
+st.title("FredFix Unified Dashboard")
+st.markdown("Welcome to your unified AI agent interface.")
 
-st.set_page_config(page_title="GringoOps Unified Dashboard", layout="wide")
-st.title("🛠️ GringoOps Unified AI Dashboard")
-st.markdown("Control and monitor all your AI-powered agents from here.")
+# Placeholder UI
+col1, col2 = st.columns(2)
 
-with st.sidebar:
-    st.header("🔧 Agent Controls")
-    agent = st.selectbox("Select an agent to run", ["repair", "scan"])
-    if st.button("Run Selected Agent"):
-        if agent == "scan":
-            issues = scan_all.report_issues()
-            st.session_state["scan_issues"] = issues
-            st.success(f"🔍 Scan complete. Found {len(issues)} issues.")
+with col1:
+    st.header("Creator Agent")
+    user_prompt = st.text_input("What should the agent generate?")
+    if st.button("Generate Code"):
+        if user_prompt:
+            agent = CreatorAgent()
+            code = agent.create_module(user_prompt)
+            st.code(code, language="python")
+            save_path = os.path.join(os.getcwd(), "generated_module.py")
+            agent.save_module(save_path, code)
+            st.success(f"Module saved to {save_path}")
         else:
-            result = registry.invoke_agent(agent)
-            st.success(result)
+            st.warning("Please enter a prompt.")
 
-if "scan_issues" in st.session_state and st.session_state["scan_issues"]:
-    st.subheader("⚠️ Code Issues Found:")
-    for path, note in st.session_state["scan_issues"]:
-        st.write(f"{note} — `{path}`")
+with col2:
+    st.header("Repair Agent")
+    target_path = st.text_input("Path to codebase for repair")
+    if st.button("Fix Codebase"):
+        if os.path.isdir(target_path):
+            result = repair_all_code(target_path)
+            st.success("Codebase repair completed.")
+            st.text(result)
+        else:
+            st.error("Invalid directory path.")
 
+st.success("Dashboard is running properly.")
 st.markdown("---")
-st.info("✅ All agents are now unified under one dashboard. Additional modules will auto-load as wired.")
+st.info("Dashboard ready for multi-agent operations.")

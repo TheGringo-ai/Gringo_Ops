@@ -2,6 +2,7 @@
 
 
 import logging
+from FredFix.agents.CreatorAgent import CreatorAgent
 import os
 import subprocess
 from datetime import datetime
@@ -32,3 +33,11 @@ def repair_all_code(repo_path="."):
         logging.info(f"💾 Commit complete: formatted {len(repaired_files)} file(s)")
     else:
         logging.info("✅ No changes needed. Repo is clean.")
+
+# Optional: Creator Agent hook for future module generation
+try:
+    from FredFix.agents.CreatorAgent import CreatorAgent
+    creator = CreatorAgent()
+    logging.info("🧠 CreatorAgent ready for use.")
+except Exception as e:
+    logging.warning(f"CreatorAgent could not be loaded: {e}")

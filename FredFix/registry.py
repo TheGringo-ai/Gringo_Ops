@@ -6,15 +6,18 @@ from LineSmart.main import LineSmartAgent
 
 agent_registry = {}
 
-register_agent("fredfix")(FredFixAgent)
-register_agent("bullettrain")(BulletTrainAgent)
-register_agent("linesmart")(LineSmartAgent)
-
+# ✅ Define the decorator BEFORE using it
 def register_agent(name):
     def decorator(cls):
         agent_registry[name] = cls
         return cls
     return decorator
+
+# ✅ Now safe to use
+register_agent("fredfix")(FredFixAgent)
+register_agent("bullettrain")(BulletTrainAgent)
+register_agent("linesmart")(LineSmartAgent)
+
 
 def get_agent(name):
     agent = agent_registry.get(name)
