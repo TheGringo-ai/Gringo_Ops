@@ -1,14 +1,11 @@
-
-
 import os
 
 try:
     import openai
-    from openai import OpenAI  # New SDK
+    from openai import OpenAI
     _new_sdk = True
 except ImportError:
     _new_sdk = False
-
 
 class CreatorAgent:
     def __init__(self, model="gpt-4", temperature=0.7):

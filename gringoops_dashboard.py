@@ -1,102 +1,71 @@
 import streamlit as st
 import os
 import subprocess
-from tools.config import load_config
-from tools.logger import log_markdown
-from tools import openai_review
-from plugins.autopatch import autopatch_run
-from plugins.summarize import run as summarize_run
-from tools import gemini_query
+import psutil
 
-# Load config
-conf = load_config()
-st.set_page_config(page_title="GringoOps AI Dashboard", layout="wide")
+st.set_page_config(page_title="GringoOps Dashboard", layout="wide")
 
-# Branding logo at the top
-logo_path = "static/gringo_logo.png"
-if os.path.exists(logo_path):
-    st.image(logo_path, width=180)
+tab1, tab2 = st.tabs(["🔧 Control Center", "📜 Logs"])
 
-st.markdown("<h1 style='color:#00bcd4;'>🤖 GringoOps AI Automation Suite</h1>", unsafe_allow_html=True)
-st.markdown("---")
+with tab1:
+    st.title("🧠 GringoOps Control Center")
 
-# Sidebar Navigation
-st.sidebar.title("🧰 Toolset")
-tool = st.sidebar.radio("Choose a tool to run:", ["Chat", "Review", "AutoPatch", "Summarize", "Logs"])
-st.sidebar.markdown("---")
-st.sidebar.markdown("Created by **GringoOps** – your AI-powered command platform.")
+    def is_process_running(keyword):
+        for proc in psutil.process_iter(['pid', 'cmdline']):
+            try:
+                if any(keyword in str(arg) for arg in proc.info['cmdline']):
+                    return proc.info['pid']
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
+        return None
 
-# Chat Tool
-if tool == "Chat":
-    model = st.sidebar.selectbox("Choose LLM", ["OpenAI (GPT-4)", "Gemini"])
-    user_input = st.text_area("💬 Enter your message:")
-    if st.button("Send"):
-        if model.startswith("OpenAI"):
-            import openai
-            client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-            response = client.chat.completions.create(
-                model=conf["openai"]["model"],
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": user_input}
-                ]
-            )
-            st.markdown(f"**GPT-4 Response:**\n\n{response.choices[0].message.content}")
-        else:
-            st.write("🧠 Sending to Gemini...")
-            gemini_query.query_model(prompt=user_input)
+    st.sidebar.markdown("## 🚀 Launch External Tools")
 
-# Review Tool
-elif tool == "Review":
-    st.subheader("📄 GPT-4 Code Review")
-    uploaded = st.file_uploader("Upload a Python file for review", type=["py"])
-    if uploaded and st.button("Run Code Review"):
-        tmp_path = "temp_review.py"
-        with open(tmp_path, "w") as f:
-            f.write(uploaded.read().decode())
-        openai_review.review(target=tmp_path, supervised=False)
-        with open("gpt_review.log", "r") as log:
-            st.markdown("### 📝 GPT Review Output")
-            st.code(log.read(), language="markdown")
+    tools = {
+        "FredFix": "FredFix/main.py",
+        "CreatorAgent UI": "FredFix/core/creator_agent_ui.py",
+        "BulletTrain": "BulletTrain/main.py",
+        "Agent": "Agent/main.py",
+        "Wizard": "wizard.py"
+    }
 
-# AutoPatch Tool
-elif tool == "AutoPatch":
-    st.subheader("🛠 GPT-4 AutoPatchBoy")
-    uploaded = st.file_uploader("Upload a Python file to patch", type=["py"])
-    if uploaded and st.button("Run AutoPatchBoy"):
-        tmp_path = "temp_patch.py"
-        with open(tmp_path, "w") as f:
-            f.write(uploaded.read().decode())
-        class Args: target=tmp_path; supervised=False
-        autopatch_run(Args())
+    for name, path in tools.items():
+        pid = is_process_running(path)
+        status = "🟢 Running" if pid else "⚪ Not running"
+        col1, col2 = st.sidebar.columns([3, 1])
+        with col1:
+            if st.button(f"Launch {name}"):
+                if not pid:
+                    subprocess.Popen(["env", f"PYTHONPATH={os.getcwd()}", "streamlit", "run", path])
+                else:
+                    st.toast(f"{name} is already running (PID {pid})", icon="ℹ️")
+        with col2:
+            st.write(status)
 
-# Summarize Tool
-elif tool == "Summarize":
-    st.subheader("🧾 AI Summarization")
-    uploaded = st.file_uploader("Upload a code or text file", type=["py", "txt", "md"])
-    if uploaded and st.button("Summarize"):
-        tmp_path = "temp_summary.txt"
-        with open(tmp_path, "w") as f:
-            f.write(uploaded.read().decode())
-        class Args: target=tmp_path
-        summarize_run(Args())
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("## ❌ Shutdown Running Tools")
 
-# Log Viewer
-elif tool == "Logs":
-    st.subheader("📚 Log Viewer (Last 5 Patches)")
-    log_dir = "logs/patches"
-    if os.path.exists(log_dir):
-        files = sorted(os.listdir(log_dir))[-5:]
-        for file in reversed(files):
-            st.markdown(f"### 📄 `{file}`")
-            with open(os.path.join(log_dir, file), "r") as f:
-                st.markdown(f.read())
+    for name, path in tools.items():
+        pid = is_process_running(path)
+        if pid and st.sidebar.button(f"Kill {name}"):
+            try:
+                psutil.Process(pid).terminate()
+                st.sidebar.success(f"{name} (PID {pid}) terminated.")
+            except Exception as e:
+                st.sidebar.error(f"Failed to kill {name}: {e}")
+
+with tab2:
+    st.title("📜 Log Viewer")
+
+    log_dir = "logs"
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+
+    log_files = [f for f in os.listdir(log_dir) if f.endswith(".log") or f.endswith(".txt")]
+    if log_files:
+        selected_log = st.selectbox("Choose a log file:", log_files)
+        with open(os.path.join(log_dir, selected_log), "r") as f:
+            content = f.read()
+        st.text_area("Log Content", content, height=400)
     else:
-        st.info("No patch logs found yet.")
-
-# Footer branding
-st.markdown("---")
-st.markdown(
-    "<div style='text-align: center; color: gray;'>GringoOps™ © 2025 — AI Automation Platform by Fred Taylor</div>",
-    unsafe_allow_html=True
-)
+        st.info("No log files found in the logs/ directory.")
