@@ -1,8 +1,14 @@
-# routes.py
+# core/routes.py
 
 from FredFix.core.agent import repair_agent
 from FredFix.core.doc_agent import doc_agent
-from FredFix.core.memory import load_memory, save_memory, search_memory, clear_memory, summarize_recent
+from FredFix.core.memory import (
+    load_memory,
+    save_memory,
+    search_memory,
+    clear_memory,
+    summarize_recent,
+)
 
 # Central route dispatcher for FredFix agent logic
 AGENT_ROUTES = {
