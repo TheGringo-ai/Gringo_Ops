@@ -1,3 +1,4 @@
+# Trigger rebuild: Streamlit syntax fix confirmation
 import os
 import streamlit as st
 
@@ -38,4 +39,4 @@ elif tool == "🧪 System Check":
 
     st.markdown("### 📁 Directory Checks")
     st.write("Logs folder:", "✅ Found" if os.path.exists("logs/patches") else "❌ Missing")
-    st.write("Plugins folder:", "✅ Found" if os.path.exists("plugins") else "❌ Mis
+    st.write("Plugins folder:", "✅ Found" if os.path.exists("plugins") else "❌ Missing")
