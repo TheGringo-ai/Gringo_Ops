@@ -1,19 +1,25 @@
 import streamlit as st
 import os
 import subprocess
-from streamlit_audio_recorder import audio_recorder
+from streamlit_webrtc import webrtc_streamer, WebRtcMode
 import tempfile
 import datetime
 import shutil
-import openai
+from openai import OpenAI
+
+st.set_page_config(page_title="🧠 GringoOps Hub", layout="wide")
+
+webrtc_streamer(
+    key="audio",
+    mode=WebRtcMode.SENDONLY,
+    audio_receiver_size=1024,
+    media_stream_constraints={"video": False, "audio": True},
+)
 
 @st.cache_resource
 def load_whisper_model():
     import whisper
     return whisper.load_model("base")
-
-
-st.set_page_config(page_title="🧠 GringoOps Hub", layout="wide")
 st.title("🧠 GringoOps Productivity Hub")
 st.markdown("Launch tools or record audio for Whisper-based transcription.")
 
@@ -44,29 +50,32 @@ with st.sidebar:
 # === Voice Recorder Section ===
 st.subheader("🎤 Voice Transcription with Whisper")
 
-audio_bytes = audio_recorder(pause_threshold=3.0, sample_rate=44100)
+st.info("🎙️ Audio stream started via WebRTC — recording & transcription support coming soon.")
 
-if audio_bytes:
-    st.audio(audio_bytes, format="audio/wav")
-    
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
-        f.write(audio_bytes)
-        temp_audio_path = f.name
+if False:
+    audio_bytes = audio_recorder(pause_threshold=3.0, sample_rate=44100)
 
-    # Move to GringoVoiceStrip if needed
-    permanent_path = os.path.expanduser("~/Projects/GringoOps/GringoVoiceStrip/recorded.wav")
-    shutil.move(temp_audio_path, permanent_path)
-    st.success("✅ Audio saved for transcription.")
+    if audio_bytes:
+        st.audio(audio_bytes, format="audio/wav")
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
+            f.write(audio_bytes)
+            temp_audio_path = f.name
 
-    # Optionally: Trigger transcription here
-    if st.button("🧠 Transcribe"):
-        try:
-            model = load_whisper_model()
-            result = model.transcribe(permanent_path)
-            st.markdown("**📝 Transcription:**")
-            st.write(result["text"])
-        except Exception as e:
-            st.error(f"Failed to transcribe audio: {e}")
+        # Move to GringoVoiceStrip if needed
+        permanent_path = os.path.expanduser("~/Projects/GringoOps/GringoVoiceStrip/recorded.wav")
+        shutil.move(temp_audio_path, permanent_path)
+        st.success("✅ Audio saved for transcription.")
+
+        # Optionally: Trigger transcription here
+        if st.button("🧠 Transcribe"):
+            try:
+                model = load_whisper_model()
+                result = model.transcribe(permanent_path)
+                st.markdown("**📝 Transcription:**")
+                st.write(result["text"])
+            except Exception as e:
+                st.error(f"Failed to transcribe audio: {e}")
 
 st.divider()
 st.subheader("🛠️ FredFix Command Console")
@@ -99,7 +108,7 @@ for entry in st.session_state.fredfix_memory[-10:]:
 st.divider()
 st.subheader("🤖 AI Chat Assistant")
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 chat_prompt = st.chat_input("Ask your dev assistant...")
 
@@ -107,20 +116,20 @@ if chat_prompt:
     with st.chat_message("user"):
         st.markdown(chat_prompt)
     with st.chat_message("assistant"):
-        if openai.api_key:
+        if client.api_key:
             with st.spinner("FredFix is thinking..."):
                 try:
                     response = ""
                     container = st.empty()
-                    completion = openai.ChatCompletion.create(
+                    completion = client.chat.completions.create(
                         model="gpt-4",
                         messages=[{"role": "user", "content": chat_prompt}],
                         stream=True,
                     )
                     for chunk in completion:
-                        delta = chunk["choices"][0]["delta"]
-                        if "content" in delta:
-                            response += delta["content"]
+                        if chunk.choices and chunk.choices[0].delta.content:
+                            delta = chunk.choices[0].delta.content
+                            response += delta
                             container.markdown(response)
                 except Exception as e:
                     st.error(f"OpenAI error: {e}")
