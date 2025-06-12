@@ -1,0 +1,17 @@
+openai:
+  model: gpt-4
+  temperature: 0.3
+  max_tokens: 2048
+
+gemini:
+  model: gemini-pro
+  temperature: 0.4
+
+huggingface:
+  default_repo: gringoops/models
+  deploy_command: echo "Simulated deploy for {model}"
+
+defaults:
+  review_target: FredFix/core/agent.py
+  save_reviews: true
+  supervised_mode: true
