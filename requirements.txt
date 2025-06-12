@@ -6,3 +6,5 @@ tqdm
 httpx
 requests
 jinja2
+psutil
+psutil
