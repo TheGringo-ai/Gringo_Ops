@@ -1,42 +1,48 @@
-import sys
 import os
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 import streamlit as st
-from core.CreatorAgent import CreatorAgent
-from core.repair_engine import repair_all_code
 
-st.set_page_config(page_title="Unified Dashboard", layout="wide")
+st.set_page_config(page_title="🧠 GringoOps Dashboard", layout="wide")
 
-st.title("FredFix Unified Dashboard")
-st.markdown("Welcome to your unified AI agent interface.")
+st.title("🧠 GringoOps Master Dashboard")
+st.markdown("This is the central control panel for launching and managing all AI modules.")
 
-col1, col2 = st.columns(2)
+# Sidebar
+st.sidebar.title("🔧 Tools")
+module = st.sidebar.radio("Navigate to module:", [
+    "🏠 Home",
+    "🛠️ FredFix",
+    "🧙 Wizard",
+    "🎨 Creator Agent",
+    "🚂 BulletTrain"
+])
 
-with col1:
-    st.header("Creator Agent")
-    user_prompt = st.text_input("What should the agent generate?")
-    if st.button("Generate Code"):
-        if user_prompt:
-            agent = CreatorAgent()
-            code = agent.create_module(user_prompt)
-            st.code(code, language="python")
-            save_path = os.path.join(os.getcwd(), "generated_module.py")
-            agent.save_module(save_path, code)
-            st.success(f"Module saved to {save_path}")
-        else:
-            st.warning("Please enter a prompt.")
+# Dynamic import/view rendering
+if module == "🏠 Home":
+    st.subheader("Welcome to GringoOps")
+    st.success("Use the sidebar to navigate to one of the available tools.")
+    st.markdown("---")
+    st.info("Modules are fully integrated. You can launch, generate, review, and patch seamlessly.")
 
-with col2:
-    st.header("Repair Agent")
-    target_path = st.text_input("Path to codebase for repair")
-    if st.button("Fix Codebase"):
-        if os.path.isdir(target_path):
-            result = repair_all_code(target_path)
-            st.success("Codebase repair completed.")
-            st.text(result)
-        else:
-            st.error("Invalid directory path.")
+elif module == "🛠️ FredFix":
+    st.subheader("🛠️ FredFix Panel")
+    with st.container():
+        st.markdown("Launching FredFix UI...")
+        os.system("streamlit run FredFix/fredfix_ui.py")
 
-st.success("Dashboard is running properly.")
-st.markdown("---")
-st.info("Dashboard ready for multi-agent operations.")
+elif module == "🧙 Wizard":
+    st.subheader("🧙 Prompt Wizard")
+    with st.container():
+        st.markdown("Launching Wizard...")
+        os.system("streamlit run FredFix/wizard/wizard.py")
+
+elif module == "🎨 Creator Agent":
+    st.subheader("🎨 Creator Agent UI")
+    with st.container():
+        st.markdown("Launching Creator Agent...")
+        os.system("streamlit run core/creator_agent_ui.py")
+
+elif module == "🚂 BulletTrain":
+    st.subheader("🚂 BulletTrain Module")
+    with st.container():
+        st.markdown("Launching BulletTrain UI...")
+        os.system("streamlit run BulletTrain/ui.py")

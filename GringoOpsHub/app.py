@@ -40,7 +40,7 @@ with st.sidebar:
         tool_path = os.path.expanduser(TOOLS[selected_tool])
         if os.path.exists(tool_path):
             try:
-                subprocess.Popen(["streamlit", "run", tool_path])
+                subprocess.Popen(["env", f"PYTHONPATH={os.getcwd()}", "streamlit", "run", tool_path])
                 st.success(f"{selected_tool} launched!")
             except Exception as e:
                 st.error(f"Failed to launch tool: {e}")

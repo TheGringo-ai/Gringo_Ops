@@ -1,5 +1,5 @@
 import streamlit as st
-from services import run_auto_repair, sync_agents, transcribe_backlog
+from BulletTrain.services import run_auto_repair, sync_agents, transcribe_backlog
 
 st.set_page_config(page_title="🚄 Bullet Train Launcher", layout="wide")
 
