@@ -1,34 +1,34 @@
-.streamlit/config.toml
-[server]
-headless = true
-enableCORS = false
-port = 8080
+# .env.template
 
-Dockerfile
-FROM python:3.11-slim
+# Required for OpenAI GPT-based tools
+OPENAI_API_KEY=your-openai-api-key-here
 
-WORKDIR /app
-COPY . .
+# Required for Gemini model queries
+GOOGLE_API_KEY=your-google-api-key-here
 
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+# Optional: Hugging Face token for custom models or inference
+HUGGINGFACE_API_KEY=your-huggingface-api-key-hereimport os
+import streamlit as st
 
-EXPOSE 8080
-CMD ["streamlit", "run", "gringo_launcher.py", "--server.port=8080", "--server.address=0.0.0.0"]
+tool = st.sidebar.radio("Choose a tool to run:", ["Chat", "Review", "AutoPatch", "Summarize", "Logs", "📦 New App", "🧪 System Check"])
 
-.dockerignore
-__pycache__/
-*.pyc
-.venv/
-.git/
-.streamlit/
+# ... existing code for other tools ...
 
-app.yaml
-runtime: custom
-env: flex
-service: gringo-launcher
+elif tool == "🧪 System Check":
+    st.subheader("🧪 Environment & Dependency Check")
 
-requirements.txt
-streamlit
-openai
-google-generativeai
+    import platform
+    import streamlit as stlib
+
+    st.markdown("### 🔑 API Key Status")
+    st.write("OPENAI_API_KEY:", "✅ Found" if os.getenv("OPENAI_API_KEY") else "❌ Missing")
+    st.write("GOOGLE_API_KEY:", "✅ Found" if os.getenv("GOOGLE_API_KEY") else "❌ Missing")
+    st.write("HUGGINGFACE_API_KEY:", "✅ Found" if os.getenv("HUGGINGFACE_API_KEY") else "⚠️ Optional")
+
+    st.markdown("### 🐍 Python Environment")
+    st.write("Python version:", platform.python_version())
+    st.write("Streamlit version:", stlib.__version__)
+
+    st.markdown("### 📁 Directory Checks")
+    st.write("Logs folder:", "✅ Found" if os.path.exists("logs/patches") else "❌ Missing")
+    st.write("Plugins folder:", "✅ Found" if os.path.exists("plugins") else "❌ Missing")
