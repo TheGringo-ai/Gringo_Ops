@@ -106,8 +106,36 @@ with tab4:
     else:
         st.info("No history log found.")
 
+
 tab5 = st.tabs(["📊 Analytics"])[0]
 with tab5:
     st.subheader("📊 Generation Analytics (Mock)")
     st.write("Modules Generated:", len(os.listdir(current_dir)))
     st.line_chart([1, 3, 4, 7, 12])  # replace with real data later
+
+# 🧠 God Mode (Developer/Commercial Panel)
+tab6 = st.tabs(["🧠 God Mode"])[0]
+with tab6:
+    st.subheader("🧠 God Mode – Admin & Dev Tools")
+
+    st.markdown("### 🔒 Licensing & Distribution")
+    st.info("This version is Streamlit Cloud-friendly and ready for commercial packaging.")
+    st.markdown("You may include licensing headers, author info, and bundle documentation.")
+
+    st.markdown("### 📦 Export for Reuse")
+    if st.button("📁 Bundle Project for Distribution"):
+        try:
+            os.system("zip -r GringoOps_Commercial_Package.zip . -x '*.venv*' '*.git*'")
+            st.success("📦 Exported as GringoOps_Commercial_Package.zip")
+            with open("GringoOps_Commercial_Package.zip", "rb") as f:
+                st.download_button("⬇️ Download Bundle", f, file_name="GringoOps_Commercial_Package.zip")
+        except Exception as e:
+            st.error(f"❌ Failed to export: {e}")
+
+    st.markdown("### 🛠 Dev Diagnostics")
+    try:
+        mem_usage = os.popen("ps -o rss= -p " + str(os.getpid())).read().strip()
+        mem_mb = round(int(mem_usage)/1024, 2)
+        st.metric(label="🔍 Current Memory Usage", value=f"{mem_mb} MB", delta=None)
+    except:
+        st.warning("Could not fetch memory usage stats.")
