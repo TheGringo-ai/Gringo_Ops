@@ -1,13 +1,4 @@
-# .env.template
-
-# Required for OpenAI GPT-based tools
-OPENAI_API_KEY=your-openai-api-key-here
-
-# Required for Gemini model queries
-GOOGLE_API_KEY=your-google-api-key-here
-
-# Optional: Hugging Face token for custom models or inference
-HUGGINGFACE_API_KEY=your-huggingface-api-key-hereimport os
+import os
 import streamlit as st
 
 tool = st.sidebar.radio("Choose a tool to run:", ["Chat", "Review", "AutoPatch", "Summarize", "Logs", "📦 New App", "🧪 System Check"])
