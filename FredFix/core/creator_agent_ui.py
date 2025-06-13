@@ -21,10 +21,17 @@ log_path = "logs/creator_agent_history.log"
 
 st.title("🧠 CreatorAgent Interface")
 
-tab1, tab2, tab3, tab4 = st.tabs(["🧠 Logic", "🛠️ Config", "📁 Files", "📜 History"])
+tabs = st.tabs([
+    "📥 Prompt Builder",
+    "⚙️ Config",
+    "📁 Files",
+    "📜 History",
+    "📊 Analytics",
+    "🧠 God Mode"
+])
 
-with tab1:
-    st.subheader("🔧 Generate a Python Module")
+with tabs[0]:  # 📥 Prompt Builder
+    st.subheader("📥 Prompt Builder & Generator")
 
     with st.form("creator_agent_form"):
         prompt = st.text_area("Enter your prompt for module generation", height=200)
@@ -58,11 +65,11 @@ if __name__ == "__main__":
 '''
             st.download_button("⬇️ Download test_" + filename, test_code, file_name="test_" + filename)
 
-with tab2:
+with tabs[1]:  # ⚙️ Config
     st.subheader("⚙️ Configuration")
     st.info("No configurable settings available yet.")
 
-with tab3:
+with tabs[2]:  # 📁 Files
     st.subheader("📂 Browse Generated Modules")
 
     current_dir = os.path.dirname(__file__)
@@ -97,7 +104,7 @@ with tab3:
                 with open(log_path, "a") as log:
                     log.write(f"Error running {selected_file}: {e}\n")
 
-with tab4:
+with tabs[3]:  # 📜 History
     st.subheader("📜 History Log")
     if os.path.exists(log_path):
         with open(log_path, "r") as log:
@@ -105,17 +112,13 @@ with tab4:
         st.text_area("Log Contents", history, height=300)
     else:
         st.info("No history log found.")
-
-
-tab5 = st.tabs(["📊 Analytics"])[0]
-with tab5:
+with tabs[4]:  # 📊 Analytics
     st.subheader("📊 Generation Analytics (Mock)")
     st.write("Modules Generated:", len(os.listdir(current_dir)))
     st.line_chart([1, 3, 4, 7, 12])  # replace with real data later
 
 # 🧠 God Mode (Developer/Commercial Panel)
-tab6 = st.tabs(["🧠 God Mode"])[0]
-with tab6:
+with tabs[5]:  # 🧠 God Mode
     st.subheader("🧠 God Mode – Admin & Dev Tools")
 
     st.markdown("### 🔒 Licensing & Distribution")
