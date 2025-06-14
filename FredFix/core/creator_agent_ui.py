@@ -21,13 +21,20 @@ log_path = "logs/creator_agent_history.log"
 
 st.title("🧠 CreatorAgent Interface")
 
+current_dir = os.path.dirname(__file__)
+files = [
+    f for f in os.listdir(current_dir)
+    if f.endswith(".py") and f != os.path.basename(__file__) and f != "CreatorAgent.py"
+]
+
 tabs = st.tabs([
     "📥 Prompt Builder",
     "⚙️ Config",
     "📁 Files",
     "📜 History",
     "📊 Analytics",
-    "🧠 God Mode"
+    "🧠 God Mode",
+    "📎 File Analyzer"
 ])
 
 with tabs[0]:  # 📥 Prompt Builder
@@ -72,12 +79,6 @@ with tabs[1]:  # ⚙️ Config
 with tabs[2]:  # 📁 Files
     st.subheader("📂 Browse Generated Modules")
 
-    current_dir = os.path.dirname(__file__)
-    files = [
-        f for f in os.listdir(current_dir)
-        if f.endswith(".py") and f != os.path.basename(__file__) and f != "CreatorAgent.py"
-    ]
-
     selected_file = st.selectbox("Choose a file to view/edit", options=files)
 
     if selected_file:
@@ -114,7 +115,7 @@ with tabs[3]:  # 📜 History
         st.info("No history log found.")
 with tabs[4]:  # 📊 Analytics
     st.subheader("📊 Generation Analytics (Mock)")
-    st.write("Modules Generated:", len(os.listdir(current_dir)))
+    st.write("Modules Generated:", len(files))
     st.line_chart([1, 3, 4, 7, 12])  # replace with real data later
 
 # 🧠 God Mode (Developer/Commercial Panel)
@@ -142,3 +143,25 @@ with tabs[5]:  # 🧠 God Mode
         st.metric(label="🔍 Current Memory Usage", value=f"{mem_mb} MB", delta=None)
     except:
         st.warning("Could not fetch memory usage stats.")
+
+with tabs[6]:  # 📎 File Analyzer
+    st.subheader("📎 File Analyzer")
+
+    selected_file = st.selectbox("Choose a file to analyze", options=files, key="analyzer_file_select")
+
+    if selected_file:
+        file_path = os.path.join(current_dir, selected_file)
+
+        with open(file_path, "r") as f:
+            code = f.read()
+
+        st.text_area("📄 File Contents", code, height=300)
+
+        if st.button("🔍 Analyze File"):
+            try:
+                from FredFix.core.AnalyzerAgent import AnalyzerAgent
+                analyzer = AnalyzerAgent()
+                analysis_result = analyzer.analyze_file(file_path)
+                st.text_area("📝 Analysis Result", analysis_result, height=300)
+            except Exception as e:
+                st.error(f"Analysis failed: {e}")
