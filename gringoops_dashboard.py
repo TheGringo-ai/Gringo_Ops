@@ -22,7 +22,7 @@ with tab1:
     st.sidebar.markdown("## 🚀 Launch External Tools")
 
     tools = {
-        "FredFix": "FredFix/main.py",
+        "TY": "FredFix/main.py",
         "CreatorAgent UI": "FredFix/core/creator_agent_ui.py",
         "BulletTrain": "BulletTrain/main.py",
         "Agent": "Agent/main.py",

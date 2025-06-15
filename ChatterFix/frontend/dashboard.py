@@ -1,6 +1,3 @@
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), './FredFix')))
 name: Deploy to Google Cloud Run
 
 on:
@@ -50,7 +47,7 @@ jobs:
       run: |
         echo "✅ Deployment triggered. Verifying service status..."
         sleep 10
-        curl --fail --silent --show-error https://unified-dashboard-<your-subdomain>-uc.a.run.app || echo "⚠️ Service ping failed. Check deployment logs."
+        curl --fail --silent --show-error https://unified-dashboard-fredfix-uc.a.run.app || exit 1
 
     - name: Auto-commit memory logs
       run: |
