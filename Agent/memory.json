@@ -7,10 +7,44 @@ from services.auto_repair import run_auto_repair
 from services.agent_sync import sync_agents
 from services.transcription import transcribe_backlog
 
+
 memory = MemoryManager("Agent/memory.json")
 
 # Log app startup
 memory.log_event("AppStart", "Streamlit BulletTrain main.py launched.")
+
+# --- Begin session log rotation, per-project logging, and cloud sync stub ---
+import datetime
+import json
+
+# Determine active project
+active_project = memory_structure["user"]["profile"]["projects"][0]
+
+# Create a timestamped session ID
+session_id = f"{active_project}_{datetime.datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')}"
+
+# Create session-specific log file path
+session_log_path = f"logs/{session_id}.log"
+os.makedirs("logs", exist_ok=True)
+
+# Rotate logs: keep only last 10 session logs
+log_files = sorted([f for f in os.listdir("logs") if f.endswith(".log")])
+while len(log_files) > 10:
+    os.remove(os.path.join("logs", log_files.pop(0)))
+
+# Write session log header
+with open(session_log_path, "w") as log_file:
+    log_file.write(f"Session started: {session_id}\n")
+
+# Append log path to memory for optional cloud sync
+memory_structure["memory"]["current_session_log"] = session_log_path
+
+# Hook: sync memory and log to Firebase/GCS (stub)
+def sync_to_cloud(memory_path, log_path):
+    print(f"[SYNC] Would upload {memory_path} and {log_path} to Firebase/GCS here.")
+
+sync_to_cloud("Agent/memory.json", session_log_path)
+# --- End session log rotation block ---
 
 # Store the structure for persistent agent memory context
 memory_structure = {
