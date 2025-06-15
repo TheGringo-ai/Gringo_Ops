@@ -3,6 +3,11 @@ import os
 import pandas as pd
 import subprocess
 import openai
+from FredFix.core.memory import MemoryManager
+from FredFix.core.agent import run_agent
+
+memory = MemoryManager()
+memory.log_event("GringoOps AI Repair Dashboard launched")
 
 st.set_page_config(page_title="GringoOps Repair Dashboard", layout="wide")
 
@@ -22,9 +27,15 @@ with st.container():
                 st.success("✅ Transcription complete")
                 st.text_area("📝 Transcribed Text", value=transcript, height=150)
 
-                # Placeholder for future AI task generation
+                # Run agent if transcript exists
                 if transcript:
-                    st.info("⚙️ This transcript can now be fed into your AI task engine (e.g. FredFix)")
+                    st.success("⚙️ Feeding transcript into FredFix Agent...")
+                    agent_output = run_agent(transcript)
+                    st.text_area("📋 AI Task Output", value=agent_output, height=200)
+                    memory.log_event("AI task generated", data={
+                        "transcript_snippet": transcript[:100],
+                        "agent_output_snippet": agent_output[:150]
+                    })
     st.markdown("---")
 
 def transcribe_with_openai(audio_file):
@@ -43,7 +54,9 @@ def load_commit_logs():
             with open("repair_history.log", "r") as f:
                 lines = [line.strip().split("|") for line in f if "|" in line]
                 if lines:
-                    return pd.DataFrame(lines, columns=["Commit", "Author", "When", "Message"])
+                    df = pd.DataFrame(lines, columns=["Commit", "Author", "When", "Message"])
+                    memory.log_event("Loaded AI repair logs", data={"count": len(df)})
+                    return df
         else:
             # Create a test log entry if none exists
             with open("repair_history.log", "w") as f:
@@ -51,7 +64,9 @@ def load_commit_logs():
             with open("repair_history.log", "r") as f:
                 lines = [line.strip().split("|") for line in f if "|" in line]
                 if lines:
-                    return pd.DataFrame(lines, columns=["Commit", "Author", "When", "Message"])
+                    df = pd.DataFrame(lines, columns=["Commit", "Author", "When", "Message"])
+                    memory.log_event("Loaded AI repair logs", data={"count": len(df)})
+                    return df
         return pd.DataFrame()
 
     try:
@@ -61,6 +76,7 @@ def load_commit_logs():
         ).read().strip().split("\n")
         parsed = [line.split("|") for line in logs if "|" in line]
         df = pd.DataFrame(parsed, columns=["Commit", "Author", "When", "Message"])
+        memory.log_event("Loaded AI repair logs", data={"count": len(df)})
         return df
     except Exception as e:
         st.error(f"❌ Error loading logs: {e}")
@@ -84,3 +100,5 @@ with st.container():
         st.caption("Latest Auto-Repair Commits (filtered by 🤖 prefix)")
 
 st.caption("🎙 Whisper transcription is powered by the OpenAI Whisper API.")
+
+memory.save()

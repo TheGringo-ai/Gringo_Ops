@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Activate virtual environment if it exists
+if [ -d ".venv" ]; then
+  source .venv/bin/activate
+  echo "✅ Virtual environment activated."
+else
+  echo "⚠️ No virtual environment found at .venv"
+  exit 1
+fi
+
+# Check if streamlit is installed
+if ! command -v streamlit &> /dev/null; then
+  echo "❌ Streamlit is not installed in this environment."
+  exit 1
+fi
+
+# Start Streamlit app
+echo "🚀 Starting FredFix app on port 8080..."
+streamlit run FredFix/main.py --server.port=8080 --server.enableCORS=false --server.enableXsrfProtection=false

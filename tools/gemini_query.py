@@ -9,9 +9,15 @@ def query_model(prompt="What is the status of project Gemini?"):
     genai.configure(api_key=api_key)
 
     try:
-        model = genai.GenerativeModel("gemini-pro")
+        model = genai.GenerativeModel(
+            model_name="models/gemini-1.5-pro",
+            generation_config={
+                "temperature": 0.7,
+                "max_output_tokens": 1024
+            }
+        )
         response = model.generate_content(prompt)
         print("🔍 Gemini Response:\n")
-        print(response.text)
+        print(response.text if hasattr(response, "text") else response)
     except Exception as e:
         print(f"❌ Failed to get response from Gemini: {e}")

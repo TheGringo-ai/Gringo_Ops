@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import subprocess
 from FredFix.core.CreatorAgent import CreatorAgent
+from Agent.memory import save_memory
 
 st.set_page_config(page_title="CreatorAgent UI", layout="wide")
 
@@ -47,8 +48,11 @@ with tabs[0]:  # 📥 Prompt Builder
 
     if submitted and prompt and filename:
         agent = CreatorAgent()
-        code = agent.create_module(prompt)
-        path = agent.save_module(filename, code)
+        with st.spinner("🧠 Generating code..."):
+            code = agent.create_module(prompt)
+            path = agent.save_module(filename, code)
+
+        save_memory("CreatorAgent", prompt, code, {"filename": filename})
 
         st.success(f"✅ Module saved to: {path}")
         st.code(code, language="python")
@@ -58,7 +62,7 @@ with tabs[0]:  # 📥 Prompt Builder
 
         st.download_button("⬇️ Download Module", code, file_name=filename)
 
-        if st.button("🧪 Generate Unit Test"):
+        if st.checkbox("🧪 Auto-generate unit test"):
             test_code = f'''
 import unittest
 from {filename.replace(".py", "")} import *
@@ -96,14 +100,15 @@ with tabs[2]:  # 📁 Files
 
         if st.button("▶️ Run This Module"):
             try:
-                result = subprocess.run(["python3", file_path], capture_output=True, text=True)
-                st.text_area("🖥 Output", result.stdout or "No output.")
+                with st.spinner("▶️ Running module..."):
+                    result = subprocess.run(["python3", file_path], capture_output=True, text=True)
+                    st.text_area("🖥 Output", result.stdout or "No output.")
                 with open(log_path, "a") as log:
                     log.write(f"Ran {selected_file} with output:\n{result.stdout}\n")
             except Exception as e:
                 st.error(f"Execution failed: {e}")
                 with open(log_path, "a") as log:
-                    log.write(f"Error running {selected_file}: {e}\n")
+                    log.write(f"Error running {selected_file}: {str(e)[:500]}\n")
 
 with tabs[3]:  # 📜 History
     st.subheader("📜 History Log")
@@ -111,6 +116,7 @@ with tabs[3]:  # 📜 History
         with open(log_path, "r") as log:
             history = log.read()
         st.text_area("Log Contents", history, height=300)
+        st.download_button("⬇️ Download Full Log", history, file_name="creator_agent_history.log")
     else:
         st.info("No history log found.")
 with tabs[4]:  # 📊 Analytics
@@ -163,5 +169,6 @@ with tabs[6]:  # 📎 File Analyzer
                 analyzer = AnalyzerAgent()
                 analysis_result = analyzer.analyze_file(file_path)
                 st.text_area("📝 Analysis Result", analysis_result, height=300)
+                save_memory("AnalyzerAgent", selected_file, analysis_result, {"source": "File Analyzer"})
             except Exception as e:
                 st.error(f"Analysis failed: {e}")

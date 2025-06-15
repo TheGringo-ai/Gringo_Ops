@@ -1,9 +1,9 @@
-
 import sys
 import os
-from keychain import get_key
+import json
+from lib.keychain import get_key
 
-class FredFixAgent:
+class TYAgent:
     def __init__(self):
         self.api_key = get_key("openai") or os.environ.get("OPENAI_API_KEY")
         if not self.api_key:
@@ -39,13 +39,21 @@ class FredFixAgent:
             with open("repair_log.txt", "a") as log:
                 log.write(f"\n🛠️ Repair for {path}\n")
                 log.write(response.choices[0].message["content"] + "\n")
+            import json
+            memory_entry = {
+                "filename": path,
+                "event": "ai_review",
+                "output": response.choices[0].message["content"]
+            }
+            with open("Agent/memory.json", "a") as mem_log:
+                mem_log.write(json.dumps(memory_entry) + "\n")
         except Exception as e:
             print(f"❌ Failed to review {path}: {e}")
 
 if __name__ == "__main__":
-    agent = FredFixAgent()
+    agent = TYAgent()
     files = agent.scan_project()
-    print(f"🧠 FredFix found {len(files)} Python files.")
+    print(f"🧠 TY found {len(files)} Python files.")
 
     for path in files:
         print(f"\n📄 Reviewing: {path}")
