@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import json
 
 from FredFix.core import wizard_logic, wizard_state
 
@@ -68,6 +69,17 @@ with tab3:
             st.markdown(f"**Prompt {len(st.session_state.prompt_history) - i}:** {p}")
     else:
         st.info("No prompt history yet.")
+
+    st.subheader("📚 Agent Memory Log")
+    if st.button("🧠 Load Memory Log"):
+        if os.path.exists("Agent/memory.json"):
+            with open("Agent/memory.json", "r") as memfile:
+                memory_lines = memfile.readlines()
+                for line in memory_lines[-10:]:
+                    entry = json.loads(line)
+                    st.markdown(f"**{entry['timestamp']}** — `{entry['command']}` → {entry['result']}")
+        else:
+            st.warning("Memory log not found.")
 
 with tab4:
     st.subheader("🧪 Unit Test Generator")

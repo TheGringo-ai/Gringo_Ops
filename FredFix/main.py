@@ -1,5 +1,6 @@
 import sys
 import os
+import json
 from lib.keychain import get_key
 
 class TYAgent:
@@ -38,6 +39,14 @@ class TYAgent:
             with open("repair_log.txt", "a") as log:
                 log.write(f"\n🛠️ Repair for {path}\n")
                 log.write(response.choices[0].message["content"] + "\n")
+            import json
+            memory_entry = {
+                "filename": path,
+                "event": "ai_review",
+                "output": response.choices[0].message["content"]
+            }
+            with open("Agent/memory.json", "a") as mem_log:
+                mem_log.write(json.dumps(memory_entry) + "\n")
         except Exception as e:
             print(f"❌ Failed to review {path}: {e}")
 

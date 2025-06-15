@@ -14,6 +14,9 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
+    ethtool \
+    linux-headers \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Create and activate virtual environment, install dependencies

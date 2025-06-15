@@ -1,28 +1,3 @@
-<file name=FredFix/fredfix_ui.py>import streamlit as st
-from FredFix.core.memory import auto_learn
-
-# ... existing Streamlit UI code ...
-
-# Example UI block with buttons
-if st.button("Clear Memory"):
-    # Clear memory logic here
-    pass
-
-if st.button("Run Auto Learn"):
-    st.success(auto_learn("fredfix"))
-
-# ... rest of the UI code ...</file>
-
-<file name=FredFix/main.py>from FredFix.core.memory import auto_learn
-
-# ... existing agent loop and interaction handling code ...
-
-# After agent logs the interaction or processes the response
-auto_learn("fredfix")
-
-# ... rest of the main.py code ...</file>
-# Add a simple auto_learn function for UI and main.py functionality
-
 import os
 import datetime
 
@@ -61,7 +36,9 @@ def clear_memory(agent_name: str):
         os.remove(memory_path)
 
 def auto_learn(agent_name: str):
-    memory_path = get_memory_path(agent_name)
-    with open(memory_path, "a", encoding="utf-8") as f:
-        f.write(f"[{datetime.datetime.now().isoformat()}] Auto-learn triggered for {agent_name}\n{'='*40}\n")
-    return f"Memory updated for {agent_name}"
+    timestamp = datetime.datetime.now().isoformat()
+    user_input = "auto_learn"
+    agent_output = f"Auto-learn triggered at {timestamp}"
+    metadata = {"event": "auto_learn"}
+    save_memory(agent_name, user_input, agent_output, metadata)
+    return f"Memory updated for {agent_name} at {timestamp}"
