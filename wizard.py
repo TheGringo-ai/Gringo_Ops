@@ -2,11 +2,13 @@ import streamlit as st
 import os
 import time
 import openai
+import difflib
+import shutil
 from FredFix.core.CreatorAgent import CreatorAgent
 from tools import openai_review
 from plugins.autopatch import autopatch_run
 from FredFix.wizard.wizard_logic import generate_code, review_file, apply_patch
-from FredFix.wizard.wizard_state import init_history, save_prompt_log
+from FredFix.wizard.wizard_state import load_history, save_history, save_prompt_log, load_analytics_logs
 import pdfkit
 
 st.set_page_config(page_title="GringoOps AI Wizard", layout="wide")
@@ -24,11 +26,26 @@ logo_url = logo_map.get(theme_choice, logo_map["GringoOps"])
 plugin_choice = st.sidebar.selectbox("🧩 Load Plugin", ["None", "CreatorAgent", "FredFix", "BulletTrain"])
 st.sidebar.write(f"📦 Loaded: {plugin_choice}")
 
-# Setup
-init_history()
+if plugin_choice == "FredFix":
+    st.sidebar.markdown("🧠 FredFix Activated")
+    # Add FredFix-specific controls
+elif plugin_choice == "BulletTrain":
+    st.sidebar.markdown("🚆 BulletTrain Controls")
+    # Add BulletTrain UI elements
 
+# Setup
+if not os.path.exists("logs"):
+    os.makedirs("logs")
 if not os.path.exists("logs/generated"):
     os.makedirs("logs/generated")
+if not os.path.exists("logs/history.json"):
+    with open("logs/history.json", "w", encoding="utf-8") as f:
+        f.write("[]")
+if not os.path.exists("logs/assistant_log.txt"):
+    with open("logs/assistant_log.txt", "w", encoding="utf-8") as f:
+        f.write("")
+
+load_history()
 
 st.markdown("<h1 style='text-align: center;'>🧠 GringoOps AI Wizard</h1>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
@@ -72,6 +89,7 @@ with tab1:
             st.download_button("⬇️ Download Scaffolding", code, file_name="scaffolded_" + uploaded_file.name)
             save_prompt_log("Upload-based scaffold", uploaded_file.name)
             st.session_state["history"].append(f"Scaffolded from {uploaded_file.name}")
+            save_history()
 
     if st.button("🧠 Generate Code"):
         if prompt and filename:
@@ -81,8 +99,9 @@ with tab1:
             st.success("Code generated and ready to download.")
             save_prompt_log(prompt, filename)
             st.session_state["history"].append(prompt)
+            save_history()
 
-    if st.session_state["history"]:
+    if st.session_state.get("history"):
         st.markdown("### ✅ Your Completed Tasks")
         for i, prompt in enumerate(st.session_state["history"][::-1]):
             st.success(f"{len(st.session_state['history']) - i}. {prompt[:60]}...")
@@ -114,13 +133,27 @@ with tab2:
 with tab3:
     st.subheader("Step 3: AutoPatch Code")
     patch_file = st.file_uploader("Upload file to patch", type="py", key="patch")
-    if patch_file and st.button("Apply Patch"):
+    if patch_file:
         tmp_path = f"patch_{int(time.time())}.py"
         with open(tmp_path, "w") as f:
             f.write(patch_file.read().decode())
-        patched = apply_patch(tmp_path)
-        st.download_button("⬇️ Download Patched Code", patched, file_name="patched.py")
-        st.success("AutoPatch complete.")
+        original_path = tmp_path  # Assuming original file path is same; in real use, adjust accordingly
+        if os.path.exists(original_path):
+            with open(tmp_path) as f:
+                new_code = f.read()
+            with open(original_path) as f:
+                old_code = f.read()
+            diff = difflib.unified_diff(old_code.splitlines(), new_code.splitlines(), fromfile="before.py", tofile="after.py")
+            st.code("\n".join(diff), language="diff")
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Apply Patch"):
+                patched = apply_patch(tmp_path)
+                st.download_button("⬇️ Download Patched Code", patched, file_name="patched.py")
+                st.success("AutoPatch complete.")
+        with col2:
+            if st.button("Cancel"):
+                st.info("Patch operation cancelled.")
 
 with tab4:
     st.subheader("🧠 Ask the GringoOps Assistant")
@@ -129,6 +162,8 @@ with tab4:
     chat_prompt = st.text_input("Ask a question (e.g. 'How do I use FastAPI with SQLite?')")
 
     if chat_prompt:
+        full_response = ""
+        response_area = st.empty()
         with st.spinner("Thinking..."):
             response = openai.ChatCompletion.create(
                 model="gpt-4",
@@ -138,14 +173,16 @@ with tab4:
                 ],
                 stream=True
             )
-            full_response = ""
             for chunk in response:
                 if "choices" in chunk:
                     delta = chunk["choices"][0]["delta"]
                     if "content" in delta:
                         full_response += delta["content"]
-                        st.write(delta["content"])
-            st.text_area("💬 Full Response", full_response, height=300)
+                        response_area.text_area("💬 Assistant Response (streaming)", full_response, height=300)
+        if st.button("💾 Save Chat"):
+            with open("logs/assistant_log.txt", "a", encoding="utf-8") as f:
+                f.write(f"User: {chat_prompt}\nAssistant: {full_response}\n\n")
+            st.success("Chat saved to logs/assistant_log.txt")
 
 # --- Launch Summary / Export Section ---
 tab5 = st.tabs(["📦 Launch Summary"])[0]
@@ -207,8 +244,15 @@ with tab5:
             with open("wizard_summary.pdf", "rb") as pdf_file:
                 st.download_button("⬇️ Download PDF", data=pdf_file, file_name="wizard_summary.pdf")
 
+        if st.button("📦 Export Full Project"):
+            shutil.make_archive("gringoops_export", "zip", ".")
+            with open("gringoops_export.zip", "rb") as zip_file:
+                st.download_button("⬇️ Download ZIP", data=zip_file, file_name="gringoops_export.zip")
+
 tab6 = st.tabs(["📊 Analytics"])[0]
 with tab6:
-    st.subheader("📊 Usage Analytics (Mockup)")
-    st.write("Modules Generated:", len(st.session_state.get("history", [])))
-    st.line_chart([1, 2, 3, 6, 10])  # Replace with real logs later
+    st.subheader("📊 Usage Analytics (Real-time)")
+    analytics_logs = load_analytics_logs()
+    generation_counts = [log["generation_count"] for log in analytics_logs]
+    st.write("Modules Generated:", sum(generation_counts))
+    st.line_chart(generation_counts)

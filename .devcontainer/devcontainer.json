@@ -10,17 +10,30 @@
       ]
     },
     "vscode": {
-      "settings": {},
+      "settings": {
+        "python.pythonPath": ".venv/bin/python",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": true
+        },
+        "python.formatting.provider": "black"
+      },
       "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance"
       ]
     }
   },
-  "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && sudo xargs apt install -y <packages.txt; [ -f requirements.txt ] && pip3 install --user -r requirements.txt; pip3 install --user streamlit; echo '✅ Packages installed and Requirements met'",
-  "postAttachCommand": {
-    "server": "streamlit run gringo_launcher.py --server.enableCORS false --server.enableXsrfProtection false"
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/gcp-cli:1": {}
   },
+  "mounts": [
+    "source=${localEnv:HOME}/.config/gcloud,target=/root/.config/gcloud,type=bind"
+  ],
+  "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && sudo xargs -a packages.txt apt install -y; [ -f requirements.txt ] && pip3 install -r requirements.txt; [ -f dev-requirements.txt ] && pip3 install -r dev-requirements.txt; pip3 install streamlit; echo '✅ Packages installed and Requirements met'",
+  "postCreateCommand": "pip install -r requirements.txt -r dev-requirements.txt && black . && echo 'Dev environment ready ✅'",
+  "postAttachCommand": "source .venv/bin/activate && python FredFix/main.py",
   "portsAttributes": {
     "8501": {
       "label": "Application",

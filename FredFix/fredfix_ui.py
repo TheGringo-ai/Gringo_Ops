@@ -1,9 +1,7 @@
-
-
 import streamlit as st
 import os
 
-from FredFix.wizard import wizard_logic, wizard_state
+from FredFix.core import wizard_logic, wizard_state
 
 try:
     from streamlit_extras.switch_page_button import switch_page
@@ -32,7 +30,8 @@ with tab1:
     model = st.selectbox("Model", ["gpt-4", "gpt-4o", "gpt-3.5-turbo"])
     filename = st.text_input("Filename", value="fredfix_output.py")
 
-    if st.button("🚀 Generate"):
+    col1, col2 = st.columns([1, 1])
+    if col1.button("🚀 Generate"):
         output = wizard_logic.generate_code(prompt, model)
         path = wizard_logic.save_code_to_file(output, filename, "generated")
         wizard_logic.log_prompt(prompt, filename)
@@ -40,6 +39,23 @@ with tab1:
         st.session_state.prompt_history.append(prompt)
         st.session_state.generated_files.append(path)
         st.success(f"Generated and saved to: {path}")
+
+    if col2.button("🤖 Add as Agent Task"):
+        tasks = wizard_logic.load_json("task_queue.json") or []
+        tasks.append(prompt)
+        wizard_logic.save_json("task_queue.json", tasks)
+        st.success("Task added to queue.")
+
+    # Below the "Add as Agent Task" button, add "Run All Tasks (Auto Loop)"
+    if st.button("🌀 Run All Tasks (Auto Loop)"):
+        from FredFix import agent_task_loop
+        ran_any = False
+        while agent_task_loop.agent_loop():
+            ran_any = True
+        if ran_any:
+            st.success("All queued tasks processed.")
+        else:
+            st.info("No tasks in the queue.")
 
 with tab2:
     st.subheader("📂 Generated Code Output")
@@ -76,8 +92,10 @@ if __name__ == "__main__":
 # Export PDF Tab
 with tab5:
     st.subheader("📄 Export Summary as PDF")
-    if st.button("Export to PDF"):
-        prompt_history = st.session_state.get("prompt_history", [])
+    prompt_history = st.session_state.get("prompt_history", [])
+    if not prompt_history:
+        st.info("No prompt history available to export.")
+    elif st.button("Export to PDF"):
         full_html = f"""
         <html>
         <head><meta charset='UTF-8'><style>
@@ -107,3 +125,10 @@ with tab5:
 
         with open("fredfix_summary.pdf", "rb") as pdf_file:
             st.download_button("⬇️ Download PDF", data=pdf_file, file_name="fredfix_summary.pdf")
+
+if st.sidebar.button("🔥 Run Agent Loop"):
+    from FredFix import agent_task_loop
+    if agent_task_loop.agent_loop():
+        st.success("Agent ran one task.")
+    else:
+        st.info("No tasks in the queue.")

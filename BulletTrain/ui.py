@@ -1,6 +1,7 @@
 
 
 import streamlit as st
+import subprocess
 
 # Page setup for embedded use
 st.set_page_config(page_title="🚂 BulletTrain", layout="wide")
@@ -16,10 +17,14 @@ with tab1:
     st.subheader("🧩 Available Actions")
     st.write("Choose a tool to run:")
     if st.button("🚧 Run Repair Check"):
-        st.info("Repair engine started... (this would call repair_engine.py)")
+        st.info("Repair engine started...")
+        result = subprocess.run(["python", "repair_engine.py"], capture_output=True, text=True)
+        st.code(result.stdout if result.returncode == 0 else result.stderr)
 
     if st.button("🛤️ Run Path Analysis"):
         st.info("Path analysis module triggered...")
+        result = subprocess.run(["python", "path_analysis.py"], capture_output=True, text=True)
+        st.code(result.stdout if result.returncode == 0 else result.stderr)
 
 with tab2:
     st.subheader("📜 System Logs")

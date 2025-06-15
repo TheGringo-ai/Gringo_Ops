@@ -1,9 +1,8 @@
-
 import sys
 import os
-from keychain import get_key
+from lib.keychain import get_key
 
-class FredFixAgent:
+class TYAgent:
     def __init__(self):
         self.api_key = get_key("openai") or os.environ.get("OPENAI_API_KEY")
         if not self.api_key:
@@ -43,9 +42,9 @@ class FredFixAgent:
             print(f"❌ Failed to review {path}: {e}")
 
 if __name__ == "__main__":
-    agent = FredFixAgent()
+    agent = TYAgent()
     files = agent.scan_project()
-    print(f"🧠 FredFix found {len(files)} Python files.")
+    print(f"🧠 TY found {len(files)} Python files.")
 
     for path in files:
         print(f"\n📄 Reviewing: {path}")

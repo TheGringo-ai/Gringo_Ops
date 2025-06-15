@@ -54,6 +54,13 @@ class FredFixAgent:
                 result = repair_all_code()
             else:
                 result = execute_command(command, self.memory)
+
+            # Update memory with the command and result
+            self.memory.setdefault("history", []).append({
+                "command": command,
+                "result": result
+            })
+
             save_memory(self.memory)
             print(f"[DEBUG] Memory after execution: {self.memory}")
             print(f"[DEBUG] Command result: {result}")
