@@ -1,0 +1,28 @@
+{
+  "apps": [
+    {
+      "name": "LineSmart",
+      "path": "~/Projects/GringoOps/LineSmart/main.py",
+      "group": "Core Tools",
+      "description": "AI training and testing system"
+    },
+    {
+      "name": "FredFix",
+      "path": "~/Projects/GringoOps/FredFix/main.py",
+      "group": "Core Tools",
+      "description": "Launch the FredFix maintenance assistant"
+    },
+    {
+      "name": "ChatterFix",
+      "path": "~/Projects/GringoOps/ChatterFix/backend/app.py",
+      "group": "Dashboards",
+      "description": "Customer automation dashboard"
+    },
+    {
+      "name": "Agent",
+      "path": "~/Projects/GringoOps/Agent/agent.py",
+      "group": "Assistants",
+      "description": "Conversational LLM agent"
+    }
+  ]
+}

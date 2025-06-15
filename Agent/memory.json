@@ -1,0 +1,40 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from Agent.memory_manager import MemoryManager
+from services.auto_repair import run_auto_repair
+from services.agent_sync import sync_agents
+from services.transcription import transcribe_backlog
+
+memory = MemoryManager("Agent/memory.json")
+
+# Log app startup
+memory.log_event("AppStart", "Streamlit BulletTrain main.py launched.")
+
+# Store the structure for persistent agent memory context
+memory_structure = {
+    "agents": {
+        "gemini": {"enabled": True, "last_used": None},
+        "openai": {"enabled": True, "last_used": None},
+        "huggingface": {"enabled": True, "last_used": None}
+    },
+    "memory": {
+        "context_summary": "",
+        "session_state": {},
+        "log": []
+    },
+    "user": {
+        "preferences": {
+            "provider_default": "gemini",
+            "autosave": True,
+            "memory_sync": False
+        },
+        "profile": {
+            "name": "Gringo",
+            "projects": ["GringoOps", "BulletTrain", "LineSmart"]
+        }
+    }
+}
+
+memory.save_structure(memory_structure)

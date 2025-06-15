@@ -1,0 +1,383 @@
+.
+├── Agent
+│   ├── __pycache__
+│   │   ├── keychain.cpython-311.pyc
+│   │   └── voice_agent.cpython-311.pyc
+│   ├── agent.py
+│   ├── config.py
+│   ├── keychain.py
+│   ├── memory.json
+│   ├── README.md
+│   ├── repair_history.log
+│   ├── requirements.txt
+│   └── voice_agent.py
+├── BulletTrain
+│   ├── assets
+│   ├── config.py
+│   ├── dashboard_ui.py
+│   ├── data
+│   ├── logs
+│   ├── main.py
+│   ├── pdf_export.py
+│   ├── quiz_generator.py
+│   ├── README.md
+│   ├── requirements.txt
+│   └── ui.py
+├── ChatterFix
+│   ├── backend
+│   │   ├── app.py
+│   │   ├── database.py
+│   │   └── models.py
+│   ├── config.py
+│   ├── docs
+│   ├── firebase
+│   │   └── config.json
+│   ├── frontend
+│   │   ├── dashboard.py
+│   │   └── ui_elements.py
+│   ├── README.md
+│   └── requirements.txt
+├── CompletedTasks
+│   ├── __init__.py
+│   ├── __main__.py
+│   ├── __pip-runner__.py
+│   ├── _compat.py
+│   ├── _dists.py
+│   ├── _distutils.py
+│   ├── _envs.py
+│   ├── _jaraco_text.py
+│   ├── _json.py
+│   ├── _log.py
+│   ├── _sysconfig.py
+│   ├── appdirs.py
+│   ├── auth.py
+│   ├── autocompletion.py
+│   ├── base_command.py
+│   ├── base.py
+│   ├── bazaar.py
+│   ├── build_env.py
+│   ├── build_tracker.py
+│   ├── cache.py
+│   ├── candidate.py
+│   ├── candidates.py
+│   ├── check.py
+│   ├── cmdoptions.py
+│   ├── collector.py
+│   ├── command_context.py
+│   ├── compat.py
+│   ├── compatibility_tags.py
+│   ├── completion.py
+│   ├── config.py
+│   ├── configuration.py
+│   ├── constructors.py
+│   ├── datetime.py
+│   ├── debug.py
+│   ├── deprecation.py
+│   ├── direct_url_helpers.py
+│   ├── direct_url.py
+│   ├── download.py
+│   ├── editable_legacy.py
+│   ├── egg_link.py
+│   ├── encoding.py
+│   ├── entrypoints.py
+│   ├── exceptions.py
+│   ├── factory.py
+│   ├── filesystem.py
+│   ├── filetypes.py
+│   ├── format_control.py
+│   ├── found_candidates.py
+│   ├── freeze.py
+│   ├── git.py
+│   ├── glibc.py
+│   ├── hash.py
+│   ├── hashes.py
+│   ├── help.py
+│   ├── index.py
+│   ├── install.py
+│   ├── installation_report.py
+│   ├── installed.py
+│   ├── lazy_wheel.py
+│   ├── link.py
+│   ├── list.py
+│   ├── logging.py
+│   ├── main_parser.py
+│   ├── main.py
+│   ├── mercurial.py
+│   ├── metadata_editable.py
+│   ├── metadata_legacy.py
+│   ├── metadata.py
+│   ├── misc.py
+│   ├── models.py
+│   ├── package_finder.py
+│   ├── packaging.py
+│   ├── parser.py
+│   ├── pdf_export.py
+│   ├── pkg_resources.py
+│   ├── prepare.py
+│   ├── progress_bars.py
+│   ├── provider.py
+│   ├── pyproject.py
+│   ├── quiz_generator.py
+│   ├── reporter.py
+│   ├── req_command.py
+│   ├── req_file.py
+│   ├── req_install.py
+│   ├── req_set.py
+│   ├── req_uninstall.py
+│   ├── requirements.py
+│   ├── resolver.py
+│   ├── scheme.py
+│   ├── sdist.py
+│   ├── search_scope.py
+│   ├── search.py
+│   ├── selection_prefs.py
+│   ├── self_outdated_check.py
+│   ├── session.py
+│   ├── setuptools_build.py
+│   ├── show.py
+│   ├── six.py
+│   ├── sources.py
+│   ├── spinners.py
+│   ├── status_codes.py
+│   ├── subprocess.py
+│   ├── subversion.py
+│   ├── target_python.py
+│   ├── temp_dir.py
+│   ├── ui.py
+│   ├── uninstall.py
+│   ├── urls.py
+│   ├── utils.py
+│   ├── versioncontrol.py
+│   ├── virtualenv.py
+│   ├── wheel_builder.py
+│   ├── wheel_editable.py
+│   ├── wheel_legacy.py
+│   ├── wheel.py
+│   └── xmlrpc.py
+├── dashboard.py
+├── FredFix
+│   ├── __init__.py
+│   ├── config.py
+│   ├── core
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   ├── agent.py
+│   │   ├── memory.py
+│   │   ├── repair_engine.py
+│   │   └── routes.py
+│   ├── main.py
+│   ├── README.md
+│   ├── requirements.txt
+│   └── ui
+│       └── style.css
+├── GeminiReviewTasks
+│   ├── __init___gemini_review.txt
+│   ├── __main___gemini_review.txt
+│   ├── __pip-runner___gemini_review.txt
+│   ├── _compat_gemini_review.txt
+│   ├── _dists_gemini_review.txt
+│   ├── _distutils_gemini_review.txt
+│   ├── _envs_gemini_review.txt
+│   ├── _jaraco_text_gemini_review.txt
+│   ├── _json_gemini_review.txt
+│   ├── _log_gemini_review.txt
+│   ├── _sysconfig_gemini_review.txt
+│   ├── appdirs_gemini_review.txt
+│   ├── auth_gemini_review.txt
+│   ├── autocompletion_gemini_review.txt
+│   ├── base_command_gemini_review.txt
+│   ├── base_gemini_review.txt
+│   ├── bazaar_gemini_review.txt
+│   ├── build_env_gemini_review.txt
+│   ├── build_tracker_gemini_review.txt
+│   ├── cache_gemini_review.txt
+│   ├── candidate_gemini_review.txt
+│   ├── candidates_gemini_review.txt
+│   ├── check_gemini_review.txt
+│   ├── cmdoptions_gemini_review.txt
+│   ├── collector_gemini_review.txt
+│   ├── command_context_gemini_review.txt
+│   ├── compat_gemini_review.txt
+│   ├── compatibility_tags_gemini_review.txt
+│   ├── completion_gemini_review.txt
+│   ├── config_gemini_review.txt
+│   ├── configuration_gemini_review.txt
+│   ├── constructors_gemini_review.txt
+│   ├── datetime_gemini_review.txt
+│   ├── debug_gemini_review.txt
+│   ├── deprecation_gemini_review.txt
+│   ├── direct_url_gemini_review.txt
+│   ├── direct_url_helpers_gemini_review.txt
+│   ├── download_gemini_review.txt
+│   ├── editable_legacy_gemini_review.txt
+│   ├── egg_link_gemini_review.txt
+│   ├── encoding_gemini_review.txt
+│   ├── entrypoints_gemini_review.txt
+│   ├── exceptions_gemini_review.txt
+│   ├── factory_gemini_review.txt
+│   ├── filesystem_gemini_review.txt
+│   ├── filetypes_gemini_review.txt
+│   ├── format_control_gemini_review.txt
+│   ├── found_candidates_gemini_review.txt
+│   ├── freeze_gemini_review.txt
+│   ├── git_gemini_review.txt
+│   ├── glibc_gemini_review.txt
+│   ├── hash_gemini_review.txt
+│   ├── hashes_gemini_review.txt
+│   ├── help_gemini_review.txt
+│   ├── index_gemini_review.txt
+│   ├── inspect_gemini_review.txt
+│   ├── install_gemini_review.txt
+│   ├── installation_report_gemini_review.txt
+│   ├── installed_gemini_review.txt
+│   ├── lazy_wheel_gemini_review.txt
+│   ├── link_gemini_review.txt
+│   ├── list_gemini_review.txt
+│   ├── logging_gemini_review.txt
+│   ├── main_gemini_review.txt
+│   ├── main_parser_gemini_review.txt
+│   ├── mercurial_gemini_review.txt
+│   ├── metadata_editable_gemini_review.txt
+│   ├── metadata_gemini_review.txt
+│   ├── metadata_legacy_gemini_review.txt
+│   ├── misc_gemini_review.txt
+│   ├── models_gemini_review.txt
+│   ├── package_finder_gemini_review.txt
+│   ├── packaging_gemini_review.txt
+│   ├── parser_gemini_review.txt
+│   ├── pdf_export_gemini_review.txt
+│   ├── pkg_resources_gemini_review.txt
+│   ├── prepare_gemini_review.txt
+│   ├── progress_bars_gemini_review.txt
+│   ├── provider_gemini_review.txt
+│   ├── pyproject_gemini_review.txt
+│   ├── quiz_generator_gemini_review.txt
+│   ├── reporter_gemini_review.txt
+│   ├── req_command_gemini_review.txt
+│   ├── req_file_gemini_review.txt
+│   ├── req_install_gemini_review.txt
+│   ├── req_set_gemini_review.txt
+│   ├── req_uninstall_gemini_review.txt
+│   ├── requirements_gemini_review.txt
+│   ├── resolver_gemini_review.txt
+│   ├── scheme_gemini_review.txt
+│   ├── sdist_gemini_review.txt
+│   ├── search_gemini_review.txt
+│   ├── search_scope_gemini_review.txt
+│   ├── selection_prefs_gemini_review.txt
+│   ├── self_outdated_check_gemini_review.txt
+│   ├── session_gemini_review.txt
+│   ├── setuptools_build_gemini_review.txt
+│   ├── show_gemini_review.txt
+│   ├── six_gemini_review.txt
+│   ├── sources_gemini_review.txt
+│   ├── spinners_gemini_review.txt
+│   ├── status_codes_gemini_review.txt
+│   ├── subprocess_gemini_review.txt
+│   ├── subversion_gemini_review.txt
+│   ├── target_python_gemini_review.txt
+│   ├── temp_dir_gemini_review.txt
+│   ├── typing_extensions_gemini_review.txt
+│   ├── ui_gemini_review.txt
+│   ├── uninstall_gemini_review.txt
+│   ├── unpacking_gemini_review.txt
+│   ├── urls_gemini_review.txt
+│   ├── utils_gemini_review.txt
+│   ├── versioncontrol_gemini_review.txt
+│   ├── virtualenv_gemini_review.txt
+│   ├── wheel_builder_gemini_review.txt
+│   ├── wheel_editable_gemini_review.txt
+│   ├── wheel_gemini_review.txt
+│   ├── wheel_legacy_gemini_review.txt
+│   └── xmlrpc_gemini_review.txt
+├── GeminiSuggestions
+├── gringo_launcher.py
+├── GringoIconBuilder
+│   ├── assets
+│   ├── config.py
+│   ├── gringo_icon_builder.py
+│   ├── IconGen
+│   │   ├── Iconapp.png
+│   │   └── image.png
+│   ├── iconsets
+│   ├── requirements.txt
+│   ├── scripts
+│   └── venv
+│       ├── bin
+│       ├── include
+│       ├── lib
+│       └── pyvenv.cfg
+├── GringoOpsHub
+│   ├── __pycache__
+│   │   └── main.cpython-311.pyc
+│   ├── config.py
+│   ├── main.py
+│   └── requirements.txt
+├── GringoVoiceStrip
+│   ├── app.py
+│   ├── config.py
+│   ├── README.md
+│   └── requirements.txt
+├── gui_launcher.py
+├── keys_test.py
+├── lib
+│   ├── __pycache__
+│   │   ├── keychain.cpython-311.pyc
+│   │   └── scaffold.cpython-311.pyc
+│   ├── keychain.py
+│   ├── llm_router.py
+│   └── scaffold.py
+├── LICENSE
+├── LineSmart
+│   ├── app.yaml
+│   ├── assets
+│   ├── config.py
+│   ├── data
+│   ├── logs
+│   ├── main.py
+│   ├── pdf_export.py
+│   ├── quiz_generator.py
+│   ├── README.md
+│   ├── requirements.txt
+│   └── ui.py
+├── LineSmart copy.zip
+├── LineSmart.zip
+├── manage_keys.py
+├── README.md
+├── run_clean_up.py
+├── run_scaffolder.py
+├── structure.txt
+├── UnresolvedTasks
+│   ├── __init__.txt
+│   ├── inspect.txt
+│   └── unpacking.txt
+└── venv
+    ├── bin
+    │   ├── activate
+    │   ├── activate.csh
+    │   ├── activate.fish
+    │   ├── Activate.ps1
+    │   ├── distro
+    │   ├── httpx
+    │   ├── normalizer
+    │   ├── openai
+    │   ├── pip
+    │   ├── pip3
+    │   ├── pip3.11
+    │   ├── pyrsa-decrypt
+    │   ├── pyrsa-encrypt
+    │   ├── pyrsa-keygen
+    │   ├── pyrsa-priv2pub
+    │   ├── pyrsa-sign
+    │   ├── pyrsa-verify
+    │   ├── python -> python3
+    │   ├── python3 -> /Users/fredtaylor/.pyenv/versions/3.11.9/bin/python3
+    │   ├── python3.11 -> python3
+    │   └── tqdm
+    ├── include
+    │   └── python3.11
+    ├── lib
+    │   └── python3.11
+    └── pyvenv.cfg
+
+44 directories, 337 files

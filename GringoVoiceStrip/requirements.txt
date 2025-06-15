@@ -1,0 +1,60 @@
+# File: ~/Projects/GringoOps/Agent/requirements.txt
+openai
+google-generativeai
+streamlit
+python-dotenv
+watchdog
+
+# File: ~/Projects/GringoOps/Agent/agent.py
+from code_writer import write_code
+from task_queue import get_tasks
+
+def main():
+    print("🤖 LineSmart Agent is online.")
+    tasks = get_tasks()
+    for task in tasks:
+        print(f"🔧 Working on task: {task['description']}")
+        write_code(task)
+
+if __name__ == "__main__":
+    main()
+
+# File: ~/Projects/GringoOps/Agent/README.md
+# 🤖 LineSmart Agent
+
+The LineSmart Agent is your AI-powered dev partner built to code the LineSmart platform using OpenAI and Gemini.
+
+### Features
+- Reads your project context
+- Plans and generates modules
+- Writes and modifies source files
+- Runs inside your existing GringoOps platform
+
+Built for automation. Powered by strategy.
+
+---
+
+🔧 To run:
+```
+python agent.py
+```
+
+# File: ~/Projects/GringoOps/Agent/code_writer.py
+"""
+Module to handle writing and modifying code files.
+"""
+
+# File: ~/Projects/GringoOps/Agent/task_queue.py
+"""
+Simple task planner and execution manager.
+"""
+
+# File: ~/Projects/GringoOps/Agent/config.py
+"""
+Holds API key fetch logic and runtime settings.
+"""
+
+# File: ~/Projects/GringoOps/Agent/utils.py
+"""
+Helper functions for file parsing, summarization, and other utilities.
+"""

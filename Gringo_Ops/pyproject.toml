@@ -1,0 +1,40 @@
+[project]
+name = "gringoops"
+version = "1.0.0"
+description = "Unified AI dashboard and agent platform by FredFix"
+authors = [
+    { name="Fred Taylor", email="fred@example.com" }
+]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "streamlit",
+    "openai",
+    "google-cloud-aiplatform",
+    "requests",
+    "watchdog",
+    "pyyaml",
+    "jinja2",
+    "huggingface-hub"
+]
+
+[project.optional-dependencies]
+gemini = ["google-generativeai"]
+cli = ["typer[all]"]
+
+[project.scripts]
+gringo-dashboard = "dashboard:main"
+fredfix-agent = "FredFix.core.agent:main"
+
+[project.urls]
+Homepage = "https://github.com/TheGringo-ai/GringoOps"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["*"]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"

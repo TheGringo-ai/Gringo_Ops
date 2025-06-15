@@ -1,0 +1,17 @@
+requests
+flask
+firebase-admin
+google-cloud-secret-manager
+google-cloud-storage
+google-auth
+python-dotenv
+openai
+streamlit
+watchdog
+openai-whisper
+ffmpeg-python
+torch
+pydub
+sounddevice
+numpy
+scipy

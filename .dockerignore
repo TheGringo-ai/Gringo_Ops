@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.log
+.venv/
+.git/
+ChatterFix/
+LineSmart/
+streamlit_audio_recorder/
+*.egg-info/
+.DS_Store

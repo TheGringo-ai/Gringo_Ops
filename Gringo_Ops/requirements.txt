@@ -1,0 +1,10 @@
+streamlit
+openai
+google-generativeai
+pyyaml
+tqdm
+httpx
+requests
+jinja2
+psutil
+psutil
