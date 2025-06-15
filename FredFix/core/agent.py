@@ -1,7 +1,11 @@
+# Import OpenAI and set API key path
+import openai
+openai.api_key_path = ".openai_key.txt"  # Or your preferred secret store path
 # core/memory.py
 
 import json
 from pathlib import Path
+from datetime import datetime
 
 MEMORY_FILE = Path(__file__).parent / "agent_memory.json"
 
@@ -37,6 +41,7 @@ def execute_command(command: str, memory: dict):
 class AgentConfig:
     def __init__(self):
         self.agent_name = "FredFix"
+        self.openai_model = "gpt-4-turbo"
 
 
 # --- Agent Implementation ---
@@ -62,12 +67,69 @@ class FredFixAgent:
             })
 
             save_memory(self.memory)
+            memory_line = {
+                "timestamp": datetime.utcnow().isoformat(),
+                "command": command,
+                "result": result
+            }
+            with open("Agent/memory.json", "a") as mem_log:
+                mem_log.write(json.dumps(memory_line) + "\n")
             print(f"[DEBUG] Memory after execution: {self.memory}")
             print(f"[DEBUG] Command result: {result}")
             return result
         except Exception as e:
             print(f"[ERROR] Exception during command execution: {e}")
             raise
+
+    def run_agent(self, input_text: str):
+        # Try running as known command first
+        known_result = self.run(input_text)
+        if "Unknown command" not in known_result:
+            return {
+                "mode": "command",
+                "output": known_result,
+                "timestamp": datetime.utcnow().isoformat()
+            }
+
+        # Otherwise, treat as natural language prompt
+        try:
+            response = openai.ChatCompletion.create(
+                model=self.config.openai_model,
+                messages=[
+                    {"role": "system", "content": "You are FredFix, an AI assistant."},
+                    {"role": "user", "content": input_text}
+                ]
+            )
+            ai_result = response.choices[0].message.content.strip()
+
+            # Save to memory
+            self.memory.setdefault("history", []).append({
+                "command": input_text,
+                "result": ai_result
+            })
+            save_memory(self.memory)
+
+            # Log JSONL entry
+            memory_line = {
+                "timestamp": datetime.utcnow().isoformat(),
+                "command": input_text,
+                "result": ai_result
+            }
+            with open("Agent/memory.json", "a") as mem_log:
+                mem_log.write(json.dumps(memory_line) + "\n")
+
+            return {
+                "mode": "ai_prompt",
+                "output": ai_result,
+                "timestamp": memory_line["timestamp"]
+            }
+
+        except Exception as e:
+            return {
+                "mode": "error",
+                "error": str(e),
+                "timestamp": datetime.utcnow().isoformat()
+            }
 
 
 if __name__ == "__main__":

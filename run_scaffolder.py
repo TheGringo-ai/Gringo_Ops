@@ -1,16 +1,32 @@
-import sys
 import os
+import sys
+import argparse
 sys.path.append('./lib')
 from scaffold import scaffold
 
-if len(sys.argv) != 3:
-    print("Usage: python3 run_scaffolder.py <project_path> <template_name>")
-    sys.exit(1)
+def main():
+    parser = argparse.ArgumentParser(
+        description="Generate a scaffold from a template into a target path"
+    )
+    parser.add_argument("project_path", help="Target path to create the project in")
+    parser.add_argument("template_name", help="Name of the template to use")
+    parser.add_argument("--dry-run", action="store_true", help="Only show what would be created")
 
-path = os.path.expanduser(sys.argv[1])
-template = sys.argv[2]
-created_files = scaffold(path, template)
+    args = parser.parse_args()
 
-print(f"✅ Created {len(created_files)} items:")
-for f in created_files:
-    print("   -", f)
+    path = os.path.expanduser(args.project_path)
+    template = args.template_name
+
+    print(f"🚀 Scaffolding '{template}' into: {path}")
+
+    try:
+        created_files = scaffold(path, template, dry_run=args.dry_run)
+        print(f"✅ Created {len(created_files)} items:")
+        for f in created_files:
+            print("   -", f)
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()

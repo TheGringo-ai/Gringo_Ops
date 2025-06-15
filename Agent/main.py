@@ -4,6 +4,7 @@ import pandas as pd
 import subprocess
 import openai
 from FredFix.core.memory import MemoryManager
+from FredFix.core.agent import run_agent
 
 memory = MemoryManager()
 memory.log_event("GringoOps AI Repair Dashboard launched")
@@ -26,10 +27,15 @@ with st.container():
                 st.success("✅ Transcription complete")
                 st.text_area("📝 Transcribed Text", value=transcript, height=150)
 
-                # Placeholder for future AI task generation
+                # Run agent if transcript exists
                 if transcript:
-                    st.info("⚙️ This transcript can now be fed into your AI task engine (e.g. FredFix)")
-                    memory.log_event("Audio transcription complete", data={"transcript": transcript[:100]})
+                    st.success("⚙️ Feeding transcript into FredFix Agent...")
+                    agent_output = run_agent(transcript)
+                    st.text_area("📋 AI Task Output", value=agent_output, height=200)
+                    memory.log_event("AI task generated", data={
+                        "transcript_snippet": transcript[:100],
+                        "agent_output_snippet": agent_output[:150]
+                    })
     st.markdown("---")
 
 def transcribe_with_openai(audio_file):
