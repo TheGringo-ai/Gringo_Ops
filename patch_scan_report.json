@@ -1,0 +1,45 @@
+{
+  "files": {
+    "firebase.json": "found",
+    "package.json": "missing",
+    "vite.config.ts": "empty",
+    "README.md": "found",
+    "gui_launcher.py": "found",
+    "streamlit_app.py": "found",
+    "gringoops_dashboard.py": "found",
+    "src/App.tsx": "found",
+    "src/pages/Dashboard.tsx": "empty",
+    "src/pages/Admin.tsx": "empty",
+    "src/pages/Reports.tsx": "empty",
+    "src/pages/AgentChat.tsx": "empty",
+    "src/pages/FileHistory.tsx": "empty",
+    "src/firebase.ts": "empty",
+    "public/index.html": "found"
+  },
+  "folders": {
+    "src/pages": "found",
+    "public": "found"
+  },
+  "dependencies": {
+    "react": "package.json missing",
+    "vite": "package.json missing",
+    "firebase": "package.json missing"
+  },
+  "scripts": {
+    "dev": "package.json missing",
+    "build": "package.json missing",
+    "lint": "package.json missing",
+    "deploy": "package.json missing"
+  },
+  "typescript": {
+    "status": "issues",
+    "details": "Need to install the following packages:\ntsc@2.0.4\nOk to proceed? (y) \n"
+  },
+  "cicd": {
+    "ready": false,
+    "details": {
+      "firebase.json": "present but not valid JSON",
+      "vite.config.ts": "present but nearly empty"
+    }
+  }
+}

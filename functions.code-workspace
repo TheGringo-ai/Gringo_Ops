@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"name": "functions",
+			"path": "ChatterFix/functions"
+		},
+		{
+			"name": "GringoOps",
+			"path": "."
+		},
+		{
+			"name": "ChatterFix",
+			"path": "ChatterFix"
+		},
+		{
+			"name": "src",
+			"path": "../Struggles/chatterfix-functions/src"
+		}
+	],
+	"settings": {}
+}

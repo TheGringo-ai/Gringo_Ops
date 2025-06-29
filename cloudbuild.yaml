@@ -1,0 +1,24 @@
+steps:
+# Build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-f', 'Dockerfile.chatterfix', '-t', 'gcr.io/$PROJECT_ID/chatterfix:latest', '.']
+
+# Push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/chatterfix:latest']
+
+# Deploy container image to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+  - 'run'
+  - 'deploy'
+  - 'chatterfix'
+  - '--image=gcr.io/$PROJECT_ID/chatterfix:latest'
+  - '--region=us-central1'
+  - '--platform=managed'
+  - '--allow-unauthenticated'
+  - '--set-secrets=GEMINI_API_KEY=GEMINI_API_KEY:latest,FIREBASE_KEY_JSON=FIREBASE_KEY_JSON:latest'
+
+images:
+- 'gcr.io/$PROJECT_ID/chatterfix:latest'
