@@ -1,4 +1,7 @@
-from core.agent_router import route_prompt
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'core')))
+from agent_router import route_prompt
 
 if __name__ == "__main__":
     while True:
@@ -6,3 +9,4 @@ if __name__ == "__main__":
         if prompt.lower() in ("exit", "quit"): break
         response = route_prompt("chatterfix", prompt)
         print(f"\n🧠 {response}\n")
+# deploy ping Sun Jun 29 22:12:31 CDT 2025
