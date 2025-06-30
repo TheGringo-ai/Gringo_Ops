@@ -4,11 +4,20 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v*'
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+      - '**/*.yaml'
+      - '**/*.json'
   workflow_dispatch:
 
 jobs:
   deploy:
+    name: Deploy to Cloud Run
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
     - name: Checkout code
@@ -24,17 +33,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Decode and validate GCP key
-      run: |
-        echo "$GCP_SA_KEY_BASE64" | base64 -d > /tmp/key.json
-        jq -e '.client_email and .private_key and .project_id' /tmp/key.json > /dev/null || exit 1
-      env:
-        GCP_SA_KEY_BASE64: ${{ secrets.GCP_SA_KEY_BASE64 }}
-
     - name: Authenticate with Google Cloud
       uses: google-github-actions/auth@v1
       with:
-        credentials_file: /tmp/key.json
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
 
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
