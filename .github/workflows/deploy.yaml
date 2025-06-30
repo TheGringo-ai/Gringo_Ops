@@ -23,20 +23,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Validate and Decode GCP Service Account Key
+    - name: Decode and validate GCP key
       run: |
-        echo "$GCP_SA_KEY" | base64 -d > /tmp/key.json
-
-        if ! jq -e '.client_email and .private_key and .project_id' /tmp/key.json > /dev/null; then
-          echo "❌ Invalid GCP Service Account JSON. Check formatting."
-          cat /tmp/key.json
-          exit 1
-        fi
-
-        echo "✅ GCP Service Account JSON validated."
-      shell: bash
+        echo "$GCP_SA_KEY_BASE64" | base64 -d > /tmp/key.json
+        jq -e '.client_email and .private_key and .project_id' /tmp/key.json > /dev/null || exit 1
       env:
-        GCP_SA_KEY: ${{ secrets.GCP_SA_KEY_BASE64 }}
+        GCP_SA_KEY_BASE64: ${{ secrets.GCP_SA_KEY_BASE64 }}
 
     - name: Authenticate with Google Cloud
       uses: google-github-actions/auth@v1
@@ -46,31 +38,18 @@ jobs:
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
       with:
-        project_id: unified-dashboard
-        install_components: 'gcloud'
+        project_id: chatterfix-ui
 
     - name: Deploy to Cloud Run
       run: |
-        gcloud run deploy unified-dashboard \
+        gcloud run deploy chatterfix-api \
           --source . \
           --region us-central1 \
           --platform managed \
           --allow-unauthenticated \
-          --project unified-dashboard
+          --project chatterfix-ui
 
     - name: Confirm Deployment
       run: |
-        echo "✅ Deployment triggered. Verifying service status..."
-        sleep 10
-        curl --fail --silent --show-error https://unified-dashboard-fredfix-uc.a.run.app || exit 1
-
-    - name: Auto-commit memory logs
-      run: |
-        if [ -f memory/log.txt ]; then
-          git config user.name "FredFix Auto"
-          git config user.email "bot@fredfix.io"
-          git add memory/log.txt
-          git commit -m "🧠 Memory log auto-commit post deploy"
-          git push origin main || echo "⚠️ Could not push memory logs."
-        fi
-# Triggered manually to force GitHub redeploy
+        echo "✅ Checking service status..."
+        curl --fail --silent --show-error https://chatterfix-api-uc.a.run.app || exit 1
