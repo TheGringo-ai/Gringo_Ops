@@ -2,15 +2,7 @@ name: Deploy to Google Cloud Run
 
 on:
   push:
-    branches:
-      - main
-    tags:
-      - 'v*'
-    paths-ignore:
-      - '**/*.md'
-      - '**/*.txt'
-      - '**/*.yaml'
-      - '**/*.json'
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -20,39 +12,46 @@ jobs:
     environment: production
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Authenticate with Google Cloud
-      uses: google-github-actions/auth@v1
-      with:
-        credentials_json: ${{ secrets.GCP_SA_KEY }}
+      - name: Decode base64 GCP key
+        id: decode-key
+        run: |
+          echo "json<<EOF" >> $GITHUB_OUTPUT
+          echo "${{ secrets.GCP_SA_KEY_BASE64 }}" | base64 -d >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
-    - name: Set up Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v1
-      with:
-        project_id: chatterfix-ui
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ steps.decode-key.outputs.json }}
 
-    - name: Deploy to Cloud Run
-      run: |
-        gcloud run deploy chatterfix-api \
-          --source . \
-          --region us-central1 \
-          --platform managed \
-          --allow-unauthenticated \
-          --project chatterfix-ui
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: chatterfix-ui
 
-    - name: Confirm Deployment
-      run: |
-        echo "✅ Checking service status..."
-        curl --fail --silent --show-error https://chatterfix-api-uc.a.run.app || exit 1
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy chatterfix-api \
+            --source . \
+            --region us-central1 \
+            --platform managed \
+            --allow-unauthenticated \
+            --project chatterfix-ui
+
+      - name: Confirm Deployment
+        run: |
+          echo "✅ Checking deployed app..."
+          curl --fail --silent https://chatterfix-api-uc.a.run.app || exit 1
