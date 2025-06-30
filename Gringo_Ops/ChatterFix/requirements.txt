@@ -1,0 +1,5 @@
+streamlit
+requests
+pymupdf
+firebase-admin
+# Add any other dependencies your app needs below

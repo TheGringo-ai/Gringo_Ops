@@ -4,7 +4,7 @@ import time
 import openai
 from FredFix.core.creator_agent import creator_agent
 from tools import openai_review
-from plugins.autopatch import autopatch_run
+# from plugins.autopatch import autopatch_run  # Removed unresolved import
 from FredFix.wizard.wizard_logic import generate_code, review_file, apply_patch
 from FredFix.wizard.wizard_state import init_history, save_prompt_log
 import pdfkit

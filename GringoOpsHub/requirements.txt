@@ -15,3 +15,7 @@ pydub
 sounddevice
 numpy
 scipy
+
+# Dependencies for config.py (LineSmart Technician Hub)
+PyMuPDF # For parsing PDF files (imported as fitz)
+python-docx # For parsing .docx files

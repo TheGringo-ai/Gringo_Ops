@@ -1,0 +1,5 @@
+pytest
+requests
+streamlit
+pymupdf
+firebase-admin

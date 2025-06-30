@@ -1,6 +1,10 @@
 import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../GringoVoiceStrip')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
+# Comment out voicestrip import if not present
+# from voicestrip import speak_response
 from keychain import get_key
-from voicestrip import speak_response
 
 # Detect which LLM provider to use
 OPENAI_KEY = get_key("openai")
@@ -25,7 +29,7 @@ def send_prompt(prompt, model="gpt-4"):
             messages=[{"role": "user", "content": prompt}]
         )
         result = response.choices[0].message.content.strip()
-        speak_response(result)
+        # speak_response(result)
         return result
 
     elif provider == "gemini":
@@ -34,11 +38,19 @@ def send_prompt(prompt, model="gpt-4"):
         model = genai.GenerativeModel("gemini-pro")
         response = model.generate_content(prompt)
         result = response.text.strip()
-        speak_response(result)
+        # speak_response(result)
         return result
 
     else:
         return "❌ No API key found for OpenAI or Gemini."
+
+class LLMRouter:
+    """Router for LLM providers (OpenAI, Gemini, etc)."""
+    def __init__(self):
+        self.provider = use_provider()
+
+    def send(self, prompt, model="gpt-4"):
+        return send_prompt(prompt, model)
 
 # Example usage
 if __name__ == "__main__":

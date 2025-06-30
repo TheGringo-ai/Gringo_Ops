@@ -1,0 +1,17 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // By default, deny all reads and writes to all documents.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Allow a user to read and write ONLY their own session document.
+    // The document ID must match the authenticated user's unique ID (uid).
+    match /user_sessions/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

@@ -1,25 +1,14 @@
 {
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
   "hosting": {
     "public": "public",
-    "cleanUrls": true,
-    "rewrites": [
-      {
-        "source": "/fredfix/**",
-        "destination": "/fredfix/index.html"
-      },
-      {
-        "source": "/launcher/**",
-        "destination": "/launcher/index.html"
-      },
-      {
-        "source": "/wizard-streamlit/**",
-        "destination": "/wizard-streamlit/index.html"
-      },
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
     ]
   }
 }
-

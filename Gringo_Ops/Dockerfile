@@ -25,5 +25,5 @@ COPY . .
 # Expose Streamlit port
 EXPOSE 8080
 
-# Launch FredFix Streamlit app
-CMD ["streamlit", "run", "FredFix/core/agent.py", "--server.port=8080", "--server.enableCORS=false"]
+# Launch FredFix Streamlit UI app (optimized for Cloud Run, uses $PORT)
+CMD ["sh", "-c", "streamlit run ChatterFix/pages/8_FredFix_Agent.py --server.port=$PORT --server.address=0.0.0.0 --server.enableCORS=false --server.enableXsrfProtection=false"]

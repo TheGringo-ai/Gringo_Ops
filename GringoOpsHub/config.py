@@ -1,8 +1,24 @@
 import streamlit as st
+import sys, os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utils.translation import translate_text
-from utils.quiz_generator import generate_quiz
-from utils.pdf_exporter import export_training_pdf
-from utils.logger import log_training_event
+try:
+    from utils.quiz_generator import generate_quiz
+except ModuleNotFoundError:
+    def generate_quiz(*args, **kwargs):
+        st.warning("Quiz generation is not available. Please ensure utils/quiz_generator.py exists.")
+        return []
+try:
+    from utils.pdf_exporter import export_training_pdf
+except ModuleNotFoundError:
+    def export_training_pdf(*args, **kwargs):
+        st.warning("PDF export is not available. Please ensure utils/pdf_exporter.py exists.")
+        return b""
+try:
+    from utils.logger import log_training_event
+except ModuleNotFoundError:
+    def log_training_event(*args, **kwargs):
+        st.warning("Training event logging is not available. Please ensure utils/logger.py exists.")
 
 st.set_page_config(page_title="LineSmart Technician Hub", layout="wide")
 
@@ -21,14 +37,29 @@ with st.expander("📋 Technician Information"):
 # Document Upload
 with st.expander("📄 Upload Training Material"):
     uploaded_file = st.file_uploader(translate("Upload a source document"), type=["pdf", "docx", "txt"])
+    file_text = None
     if uploaded_file:
         st.success(translate("Document uploaded successfully."))
+        if uploaded_file.type == "application/pdf":
+            try:
+                import fitz  # PyMuPDF
+                uploaded_file.seek(0)
+                with fitz.open(stream=uploaded_file.read(), filetype="pdf") as doc:
+                    file_text = "".join([page.get_text() for page in doc])
+            except Exception as e:
+                st.warning(f"PDF extraction failed: {e}")
+        else:
+            try:
+                uploaded_file.seek(0)
+                file_text = uploaded_file.read().decode("utf-8")
+            except Exception as e:
+                st.warning(f"File read failed: {e}")
 
 # Quiz Generator
 with st.expander("🧠 Generate Training Quiz"):
-    if uploaded_file:
+    if uploaded_file and file_text:
         if st.button(translate("Generate Quiz")):
-            questions = generate_quiz(uploaded_file.read().decode("utf-8"))
+            questions = generate_quiz(file_text)
             for q in questions:
                 st.markdown(f"**Q:** {q['question']}")
                 for option in q['options']:
@@ -40,6 +71,7 @@ with st.expander("🧠 Generate Training Quiz"):
 with st.expander("📥 Export Training Summary as PDF"):
     if uploaded_file and name:
         if st.button(translate("Export Training PDF")):
+            uploaded_file.seek(0)
             pdf_bytes = export_training_pdf(name, department, equipment, uploaded_file.read())
             st.download_button(
                 label=translate("Download Training PDF"),
