@@ -15,6 +15,15 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Check GCP_SA_KEY_BASE64 Secret
+        run: |
+          if [ -z "${{ secrets.GCP_SA_KEY_BASE64 }}" ]; then
+            echo "GCP_SA_KEY_BASE64 is NOT set."
+            exit 1
+          else
+            echo "GCP_SA_KEY_BASE64 is set."
+          fi
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -23,7 +32,9 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f Gringo_Ops/ChatterFix/requirements.txt ]; then pip install -r Gringo_Ops/ChatterFix/requirements.txt; fi
+          if [ -f GringoOpsHub/requirements.txt ]; then pip install -r GringoOpsHub/requirements.txt; fi
 
       - name: Decode base64 GCP key
         id: decode-key
@@ -42,8 +53,14 @@ jobs:
         with:
           project_id: chatterfix-ui
 
+      - name: Test GCP Authentication
+        run: |
+          gcloud projects list || { echo 'GCP authentication failed or insufficient permissions.'; exit 1; }
+
       - name: Deploy to Cloud Run
         run: |
+          if [ ! -f Dockerfile ]; then echo "ERROR: Dockerfile missing in root"; exit 1; fi
+          if [ ! -f pyproject.toml ]; then echo "ERROR: pyproject.toml missing in root"; exit 1; fi
           gcloud run deploy chatterfix-api \
             --source . \
             --region us-central1 \
