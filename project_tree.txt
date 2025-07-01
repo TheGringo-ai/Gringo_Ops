@@ -1,0 +1,395 @@
+.
+├── # final deploy Sun Jun 29 22:16:07 CDT 2025
+├── Agent
+│   ├── __init__.py
+│   ├── config.py
+│   ├── keychain.py
+│   ├── main.py
+│   ├── memory.json
+│   ├── README.md
+│   ├── repair_history.log
+│   └── voice_agent.py
+├── agent_config.yaml
+├── BulletTrain
+│   ├── __init__.py
+│   ├── assets
+│   ├── config.py
+│   ├── data
+│   ├── main.py
+│   ├── pdf_export.py
+│   ├── python3
+│   ├── quiz_generator.py
+│   ├── README.md
+│   ├── requirements.txt
+│   ├── services.py 
+│   └── ui.py
+├── ChatterFix
+│   ├── backend
+│   │   ├── __init__.py
+│   │   ├── accounting.py
+│   │   ├── agent.py
+│   │   ├── ai_assistant.py
+│   │   ├── app.py
+│   │   ├── assets.py
+│   │   ├── audit.py
+│   │   ├── auth.py
+│   │   ├── chatterfix_agent.py
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   ├── documents.py
+│   │   ├── erp_tools.py
+│   │   ├── inventory.py
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   ├── parts.py
+│   │   ├── predictive.py
+│   │   ├── procurement.py
+│   │   ├── production.py
+│   │   ├── qr_utils.py
+│   │   ├── quality.py
+│   │   ├── safety.py
+│   │   ├── synthetic_data.py
+│   │   ├── users.py
+│   │   ├── vision_agent.py
+│   │   └── work_orders.py
+│   ├── cloudbuild.patch.yaml
+│   ├── cloudbuild.yaml
+│   ├── config.py
+│   ├── Dockerfile.ui
+│   ├── docs
+│   │   ├── launch_announcement.md
+│   │   └── website
+│   ├── entrypoint.sh
+│   ├── entrypoint.sh.bak
+│   ├── firebase
+│   │   └── config.json
+│   ├── frontend
+│   │   ├── assets.py
+│   │   ├── auth_utils.py
+│   │   ├── dashboard.py
+│   │   ├── dist
+│   │   ├── eslint.config.js
+│   │   ├── gringoops_dashboard.py
+│   │   ├── gui_launcher.py
+│   │   ├── index.html
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── pages
+│   │   ├── parts.py
+│   │   ├── patch_scan_report.json
+│   │   ├── patch_scan_report.md
+│   │   ├── patch_scan.py
+│   │   ├── public
+│   │   ├── README.md
+│   │   ├── src
+│   │   ├── streamlit_app.py
+│   │   ├── tsconfig.app.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.node.json
+│   │   ├── ui_elements.py
+│   │   ├── utils.py
+│   │   └── vite.config.ts
+│   ├── main.py
+│   ├── pages
+│   │   ├── 10_LineSmart_Agent.py
+│   │   ├── 8_FredFix_Agent.py
+│   │   ├── 9_BulletTrain_Agent.py
+│   │   └── sidebar.py
+│   ├── README.md
+│   ├── requirements.txt
+│   ├── test_backend.py
+│   └── tests
+│       ├── conftest.py
+│       ├── test_agent.py
+│       ├── test_assets_integration.py
+│       ├── test_auth.py
+│       ├── test_env_and_api.py
+│       ├── test_erp_tools_integration.py
+│       ├── test_fredfix_api.py
+│       ├── test_integration.py
+│       ├── test_inventory_integration.py
+│       ├── test_predictive_integration.py
+│       ├── test_procurement_integration.py
+│       ├── test_production_integration.py
+│       ├── test_streamlit_ui.py
+│       ├── test_users_integration.py
+│       └── test_work_orders_integration.py
+├── cloudbuild.chatterfix.yaml
+├── cloudbuild.yaml
+├── core
+│   ├── agent_logging.py
+│   └── test_agent_router.py
+├── dashboard.py
+├── deploy_fix.txt
+├── deploy_live.txt
+├── deploycheck.txt
+├── dev_patch.sh
+├── Dockerfile
+├── Dockerfile.chatterfix
+├── firebase-debug.log
+├── firebase.json
+├── firestore-debug.log
+├── firestore.rules
+├── FredFix
+│   ├── __main__.py
+│   ├── config.py
+│   ├── core
+│   │   ├── agent_api.py
+│   │   ├── agent.py
+│   │   ├── AnalyzerAgent.py
+│   │   ├── cloudrun.yaml
+│   │   ├── creator_agent.py
+│   │   ├── deploy_cloudrun.sh
+│   │   ├── deploy_streamlit_ui.sh
+│   │   ├── doc_agent.py
+│   │   ├── Dockerfile.agent
+│   │   ├── Dockerfile.streamlit
+│   │   ├── Fred_Fix_agent.py
+│   │   ├── launch_fredfix.sh
+│   │   ├── memory.py
+│   │   ├── project_manager.py
+│   │   ├── requirements.txt
+│   │   ├── routes.py
+│   │   ├── stop_fredfix.sh
+│   │   ├── streamlit_fredfix_ui.py
+│   │   └── voice_agent.py
+│   ├── registry.py
+│   ├── services
+│   │   └── __init__.py
+│   └── wizard
+│       ├── wizard_logic.py
+│       └── wizard_state.py
+├── functions.code-workspace
+├── gcp-key.json
+├── GeminiSuggestions
+├── gpt_review.log
+├── gringo_launcher.py
+├── Gringo_Ops
+│   ├── Agent
+│   │   ├── __init__.py
+│   │   ├── config.py
+│   │   ├── keychain.py
+│   │   ├── main.py
+│   │   ├── memory.json
+│   │   ├── README.md
+│   │   ├── requirements.txt
+│   │   └── voice_agent.py
+│   ├── agent_cli.py
+│   ├── BulletTrain
+│   │   ├── __init__.py
+│   │   ├── config.py
+│   │   ├── main.py
+│   │   ├── pdf_export.py
+│   │   ├── python3
+│   │   ├── quiz_generator.py
+│   │   ├── README.md
+│   │   ├── requirements.txt
+│   │   ├── services.py 
+│   │   └── ui.py
+│   ├── ChatterFix
+│   │   ├── backend
+│   │   ├── config.py
+│   │   ├── firebase
+│   │   ├── frontend
+│   │   ├── README.md
+│   │   └── requirements.txt
+│   ├── cleanup.sh
+│   ├── dashboard.py
+│   ├── Dockerfile
+│   ├── FredFix
+│   │   ├── __init__.py
+│   │   ├── config.py
+│   │   ├── core
+│   │   ├── fredfix_ui.py
+│   │   ├── main.py
+│   │   ├── README.md
+│   │   ├── registry.py
+│   │   ├── requirements.txt
+│   │   ├── ui
+│   │   └── wizard
+│   ├── gringo_launcher.py
+│   ├── GringoIconBuilder
+│   │   ├── config.py
+│   │   ├── gringo_icon_builder.py
+│   │   ├── IconGen
+│   │   └── requirements.txt
+│   ├── gringoops_dashboard.py
+│   ├── GringoOpsHub
+│   │   ├── app.py
+│   │   ├── config.py
+│   │   └── requirements.txt
+│   ├── GringoVoiceStrip
+│   │   ├── __init__.py
+│   │   ├── app.py
+│   │   ├── config.py
+│   │   ├── README.md
+│   │   └── requirements.txt
+│   ├── gui_launcher.py
+│   ├── lib
+│   │   ├── keychain.py
+│   │   ├── llm_router.py
+│   │   └── scaffold.py
+│   ├── LICENSE
+│   ├── LineSmart
+│   │   ├── app.yaml
+│   │   ├── config.py
+│   │   ├── main.py
+│   │   ├── pdf_export.py
+│   │   ├── quiz_generator.py
+│   │   ├── README.md
+│   │   ├── requirements.txt
+│   │   └── ui.py
+│   ├── Makefile
+│   ├── manage_keys.py
+│   ├── pyproject.toml
+│   ├── README.md
+│   ├── requirements.txt
+│   ├── review_agent.py
+│   ├── run_clean_up.py
+│   ├── run_scaffolder.py
+│   ├── setup_agent.sh
+│   ├── streamlit_audio_recorder
+│   ├── structure.txt
+│   ├── tools
+│   │   ├── __init__.py
+│   │   ├── gemini_query.py
+│   │   ├── hf_runner.py
+│   │   ├── openai_review.py
+│   │   └── repair_engine.py
+│   └── wizard.py
+├── GringoIconBuilder
+│   ├── assets
+│   ├── config.py
+│   ├── gringo_icon_builder.py
+│   ├── IconGen
+│   │   ├── Iconapp.png
+│   │   └── image.png
+│   ├── iconsets
+│   ├── requirements.txt
+│   └── scripts
+├── gringoops_dashboard.py
+├── GringoOpsHub
+│   ├── app.py
+│   ├── config.py
+│   └── requirements.txt
+├── GringoVoiceStrip
+│   ├── __init__.py
+│   ├── app.py
+│   ├── config.py
+│   ├── README.md
+│   └── requirements.txt
+├── keys_test.py
+├── lib
+│   ├── keychain.py
+│   ├── llm_router.py
+│   └── scaffold.py
+├── LICENSE
+├── LineSmart
+│   ├── app.yaml
+│   ├── assets
+│   ├── config.py
+│   ├── data
+│   ├── main.py
+│   ├── pdf_export.py
+│   ├── quiz_generator.py
+│   ├── README.md
+│   ├── requirements.txt
+│   └── ui.py
+├── logs
+│   └── refactor_log_20250614_185319.txt
+├── manage_keys.py
+├── models
+│   └── my-model-name
+│       └── README.md
+├── pages
+│   ├── __init__.py
+│   ├── 1_🛠️_FredFix.py
+│   ├── 2_Wizard.py
+│   ├── 3_Creator_Agent.py
+│   ├── 3_Settings.py
+│   ├── 4_BulletTrain.py
+│   ├── 5_User_Authentication.py
+│   ├── 6_ChatterFix.py
+│   ├── 7_Asset_Management.py
+│   ├── 8_Parts_Management.py
+│   └── 9_User_Authentication.py
+├── patch_scan_report.json
+├── patch_scan_report.md
+├── project_tree.txt
+├── public
+│   └── index.html
+├── pyproject.toml
+├── README.md
+├── requirements.txt
+├── run_chatterfix_local.py
+├── sa_key_base64.txt
+├── sa_key_base64.txtecho
+├── services
+│   ├── __init__.py
+│   └── repair_services.py
+├── src
+│   ├── App.tsx
+│   ├── firebase.ts
+│   └── pages
+│       ├── Admin.tsx
+│       ├── AgentChat.tsx
+│       ├── Dashboard.tsx
+│       ├── FileHistory.tsx
+│       └── Reports.tsx
+├── streamlit_app.py
+├── streamlit_audio_recorder
+│   ├── build
+│   │   ├── bdist.macosx-15.5-arm64
+│   │   └── lib
+│   ├── st_audiorec
+│   │   └── frontend
+│   └── streamlit_audiorec.egg-info
+│       ├── dependency_links.txt
+│       ├── PKG-INFO
+│       ├── requires.txt
+│       ├── SOURCES.txt
+│       └── top_level.txt
+├── structure.txt
+├── test_report.html
+├── tests
+│   └── test_agent.py
+├── tools
+│   ├── __init__.py
+│   ├── add-to-dock.sh
+│   ├── agent_cli.py
+│   ├── cli_agent.py
+│   ├── config.py
+│   ├── gchat_plus.py
+│   ├── gemini_agent.py
+│   ├── gemini_query.py
+│   ├── gui_launcher.py
+│   ├── hf_agent.py
+│   ├── hf_runner.py
+│   ├── huggingface_agent.py
+│   ├── keys_test.py
+│   ├── launcher_config.json
+│   ├── launcher_wizard.py
+│   ├── logger.py
+│   ├── openai_agent.py
+│   ├── openai_review.py
+│   ├── pdf_exporter.py
+│   ├── quiz_generator.py
+│   ├── repair_engine.py
+│   ├── review_agent.py
+│   ├── run_clean_up.py
+│   ├── run_scaffolder.py
+│   ├── setup_agent.sh
+│   ├── token_counter.py
+│   ├── tools_ui.py
+│   └── translation.py
+├── trigger_reencoded.txt
+├── trigger.txt
+├── triggerfix.txt
+├── utils
+│   ├── config.py
+│   ├── helpers.py
+│   └── ui_helpers.py
+├── vite.config.ts
+└── wizard.py
+
+71 directories, 322 files

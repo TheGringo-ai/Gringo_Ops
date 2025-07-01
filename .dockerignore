@@ -1,10 +1,32 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Database and log files
+*.db
+*.sqlite3
 *.log
-.venv/
-.git/
-ChatterFix/
-LineSmart/
-streamlit_audio_recorder/
-*.egg-info/
+
+# Environment files
+*.env
+.env.*
+
+# macOS and editor files
 .DS_Store
+.vscode/
+
+# Git and build
+.git/
+.gitignore
+node_modules/
+*.egg-info/
+*.egg
+build/
+dist/
+logs/
+
+# Only include Streamlit UI and requirements for this build
+!streamlit_fredfix_ui.py
+!requirements.txt
