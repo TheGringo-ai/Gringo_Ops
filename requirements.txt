@@ -1,4 +1,7 @@
 # GringoOps project requirements (pinned)
+setuptools
+wheel
+cython
 google-generativeai==0.8.5
 firebase-admin==6.4.0
 google-cloud-secret-manager==2.16.0

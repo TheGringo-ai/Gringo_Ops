@@ -16,15 +16,22 @@ RUN apt-get update && apt-get install -y \
     wkhtmltopdf \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy project definition and source code
+# Copy requirements files
+COPY requirements.txt ./
+COPY Gringo_Ops/ChatterFix/requirements.txt ./Gringo_Ops/ChatterFix/requirements.txt
+COPY GringoOpsHub/requirements.txt ./GringoOpsHub/requirements.txt
 COPY pyproject.toml ./
 COPY . .
 
-# Install the project and its dependencies using pyproject.toml
-RUN pip install --upgrade pip && pip install .
+# Install build dependencies and all requirements
+RUN pip install --upgrade pip setuptools wheel cython \
+    && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi \
+    && if [ -f Gringo_Ops/ChatterFix/requirements.txt ]; then pip install -r Gringo_Ops/ChatterFix/requirements.txt; fi \
+    && if [ -f GringoOpsHub/requirements.txt ]; then pip install -r GringoOpsHub/requirements.txt; fi \
+    && pip install .
 
 # Expose the port Cloud Run will use
 EXPOSE 8080
 
-# Launch the LineSmart Technician Hub (the unified-dashboard)
-CMD ["python", "-m", "streamlit", "run", "GringoOpsHub/config.py", "--server.port=8080", "--server.enableCORS=false"]
+# Launch ChatterFix (adjust the path if your main file is different)
+CMD ["python", "-m", "streamlit", "run", "Gringo_Ops/ChatterFix/app.py", "--server.port=8080", "--server.enableCORS=false"]
