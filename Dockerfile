@@ -13,17 +13,18 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
+    wkhtmltopdf \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
-
-# Copy all source code (respects .dockerignore)
+# Copy project definition and source code
+COPY pyproject.toml ./
 COPY . .
 
-# Expose Streamlit port
+# Install the project and its dependencies using pyproject.toml
+RUN pip install --upgrade pip && pip install .
+
+# Expose the port Cloud Run will use
 EXPOSE 8080
 
-# Launch FredFix Streamlit app
-CMD ["streamlit", "run", "streamlit_app.py", "--server.port=8080", "--server.enableCORS=false"]
+# Launch the LineSmart Technician Hub (the unified-dashboard)
+CMD ["python", "-m", "streamlit", "run", "GringoOpsHub/config.py", "--server.port=8080", "--server.enableCORS=false"]

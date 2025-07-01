@@ -1,0 +1,17 @@
+#!/bin/sh
+# This script ensures that the application starts in a controlled and predictable way.
+
+# Exit immediately if a command exits with a non-zero status.
+set -e
+# Print each command to stdout before executing it.
+set -x
+
+# 1. Run the pre-flight check for Firebase initialization.
+# The main.py script will exit with 0 on success or 1 on failure.
+echo "--- Running pre-flight initialization check ---"
+python -u main.py
+
+# 2. If the check above succeeds, execute the command passed to the script.
+# This allows the Docker CMD to be executed after the pre-flight check.
+echo "--- Pre-flight check passed. Executing command ---"
+exec "$@"

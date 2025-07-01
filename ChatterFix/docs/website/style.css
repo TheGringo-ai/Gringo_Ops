@@ -1,0 +1,202 @@
+:root {
+    --primary-color: #007bff; /* A strong, professional blue */
+    --secondary-color: #0056b3; /* A darker blue for hover effects */
+    --background-color: #f8f9fa; /* A very light grey for the page background */
+    --surface-color: #ffffff; /* White for cards and surfaces */
+    --text-color: #333333; /* Dark grey for main text */
+    --headline-color: #1a1a1a; /* Near-black for headlines */
+    --accent-color: #ffc107; /* A vibrant yellow/gold for accents */
+    --font-main: 'Roboto', sans-serif;
+    --font-special: 'Teko', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+header {
+    background-color: var(--surface-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1rem 5%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-family: var(--font-special);
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 700;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--primary-color);
+}
+
+.cta-button {
+    text-decoration: none;
+    color: var(--surface-color);
+    background-color: var(--primary-color);
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: var(--secondary-color);
+}
+
+.hero {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1581091870623-9c04558dd7b9?fit=crop&w=1920&h=1080');
+    background-size: cover;
+    background-position: center;
+    color: var(--surface-color);
+    text-align: center;
+    padding: 8rem 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-content {
+    max-width: 800px;
+}
+
+.hero h1 {
+    font-family: var(--font-special);
+    font-size: 4.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+}
+
+.hero .subtitle {
+    font-size: 1.25rem;
+    font-weight: 300;
+    margin-bottom: 2rem;
+}
+
+.cta-button.primary {
+    background-color: var(--accent-color);
+    color: var(--headline-color);
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+}
+
+.cta-button.primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+}
+
+.features-section {
+    padding: 5rem 5%;
+    text-align: center;
+}
+
+.features-section h2 {
+    font-family: var(--font-special);
+    font-size: 3.5rem;
+    color: var(--headline-color);
+    margin-bottom: 3rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    background-color: var(--surface-color);
+    padding: 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.feature-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    font-size: 1.75rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.vision-section {
+    background-color: var(--headline-color);
+    color: var(--background-color);
+    padding: 6rem 5%;
+    text-align: center;
+}
+
+.vision-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.vision-section h2 {
+    font-family: var(--font-special);
+    font-size: 3.5rem;
+    color: var(--accent-color);
+    margin-bottom: 1.5rem;
+}
+
+.vision-section p {
+    font-size: 1.2rem;
+    font-weight: 300;
+}
+
+footer {
+    background-color: #222;
+    color: var(--background-color);
+    text-align: center;
+    padding: 2rem 5%;
+}
+
+footer a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

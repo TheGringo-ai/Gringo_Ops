@@ -1,0 +1,45 @@
+{
+  "files": {
+    "firebase.json": "empty",
+    "package.json": "found",
+    "vite.config.ts": "found",
+    "README.md": "found",
+    "gui_launcher.py": "found",
+    "streamlit_app.py": "found",
+    "gringoops_dashboard.py": "found",
+    "src/App.tsx": "found",
+    "src/pages/Dashboard.tsx": "found",
+    "src/pages/Admin.tsx": "found",
+    "src/pages/Reports.tsx": "found",
+    "src/pages/AgentChat.tsx": "found",
+    "src/pages/FileHistory.tsx": "found",
+    "src/firebase.ts": "found",
+    "public/index.html": "found"
+  },
+  "folders": {
+    "src/pages": "found",
+    "public": "found"
+  },
+  "dependencies": {
+    "react": "found",
+    "vite": "missing",
+    "firebase": "found"
+  },
+  "scripts": {
+    "dev": "found",
+    "build": "found",
+    "lint": "found",
+    "deploy": "found"
+  },
+  "typescript": {
+    "status": "ok",
+    "details": ""
+  },
+  "cicd": {
+    "ready": false,
+    "details": {
+      "firebase.json": "present but empty or invalid",
+      "vite.config.ts": "present & non-empty"
+    }
+  }
+}

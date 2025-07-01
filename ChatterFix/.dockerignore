@@ -1,0 +1,9 @@
+**/*
+!/frontend/
+!/backend/
+!/requirements.txt
+!/firebase.json
+!/entrypoint.sh
+!/main.py
+!/Dockerfile
+!/cloudbuild.yaml

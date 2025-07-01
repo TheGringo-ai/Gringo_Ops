@@ -32,12 +32,17 @@ dist/
 # Python wheels
 *.whl
 
-# Disallow stray root-level app duplicates outside Gringo_Ops
-/FredFix/
-/LineSmart/
-/ChatterFix/
-/GringoOpsHub/
-/GringoIconBuilder/
-/GringoVoiceStrip/
-/BulletTrain/
-/Agent/diff.txt
+# VSCode project settings
+.vscode/
+
+# Virtual environments
+venv/
+env/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Python wheels
+*.whl

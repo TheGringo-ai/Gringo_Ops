@@ -5,10 +5,30 @@ import psutil
 
 st.set_page_config(page_title="GringoOps Dashboard", layout="wide")
 
+# --- Welcome and Navigation Section ---
+st.title("🧠 GringoOps Main Dashboard Hub")
+st.markdown("""
+Welcome to the GringoOps Control Center! Use the sidebar to launch, monitor, or switch between specialized dashboards and tools.
+""")
+
+# In-app navigation to Streamlit pages (if available)
+st.sidebar.markdown("## 🗂 Switch Dashboards")
+try:
+    from streamlit_extras.switch_page_button import switch_page
+    if st.sidebar.button("FredFix Dashboard"):
+        switch_page("1_🛠️_FredFix")
+    if st.sidebar.button("ChatterFix Dashboard"):
+        switch_page("6_ChatterFix")
+    if st.sidebar.button("CreatorAgent Dashboard"):
+        switch_page("3_Creator_Agent")
+except ImportError:
+    st.sidebar.info("Install streamlit-extras for in-app navigation.")
+
+# --- Tabs for Control Center and Logs ---
 tab1, tab2 = st.tabs(["🔧 Control Center", "📜 Logs"])
 
 with tab1:
-    st.title("🧠 GringoOps Control Center")
+    st.header("Tool Launcher & Monitor")
 
     def is_process_running(keyword):
         for proc in psutil.process_iter(['pid', 'cmdline']):
@@ -55,7 +75,7 @@ with tab1:
                 st.sidebar.error(f"Failed to kill {name}: {e}")
 
 with tab2:
-    st.title("📜 Log Viewer")
+    st.header("Log Viewer")
 
     log_dir = "logs"
     if not os.path.exists(log_dir):
