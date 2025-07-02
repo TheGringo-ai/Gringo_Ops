@@ -10,4 +10,4 @@ COPY . .
 
 ENV PYTHONUNBUFFERED=1
 
-CMD ["uvicorn", "Fred_Fix_agent:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["python", "run_chatterfix_local.py"]
