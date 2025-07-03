@@ -33,7 +33,8 @@ with tab1:
     def is_process_running(keyword):
         for proc in psutil.process_iter(['pid', 'cmdline']):
             try:
-                if any(keyword in str(arg) for arg in proc.info['cmdline']):
+                cmdline = proc.info['cmdline']
+                if cmdline and any(keyword in str(arg) for arg in cmdline):
                     return proc.info['pid']
             except (psutil.NoSuchProcess, psutil.AccessDenied):
                 continue
