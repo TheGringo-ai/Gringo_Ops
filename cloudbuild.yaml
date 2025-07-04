@@ -1,11 +1,11 @@
 steps:
 # Build the container image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-f', 'Dockerfile.chatterfix', '-t', 'gcr.io/$PROJECT_ID/chatterfix:latest', '.']
+  args: ['build', '-f', 'packages/chatterfix/Dockerfile', '-t', 'gcr.io/$PROJECT_ID/chatterfix-backend:$COMMIT_SHA', './packages/chatterfix']
 
 # Push the container image to Container Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/$PROJECT_ID/chatterfix:latest']
+  args: ['push', 'gcr.io/$PROJECT_ID/chatterfix-backend:$COMMIT_SHA']
 
 # Deploy container image to Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -13,12 +13,12 @@ steps:
   args:
   - 'run'
   - 'deploy'
-  - 'chatterfix'
-  - '--image=gcr.io/$PROJECT_ID/chatterfix:latest'
+  - 'chatterfix-backend'
+  - '--image=gcr.io/$PROJECT_ID/chatterfix-backend:$COMMIT_SHA'
   - '--region=us-central1'
   - '--platform=managed'
   - '--allow-unauthenticated'
   - '--set-secrets=GEMINI_API_KEY=GEMINI_API_KEY:latest,FIREBASE_KEY_JSON=FIREBASE_KEY_JSON:latest'
 
 images:
-- 'gcr.io/$PROJECT_ID/chatterfix:latest'
+- 'gcr.io/$PROJECT_ID/chatterfix-backend:$COMMIT_SHA'

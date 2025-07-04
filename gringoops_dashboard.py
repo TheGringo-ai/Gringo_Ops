@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import subprocess
 import psutil
+import sys
 
 st.set_page_config(page_title="GringoOps Dashboard", layout="wide")
 
@@ -21,7 +22,8 @@ try:
         switch_page("6_ChatterFix")
     if st.sidebar.button("CreatorAgent Dashboard"):
         switch_page("3_Creator_Agent")
-except ImportError:
+except ImportError as e:
+    st.sidebar.warning(f"streamlit-extras not installed: {e}")
     st.sidebar.info("Install streamlit-extras for in-app navigation.")
 
 # --- Tabs for Control Center and Logs ---
@@ -33,20 +35,23 @@ with tab1:
     def is_process_running(keyword):
         for proc in psutil.process_iter(['pid', 'cmdline']):
             try:
-                cmdline = proc.info['cmdline']
+                cmdline = proc.info.get('cmdline')
                 if cmdline and any(keyword in str(arg) for arg in cmdline):
                     return proc.info['pid']
-            except (psutil.NoSuchProcess, psutil.AccessDenied):
+            except (psutil.NoSuchProcess, psutil.AccessDenied, KeyError, TypeError):
+                continue
+            except Exception as e:
+                st.warning(f"Process check error: {e}")
                 continue
         return None
 
     st.sidebar.markdown("## 🚀 Launch External Tools")
 
     tools = {
-        "FredFix": "FredFix/main.py",
-        "CreatorAgent UI": "FredFix/core/creator_agent_ui.py",
-        "BulletTrain": "BulletTrain/main.py",
-        "Agent": "Agent/main.py",
+        "FredFix": "packages/fredfix/main.py",
+        "CreatorAgent UI": "packages/fredfix/core/creator_agent_ui.py",
+        "BulletTrain": "packages/bullettrain/main.py",
+        "Agent": "packages/agent/main.py",
         "Wizard": "wizard.py"
     }
 
@@ -57,7 +62,13 @@ with tab1:
         with col1:
             if st.button(f"Launch {name}"):
                 if not pid:
-                    subprocess.Popen(["env", f"PYTHONPATH={os.getcwd()}", "streamlit", "run", path])
+                    if os.path.exists(path):
+                        try:
+                            subprocess.Popen([sys.executable, "-m", "streamlit", "run", path], env={**os.environ, "PYTHONPATH": os.getcwd()})
+                        except Exception as e:
+                            st.sidebar.error(f"Failed to launch {name}: {e}")
+                    else:
+                        st.sidebar.error(f"File not found: {path}")
                 else:
                     st.toast(f"{name} is already running (PID {pid})", icon="ℹ️")
         with col2:

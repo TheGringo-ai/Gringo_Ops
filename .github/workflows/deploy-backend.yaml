@@ -1,0 +1,29 @@
+name: Deploy Backend to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/chatterfix/**'
+      - '.github/workflows/deploy-backend.yaml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: 'projects/YOUR_PROJECT_ID/locations/global/workloadIdentityPools/YOUR_POOL_ID/providers/YOUR_PROVIDER_ID'
+          service_account: 'YOUR_SERVICE_ACCOUNT@YOUR_PROJECT_ID.iam.gserviceaccount.com'
+
+      - name: 'Submit build to Cloud Build'
+        uses: 'google-github-actions/submit-cloud-build@v1'
+        with:
+          project: 'YOUR_PROJECT_ID'
+          gcloud_version: 'latest'
+          config: 'cloudbuild.yaml'
