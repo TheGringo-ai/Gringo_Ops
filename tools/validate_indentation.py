@@ -7,17 +7,14 @@ def get_indent_violations():
     """
     bad_files = []
     for root, _, files in os.walk("."):
-        for f in files:
-            if f.endswith(".py") and "venv" not in root:
-                file_path = os.path.join(root, f)
+        for file in files:
+            if file.endswith(".py") and "venv" not in root:
+                path = os.path.join(root, file)
                 try:
-                    with open(file_path, "r", encoding="utf-8") as src:
-                        ast.parse(src.read())
-                except IndentationError:
-                    bad_files.append(file_path)
-                except SyntaxError:
-                    # We'll let the import validator handle other syntax errors
-                    continue
+                    with open(path) as f:
+                        ast.parse(f.read())
+                except (IndentationError, SyntaxError):
+                    bad_files.append(path)
     return bad_files
 
 if __name__ == "__main__":
