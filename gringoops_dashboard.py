@@ -82,3 +82,13 @@ with tab2:
         
     st.subheader("Firestore Memory")
     st.warning("Firestore memory viewing is not yet implemented in the dashboard.")
+
+# --- Debug Info Sidebar ---
+st.sidebar.markdown("---")
+st.sidebar.markdown("### 🧠 Debug Info")
+st.sidebar.write(f"Python: {__import__('platform').python_version()}")
+st.sidebar.write(f"Working Dir: {os.getcwd()}")
+try:
+    st.sidebar.write(f"Secrets loaded: {list(st.secrets.keys())}")
+except Exception as e:
+    st.sidebar.warning(f"Could not load secrets: {e}")

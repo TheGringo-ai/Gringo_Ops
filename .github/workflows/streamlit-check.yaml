@@ -1,0 +1,16 @@
+# .github/workflows/streamlit-check.yaml
+name: Validate Streamlit App
+
+on: [push, pull_request]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - run: pip install streamlit
+      - run: python tools/validate_pages.py
