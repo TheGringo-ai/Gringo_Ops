@@ -6,6 +6,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 from packages.fredfix.core.agent import FredFixAgent
+from tools.export_to_pdf import export_to_pdf
 
 st.set_page_config(page_title="ChatterBot - ChatterFix", page_icon="🤖")
 
@@ -40,6 +41,11 @@ if prompt := st.chat_input("What can I help you with?"):
             agent_response = st.session_state.fredfix_agent.run_agent(prompt)
             response_content = agent_response.get("output", "Sorry, I encountered an error.")
             st.markdown(response_content)
+            
+            if st.button("Save as PDF", key=f"pdf_{len(st.session_state.messages)}"):
+                pdf_path = export_to_pdf(response_content)
+                with open(pdf_path, "rb") as f:
+                    st.download_button("Download PDF", f, file_name=pdf_path)
     
     # Add assistant message to history
     st.session_state.messages.append({"role": "assistant", "content": response_content})

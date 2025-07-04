@@ -7,6 +7,7 @@ from .memory import load_memory, save_memory
 from .repair_engine import repair_all_code
 from .command_router import execute_command
 from .config import AgentConfig
+from tools.export_to_pdf import export_to_pdf
 
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
@@ -26,6 +27,9 @@ class ChatterBotAgent:
         try:
             if command == "repair":
                 result = repair_all_code()
+            elif command.startswith("export to pdf"):
+                text_to_export = command.replace("export to pdf", "").strip()
+                result = export_to_pdf(text_to_export)
             else:
                 result = execute_command(command, self.memory, self.user_id)
 
