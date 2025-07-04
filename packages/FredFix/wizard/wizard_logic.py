@@ -12,19 +12,19 @@ try:
     from tools.gemini_agent import query_model as gemini_query
 except ImportError:
     def gemini_query(prompt):
-    
-        """Placeholder docstring for gemini_query."""        raise ImportError("tools.gemini_agent or its query_model is missing.")
+        """Placeholder docstring for gemini_query."""
+        raise ImportError("tools.gemini_agent or its query_model is missing.")
 
 try:
     from tools.huggingface_agent import query_model as hf_query
 except ImportError:
     def hf_query(prompt):
-    
-        """Placeholder docstring for hf_query."""        raise ImportError("tools.huggingface_agent or its query_model is missing.")
+        """Placeholder docstring for hf_query."""
+        raise ImportError("tools.huggingface_agent or its query_model is missing.")
 
 def sanitize_filename(prompt: str) -> str:
-
-    """Placeholder docstring for sanitize_filename."""    name = re.sub(r'\W+', '_', prompt.strip())[:50]
+    """Placeholder docstring for sanitize_filename."""
+    name = re.sub(r'\W+', '_', prompt.strip())[:50]
     return f"{name}.py"
 
 def generate_code(prompt: str, provider="openai", model="gpt-4", temperature=0.7):

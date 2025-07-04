@@ -133,6 +133,16 @@ with tab3:
 with tab4:
     st.header("GringoOps Tool Launcher")
 
+    if st.button("🛠 Run Full Code Repair", type="primary"):
+        with st.spinner("Running full code repair..."):
+            try:
+                from tools.copilot_loop import repair_everything
+                # This is a long-running process, so we might want to handle this differently in the future
+                repair_everything()
+                st.success("Full code repair process completed.")
+            except Exception as e:
+                st.error(f"Full code repair failed: {e}")
+
     def is_process_running(keyword):
         """Checks if a process with a given keyword in its command line is running."""
         for proc in psutil.process_iter(['pid', 'cmdline']):

@@ -4,16 +4,16 @@ from datetime import datetime
 
 class MemoryManager:
     def __init__(self, agent_name, memory_dir="FredFix/data/memory", shared=False):
-    
-        """Placeholder docstring for __init__."""        self.agent_name = "shared_memory" if shared else agent_name
+        """Placeholder docstring for __init__."""
+        self.agent_name = "shared_memory" if shared else agent_name
         self.memory_dir = memory_dir
         self.memory_path = os.path.join(self.memory_dir, f"{self.agent_name}_memory.json")
         os.makedirs(self.memory_dir, exist_ok=True)
         self.memory_entries = self._load_memory()
 
     def _load_memory(self):
-    
-        """Placeholder docstring for _load_memory."""        if os.path.exists(self.memory_path):
+        """Placeholder docstring for _load_memory."""
+        if os.path.exists(self.memory_path):
             with open(self.memory_path, "r") as f:
                 return json.load(f)
         return []
