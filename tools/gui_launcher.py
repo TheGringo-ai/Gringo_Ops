@@ -36,7 +36,8 @@ def run_project(name, path):
     status.config(text=f"Launching {name}...")
 
 class ToolTip:
-    """Placeholder docstring for ToolTip."""    def __init__(self, widget, text):
+    """Placeholder docstring for ToolTip."""
+    def __init__(self, widget, text):
         """Initializes the ToolTip."""
         self.widget = widget
         self.text = text

@@ -19,17 +19,17 @@ class MemoryManager:
         return []
 
     def _save_memory(self):
-    
-        """Placeholder docstring for _save_memory."""        with open(self.memory_path, "w") as f:
+        """Placeholder docstring for _save_memory."""
+        with open(self.memory_path, "w") as f:
             json.dump(self.memory_entries, f, indent=2)
 
     def _get_current_session_id(self):
-    
-        """Placeholder docstring for _get_current_session_id."""        return datetime.utcnow().strftime("%Y%m%d-%H%M%S")
+        """Placeholder docstring for _get_current_session_id."""
+        return datetime.utcnow().strftime("%Y%m%d-%H%M%S")
 
     def log_interaction(self, user_input, agent_response, tags=None):
-    
-        """Placeholder docstring for log_interaction."""        entry = {
+        """Logs an interaction to the memory."""
+        entry = {
             "timestamp": datetime.utcnow().isoformat(),
             "session_id": self._get_current_session_id(),
             "user_input": user_input,
@@ -40,54 +40,54 @@ class MemoryManager:
         self._save_memory()
 
     def get_recent(self, limit=5):
-    
-        """Placeholder docstring for get_recent."""        return self.memory_entries[-limit:]
+        """Gets the most recent interactions."""
+        return self.memory_entries[-limit:]
 
     def search(self, keyword):
-    
-        """Placeholder docstring for search."""        keyword = keyword.lower()
+        """Searches the memory for a keyword."""
+        keyword = keyword.lower()
         return [
             e for e in self.memory_entries
             if keyword in e["user_input"].lower() or keyword in e["agent_response"].lower()
         ]
 
     def clear(self):
-    
-        """Placeholder docstring for clear."""        self.memory_entries = []
+        """Clears the memory."""
+        self.memory_entries = []
         if os.path.exists(self.memory_path):
             os.remove(self.memory_path)
 
     def summarize_recent(self, limit=5):
-    
-        """Placeholder docstring for summarize_recent."""        return "\n".join([
+        """Summarizes the most recent interactions."""
+        return "\n".join([
             f"{e['timestamp']} | {e['user_input']} → {e['agent_response']}"
             for e in self.get_recent(limit)
         ])
 
     def export(self, export_path):
-    
-        """Placeholder docstring for export."""        with open(export_path, "w") as f:
+        """Exports the memory to a file."""
+        with open(export_path, "w") as f:
             json.dump(self.memory_entries, f, indent=2)
 
     def import_memory(self, import_path):
-    
-        """Placeholder docstring for import_memory."""        if os.path.exists(import_path):
+        """Imports memory from a file."""
+        if os.path.exists(import_path):
             with open(import_path, "r") as f:
                 imported = json.load(f)
                 self.memory_entries.extend(imported)
                 self._save_memory()
 
     def get_by_tag(self, tag):
-    
-        """Placeholder docstring for get_by_tag."""        return [e for e in self.memory_entries if tag in e["tags"]]
+        """Gets interactions by tag."""
+        return [e for e in self.memory_entries if tag in e["tags"]]
 
     def compact_summary(self, limit=10):
-    
-        """Placeholder docstring for compact_summary."""        return [
+        """Creates a compact summary of recent interactions."""
+        return [
             {"q": e["user_input"], "a": e["agent_response"]}
             for e in self.get_recent(limit)
         ]
 
     def sync_to_cloud(self):
-    
-        """Placeholder docstring for sync_to_cloud."""        pass  # TODO: Push memory_entries to Firebase
+        """Syncs the memory to the cloud."""
+        pass  # TODO: Push memory_entries to Firebase

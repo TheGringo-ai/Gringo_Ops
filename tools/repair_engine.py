@@ -1,4 +1,4 @@
-from tools.openai_review import repair_all_code
+from tools.openai_review import repair_file
 import os
 import json
 
@@ -17,9 +17,9 @@ def run_auto_repair(file_path=None):
         if file_path:
             if should_skip(file_path):
                 return f"⏩ Skipped {file_path}"
-            repair_all_code(file_path)
+            repair_file(file_path)
             return f"✅ Repaired {file_path}"
         else:
-            return repair_all_code(repo_path=os.path.expanduser("~/Projects/GringoOps"))
+            return repair_file(repo_path=os.path.expanduser("~/Projects/GringoOps"))
     except Exception as e:
         return f"❌ Failed: {e}"

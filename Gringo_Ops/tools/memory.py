@@ -45,11 +45,13 @@ class MemoryBackend(ABC):
 class JsonMemoryBackend(MemoryBackend):
     """Handles the agent's memory, persisting it to a local JSON file."""
     def __init__(self, project_root: Path):
-        """Placeholder docstring for __init__."""        """Placeholder docstring for __init__."""        """Placeholder docstring for __init__."""        self.memory_path = project_root / ".agent_memory.json"
+        """Initializes the JsonMemoryBackend."""
+        self.memory_path = project_root / ".agent_memory.json"
         self.memory = self._load()
 
     def _load(self) -> dict:
-        """Placeholder docstring for _load."""        if self.memory_path.exists():
+        """Loads the memory from the JSON file."""
+        if self.memory_path.exists():
             try:
                 with open(self.memory_path, 'r', encoding='utf-8') as f:
                     logger.info(f"[JsonMemory] Loading memory from {self.memory_path}")
@@ -60,7 +62,8 @@ class JsonMemoryBackend(MemoryBackend):
         return self._get_default_memory()
 
     def _save(self):
-        """Placeholder docstring for _save."""        try:
+        """Saves the memory to the JSON file."""
+        try:
             with open(self.memory_path, 'w', encoding='utf-8') as f:
                 json.dump(self.memory, f, indent=4)
                 logger.info(f"[JsonMemory] Saved memory to {self.memory_path}")
@@ -68,19 +71,23 @@ class JsonMemoryBackend(MemoryBackend):
             logger.error(f"[JsonMemory] Could not save memory file: {e}")
 
     def _get_default_memory(self) -> dict:
-        """Placeholder docstring for _get_default_memory."""        return {"version": "1.0", "error_files": [], "failed_patches": {}}
+        """Returns the default memory structure."""
+        return {"version": "1.0", "error_files": [], "failed_patches": {}}
 
     def get_error_files(self) -> list:
-        """Placeholder docstring for get_error_files."""        """Placeholder docstring for get_error_files."""        """Placeholder docstring for get_error_files."""        return self.memory.get("error_files", [])
+        """Gets a list of files that have previously caused errors."""
+        return self.memory.get("error_files", [])
 
     def add_error_file(self, file_path: str):
-        """Placeholder docstring for add_error_file."""        """Placeholder docstring for add_error_file."""        """Placeholder docstring for add_error_file."""        if file_path not in self.memory["error_files"]:
+        """Adds a file to the list of error-prone files."""
+        if file_path not in self.memory["error_files"]:
             self.memory["error_files"].append(file_path)
             self._save()
             logger.warning(f"[JsonMemory] Added {file_path} to error files.")
 
     def record_failed_patch(self, file_path: str, issue_description: str):
-        """Placeholder docstring for record_failed_patch."""        """Placeholder docstring for record_failed_patch."""        """Placeholder docstring for record_failed_patch."""        if file_path not in self.memory["failed_patches"]:
+        """Records a patch that failed validation."""
+        if file_path not in self.memory["failed_patches"]:
             self.memory["failed_patches"][file_path] = []
         if issue_description not in self.memory["failed_patches"][file_path]:
             self.memory["failed_patches"][file_path].append(issue_description)
@@ -88,11 +95,13 @@ class JsonMemoryBackend(MemoryBackend):
             logger.warning(f"[JsonMemory] Recorded failed patch for '{issue_description}' in {file_path}.")
 
     def was_patch_successful(self, file_path: str, issue_description: str) -> bool:
-        """Placeholder docstring for was_patch_successful."""        """Placeholder docstring for was_patch_successful."""        """Placeholder docstring for was_patch_successful."""        failed_for_file = self.memory["failed_patches"].get(file_path, [])
+        """Checks if a patch for a given issue has previously failed."""
+        failed_for_file = self.memory["failed_patches"].get(file_path, [])
         return issue_description not in failed_for_file
     
     def clear(self):
-        """Placeholder docstring for clear."""        """Placeholder docstring for clear."""        """Placeholder docstring for clear."""        self.memory = self._get_default_memory()
+        """Clears the entire memory for the current scope."""
+        self.memory = self._get_default_memory()
         self._save()
         logger.info("[JsonMemory] Cleared local memory file.")
 
@@ -103,6 +112,7 @@ class FirestoreMemoryBackend(MemoryBackend):
     This enables a global, shared memory across different agents and projects.
     """
     def __init__(self, project_id: str, collection_name: str = "gringoops_agent_memory"):
+        """Initializes the FirestoreMemoryBackend."""
         if firestore is None:
             raise ImportError("google-cloud-firestore is not installed.")
 
@@ -130,19 +140,23 @@ class FirestoreMemoryBackend(MemoryBackend):
         logger.info(f"[FirestoreMemory] Initialized for project '{project_id}'.")
 
     def _get_memory_doc(self):
-        """Placeholder docstring for _get_memory_doc."""        doc = self.project_doc_ref.get()
+        """Gets the memory document from Firestore."""
+        doc = self.project_doc_ref.get()
         if doc.exists:
             return doc.to_dict()
         return {"error_files": [], "failed_patches": {}}
 
     def get_error_files(self) -> list:
+        """Gets a list of files that have previously caused errors."""
         return self._get_memory_doc().get("error_files", [])
 
     def add_error_file(self, file_path: str):
+        """Adds a file to the list of error-prone files."""
         self.project_doc_ref.update({"error_files": firestore.ArrayUnion([file_path])})
         logger.warning(f"[FirestoreMemory] Added {file_path} to error files.")
 
     def record_failed_patch(self, file_path: str, issue_description: str):
+        """Records a patch that failed validation."""
         # Firestore cannot have '.' in field names, so we replace it.
         safe_file_path = file_path.replace('.', '_')
         patch_key = f"failed_patches.{safe_file_path}"
@@ -150,12 +164,14 @@ class FirestoreMemoryBackend(MemoryBackend):
         logger.warning(f"[FirestoreMemory] Recorded failed patch for '{issue_description}' in {file_path}.")
 
     def was_patch_successful(self, file_path: str, issue_description: str) -> bool:
+        """Checks if a patch for a given issue has previously failed."""
         memory = self._get_memory_doc()
         safe_file_path = file_path.replace('.', '_')
         failed_for_file = memory.get("failed_patches", {}).get(safe_file_path, [])
         return issue_description not in failed_for_file
 
     def clear(self):
+        """Clears the entire memory for this project."""
         self.project_doc_ref.set({"error_files": [], "failed_patches": {}})
         logger.info("[FirestoreMemory] Cleared Firestore memory for this project.")
 
@@ -166,6 +182,7 @@ class AgentMemory:
     It can be configured to use different backends like local JSON or Firestore.
     """
     def __init__(self, project_root: Path, backend: str = 'json', gcp_project_id: str = None):
+        """Initializes the AgentMemory."""
         backend_env = os.environ.get('AGENT_MEMORY_BACKEND', backend)
         
         if backend_env == 'firestore':
@@ -179,16 +196,21 @@ class AgentMemory:
             raise ValueError(f"Unknown memory backend: {backend_env}")
 
     def get_error_files(self) -> list:
+        """Gets a list of files that have previously caused errors."""
         return self.backend.get_error_files()
 
     def add_error_file(self, file_path: str):
+        """Adds a file to the list of error-prone files."""
         self.backend.add_error_file(file_path)
 
     def record_failed_patch(self, file_path: str, issue_description: str):
+        """Records a patch that failed validation."""
         self.backend.record_failed_patch(file_path, issue_description)
 
     def was_patch_successful(self, file_path: str, issue_description: str) -> bool:
+        """Checks if a patch for a given issue has previously failed."""
         return self.backend.was_patch_successful(file_path, issue_description)
 
     def clear(self):
+        """Clears the entire memory for the current scope."""
         self.backend.clear()

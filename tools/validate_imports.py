@@ -2,9 +2,13 @@ import os
 import ast
 from collections import defaultdict
 
+EXCLUDE_DIRS = ["node_modules", ".venv", "__pycache__"]
+
 def find_python_files(start_path):
-    """Finds all Python files in a directory."""
+    """Finds all Python files in a directory, excluding specified directories."""
     for root, _, files in os.walk(start_path):
+        if any(skip in root for skip in EXCLUDE_DIRS):
+            continue
         for file in files:
             if file.endswith(".py"):
                 yield os.path.join(root, file)
@@ -70,3 +74,16 @@ if __name__ == "__main__":
             print(" -> ".join(cycle))
     else:
         print("\n✅ No circular dependencies found.")
+
+    print("\n--- Checking for syntax errors ---")
+    invalid_syntax_files = []
+    for file_path in find_python_files(project_path):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                ast.parse(f.read())
+        except (SyntaxError, IndentationError) as e:
+            invalid_syntax_files.append(file_path)
+            print(f"❌ Invalid syntax in {file_path}: {e}")
+    
+    if not invalid_syntax_files:
+        print("✅ No syntax errors found.")

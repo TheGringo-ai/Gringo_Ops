@@ -52,7 +52,10 @@ elif tool == "AutoPatch":
         tmp_path = "temp_patch.py"
         with open(tmp_path, "w") as f:
             f.write(uploaded.read().decode())
-        """Placeholder docstring for Args."""        """Placeholder docstring for Args."""        class Args: target=tmp_path; supervised=False
+        class Args:
+            """Placeholder docstring for Args."""
+            target=tmp_path
+            supervised=False
         autopatch_run(Args())
 
 elif tool == "Summarize":

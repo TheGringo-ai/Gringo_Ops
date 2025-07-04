@@ -54,8 +54,8 @@ class GringoIconBuilderApp:
         messagebox.showinfo("Done", "Your .icns file has been created.")
 
     def generate_icon_from_prompt(self, prompt):
-    
-        """Placeholder docstring for generate_icon_from_prompt."""        response = openai.Image.create(
+        """Generates an icon from a text prompt using DALL-E."""
+        response = openai.Image.create(
             prompt=prompt,
             n=1,
             size="512x512"
@@ -66,8 +66,8 @@ class GringoIconBuilderApp:
         return save_path
 
     def make_iconset(self, base_img_path):
-    
-        """Placeholder docstring for make_iconset."""        os.makedirs(ICONSET_PATH, exist_ok=True)
+        """Creates an iconset from a base image."""
+        os.makedirs(ICONSET_PATH, exist_ok=True)
         sizes = [16, 32, 128, 256, 512]
         with Image.open(base_img_path) as img:
             for size in sizes:
@@ -80,8 +80,8 @@ class GringoIconBuilderApp:
                     resized.save(f"{ICONSET_PATH}/icon_{suffix}.png")
 
     def build_icns(self):
-    
-        """Placeholder docstring for build_icns."""        subprocess.run([
+        """Builds the .icns file from the iconset."""
+        subprocess.run([
             "iconutil", "-c", "icns",
             ICONSET_PATH,
             "-o", ICNS_OUTPUT_PATH

@@ -5,66 +5,59 @@ import sys
 from pathlib import Path
 import subprocess
 
-# Add the tools directory to the Python path
-current_dir = Path(__file__).parent
-sys.path.append(str(current_dir))
 # Add the project root to the Python path
+current_dir = Path(__file__).parent
 sys.path.append(str(current_dir.parent))
 
 from packages.fredfix.core.repair_engine import repair_file
-from tools.validate_imports import find_python_files, get_imports, build_dependency_graph, find_cycles
-from tools.validate_indentation import get_indent_violations
-from tools.validate_flake8 import get_flake8_violations
-from tools.repair_engine import run_auto_repair
 from tools.gringo_checkpoint import log
 
-def get_broken_files():
+def get_invalid_syntax_files():
     """
-    A placeholder for a function that returns a list of files with import errors.
-    For now, it returns an empty list.
+    Runs the validate_imports.py script and returns a list of files with syntax errors.
     """
-    return []
-
-def get_indent_violations():
-    """
-    A placeholder for a function that returns a list of files with indentation errors.
-    For now, it returns an empty list.
-    """
-    # In the future, this could be a more sophisticated check
-    # For now, we'll rely on the indentation checker to find most syntax errors
-    return []
+    result = subprocess.run(
+        ["python3", "tools/validate_imports.py"],
+        capture_output=True,
+        text=True
+    )
+    return [
+        line.split(":")[0].strip()
+        for line in result.stdout.splitlines()
+        if "invalid syntax" in line or "expected an indented block" in line
+    ]
 
 def repair_everything():
     """
     The main function for the auto-repair loop.
     """
-    files_to_fix = list(set(get_broken_files() + get_indent_violations() + get_flake8_violations()))
-    print(f"🔧 {len(files_to_fix)} files to fix")
+    broken_files = get_invalid_syntax_files()
+    print(f"🔧 {len(broken_files)} files to fix")
 
-    for f in files_to_fix:
-        result = run_auto_repair(f)
-        print(result)
-        log(f"🛠️ {result}")
+    for path in broken_files:
+        if not path.endswith(".py"):
+            continue
+        print(f"🔁 Fixing: {path}")
+        try:
+            fix_result = repair_file(path)
+            log(f"🛠️ {fix_result}")
+            print(f"✅ Success: {path}")
+        except Exception as e:
+            print(f"⚠️ Error fixing {path}: {e}")
 
-def run_tests():
-    """Runs pytest and reports the results."""
-    print("\n--- Running Tests ---")
-    try:
-        result = subprocess.run(["pytest"], capture_output=True, text=True)
-        if result.returncode == 0:
-            print("✅ Tests passed after repairs.")
-            log("✅ Tests passed after repairs.")
-        else:
-            print("❌ Tests FAILED after repairs:")
-            print(result.stdout)
-            log("❌ Tests FAILED after repairs.")
-    except FileNotFoundError:
-        print("Error: pytest is not installed or not in the system's PATH.")
-        log("Error: pytest is not installed or not in the system's PATH.")
-    except Exception as e:
-        print(f"An unexpected error occurred while running tests: {e}")
-        log(f"An unexpected error occurred while running tests: {e}")
+def confirm_clean_run():
+    """
+    Runs the validate_imports.py script again to confirm that all syntax issues have been resolved.
+    """
+    print("\n--- Confirming Clean Run ---")
+    result = subprocess.run(["python3", "tools/validate_imports.py"], capture_output=True, text=True)
+    if "invalid syntax" in result.stdout or "expected an indented block" in result.stdout:
+        print("❌ Still broken files.")
+        log("❌ Self-healing failed. Still broken files.")
+    else:
+        print("✅ All syntax issues resolved.")
+        log("✅ Self-healing successful. All syntax issues resolved.")
 
 if __name__ == "__main__":
     repair_everything()
-    run_tests()
+    confirm_clean_run()

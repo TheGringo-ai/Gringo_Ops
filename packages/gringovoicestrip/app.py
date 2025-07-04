@@ -8,7 +8,8 @@ from streamlit_audio_recorder import audio_recorder
 
 # Helper function to use OpenAI Whisper API
 def transcribe_audio_with_openai(audio_path):
-    """Placeholder docstring for transcribe_audio_with_openai."""    openai.api_key = st.secrets["OPENAI_API_KEY"]
+    """Transcribes an audio file using the OpenAI Whisper API."""
+    openai.api_key = st.secrets["OPENAI_API_KEY"]
     with open(audio_path, "rb") as audio_file:
         result = openai.Audio.transcribe("whisper-1", audio_file)
     return result["text"]
