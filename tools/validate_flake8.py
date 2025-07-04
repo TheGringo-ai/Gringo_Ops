@@ -31,6 +31,21 @@ def get_flake8_violations():
         print(f"An unexpected error occurred while running flake8: {e}")
         return []
 
+def run_flake8():
+    """
+    Runs flake8 and returns the raw output.
+    """
+    try:
+        command = ["flake8", ".", "--exclude", ",".join(EXCLUDE_DIRS)]
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+        )
+        return result.stdout or "✅ No flake8 violations found."
+    except Exception as e:
+        return f"An error occurred while running flake8: {e}"
+
 if __name__ == "__main__":
     violations = get_flake8_violations()
     if violations:

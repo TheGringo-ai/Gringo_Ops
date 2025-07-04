@@ -87,3 +87,24 @@ if __name__ == "__main__":
     
     if not invalid_syntax_files:
         print("✅ No syntax errors found.")
+
+def get_invalid_imports():
+    """
+    Runs the import validation and returns a formatted string of any issues.
+    """
+    cycles = find_cycles(build_dependency_graph("."))
+    if cycles:
+        return "❌ Found circular dependencies:\n" + "\n".join([" -> ".join(c) for c in cycles])
+    
+    invalid_syntax_files = []
+    for file_path in find_python_files("."):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                ast.parse(f.read())
+        except (SyntaxError, IndentationError) as e:
+            invalid_syntax_files.append(f"{file_path}: {e}")
+
+    if invalid_syntax_files:
+        return "❌ Found syntax errors:\n" + "\n".join(invalid_syntax_files)
+        
+    return "✅ No import or syntax errors found."
