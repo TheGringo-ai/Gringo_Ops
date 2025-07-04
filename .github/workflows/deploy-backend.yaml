@@ -26,7 +26,7 @@ jobs:
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
       - name: 'Submit build to Cloud Build'
-        uses: 'google-github-actions/cloud-build@v0'
+        uses: 'google-github-actions/cloud-build@v1'
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           config: 'cloudbuild.yaml'
