@@ -46,9 +46,39 @@ def check_quota(user_id):
     else:
         return False
 
+def check_and_increment_usage(uid):
+    """
+    Checks and increments the user's command count.
+    """
+    if not uid or uid == "default_user":
+        return True
+
+    user_ref = db.collection('users').document(uid)
+    user_doc = user_ref.get()
+
+    if not user_doc.exists:
+        # If the user has no document, create one with the default plan
+        user_ref.set({
+            'plan': 'free',
+            'command_count': 0,
+            'limit': 100
+        })
+        return True
+
+    user_data = user_doc.to_dict()
+
+    if user_data.get('plan') == 'team':
+        return True
+
+    if user_data.get('command_count', 0) < user_data.get('limit', 100):
+        user_ref.update({'command_count': firestore.Increment(1)})
+        return True
+    else:
+        return False
+
 def execute_command(command: str, memory: dict, user_id="default_user"):
     """Executes a command and returns the result."""
-    if not check_quota(user_id):
+    if not check_and_increment_usage(user_id):
         return "You have exceeded your command quota for this month. Please upgrade to a paid plan to continue."
         
     if command == "hello":

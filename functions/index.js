@@ -12,48 +12,56 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
 
   const YOUR_PRICE_ID = "YOUR_STRIPE_PRICE_ID"; // Replace with your real price ID from Stripe
 
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    mode: "subscription",
-    line_items: [
-      {
-        price: YOUR_PRICE_ID,
-        quantity: 1,
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "subscription",
+      line_items: [
+        {
+          price: YOUR_PRICE_ID,
+          quantity: 1,
+        },
+      ],
+      success_url: "https://chatterfix.ai/success",
+      cancel_url: "https://chatterfix.ai/cancel",
+      metadata: {
+        firebaseUID: uid,
       },
-    ],
-    success_url: "https://chatterfix.ai/success",
-    cancel_url: "https://chatterfix.ai/cancel",
-    metadata: {
-      firebaseUID: uid,
-    },
-  });
+    });
 
-  return {
-    id: session.id,
-  };
+    return {
+      id: session.id,
+    };
+  } catch (error) {
+    throw new functions.https.HttpsError(
+      "internal",
+      "Unable to create Stripe Checkout session."
+    );
+  }
 });
 
-exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
+exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
     const sig = req.headers["stripe-signature"];
-    const endpointSecret = "YOUR_STRIPE_WEBHOOK_SECRET"; // Replace with your webhook secret from Stripe
-  
+    const endpointSecret = functions.config().stripe.webhook_secret;
+
     let event;
     try {
-      event = stripe.webhooks.constructEvent(req.rawBody, sig, endpointSecret);
+        event = stripe.webhooks.constructEvent(req.rawBody, sig, endpointSecret);
     } catch (err) {
-      res.status(400).send(`Webhook error: ${err.message}`);
-      return;
+        res.status(400).send(`Webhook error: ${err.message}`);
+        return;
     }
-  
+
     if (event.type === "checkout.session.completed") {
-      const uid = event.data.object.metadata.firebaseUID;
-  
-      // Upgrade user plan
-      await admin.firestore().collection("users").doc(uid).set({
-        plan: "team",
-        commands_limit: 1000,
-      }, { merge: true });
+        const session = event.data.object;
+        const uid = session.client_reference_id;
+
+        // Upgrade user plan
+        await admin.firestore().collection("users").doc(uid).set({
+            plan: "team",
+            commands_limit: 1000,
+        }, { merge: true });
     }
-  
+
     res.sendStatus(200);
-  });
+});
