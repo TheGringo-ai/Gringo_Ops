@@ -27,7 +27,7 @@ class ChatterBotAgent:
             if command == "repair":
                 result = repair_all_code()
             else:
-                result = execute_command(command, self.memory)
+                result = execute_command(command, self.memory, self.user_id)
 
             # Update memory with the command and result
             self.memory.setdefault("history", []).append({
