@@ -1,0 +1,35 @@
+name: Deploy Dashboard to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'gringoops_dashboard.py'
+      - 'Dockerfile.dashboard'
+      - 'cloudbuild.dashboard.yaml'
+      - '.github/workflows/deploy-dashboard.yaml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: 'Submit build to Cloud Build'
+        run: |
+          gcloud builds submit --config cloudbuild.dashboard.yaml .

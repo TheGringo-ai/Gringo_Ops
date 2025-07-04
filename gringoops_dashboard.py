@@ -83,7 +83,24 @@ with tab2:
         st.info("No local memory file found.")
         
     st.subheader("Firestore Memory")
-    st.warning("Firestore memory viewing is not yet implemented in the dashboard.")
+    try:
+        from Gringo_Ops.tools.memory import FirestoreMemoryBackend
+        
+        gcp_project_id = st.secrets.get("GCP_PROJECT_ID")
+        if gcp_project_id:
+            firestore_memory = FirestoreMemoryBackend(project_id=gcp_project_id)
+            firestore_data = firestore_memory._get_memory_doc()
+            if firestore_data:
+                st.json(firestore_data)
+            else:
+                st.info("No data found in Firestore memory for this project.")
+        else:
+            st.warning("GCP_PROJECT_ID secret not found. Cannot connect to Firestore.")
+            
+    except ImportError:
+        st.error("Could not import FirestoreMemoryBackend. Make sure the `Gringo_Ops` package is in your Python path.")
+    except Exception as e:
+        st.error(f"An error occurred while fetching Firestore memory: {e}")
 
 with tab3:
     st.header("Interact with the FredFix Agent")
