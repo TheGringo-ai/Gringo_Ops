@@ -5,16 +5,21 @@ from typing import Optional, List, ClassVar
 from pydantic import BaseModel
 from datetime import datetime
 
-class User(BaseModel):
-    """Placeholder docstring for User."""    id: str
-    username: str
-    email: str
-    name: Optional[str] = None
-    role: Optional[str] = None
-    is_active: bool = True
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    username = Column(String, unique=True, nullable=False)
+    email = Column(String, unique=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
+    role = Column(String, default='user')
 
-class Asset(BaseModel):
-    """Placeholder docstring for Asset."""    id: Optional[str] = None
+    def __repr__(self):
+    """Incorrectly indented docstring."""
+        return f"<User(username='{self.username}')>"
+
+class Asset(Base):
+    __tablename__ = 'assets'
+    id: Optional[str] = None
     name: str
     asset_type: str
     location: str

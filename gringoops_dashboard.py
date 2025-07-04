@@ -155,6 +155,15 @@ with tab4:
         except FileNotFoundError:
             st.warning("Dev journal not found.")
 
+    with st.expander("📊 Repair Summary"):
+        try:
+            with open("docs/gringoops-dev-journal.md") as f:
+                logs = f.readlines()[-10:]  # show last 10 entries
+                for line in logs:
+                    st.markdown(f"- {line.strip()}")
+        except FileNotFoundError:
+            st.warning("Dev journal not found.")
+
     def is_process_running(keyword):
         """Checks if a process with a given keyword in its command line is running."""
         for proc in psutil.process_iter(['pid', 'cmdline']):
