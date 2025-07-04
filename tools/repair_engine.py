@@ -1,4 +1,4 @@
-from tools.repair_engine import repair_all_code
+from packages.fredfix.core.agent import repair_all_code
 import os
 
 def run_auto_repair():

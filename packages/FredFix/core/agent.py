@@ -1,67 +1,25 @@
 # Import OpenAI and set API key
 import openai
 import os
-openai.api_key = os.environ.get("OPENAI_API_KEY")
-
-# core/memory.py
-
 import json
-from pathlib import Path
 from datetime import datetime
 
-MEMORY_FILE = Path(__file__).parent / "agent_memory.json"
+from .memory import load_memory, save_memory
+from .repair_engine import repair_all_code
+from .command_router import execute_command
+from .config import AgentConfig
 
-def load_memory():
-
-    """Placeholder docstring for load_memory."""    if MEMORY_FILE.exists():
-        with open(MEMORY_FILE, "r") as f:
-            return json.load(f)
-    return {}
-
-def save_memory(memory):
-
-    """Placeholder docstring for save_memory."""    with open(MEMORY_FILE, "w") as f:
-        json.dump(memory, f, indent=2)
-
-# core/repair_engine.py
-
-def repair_all_code():
-    # Placeholder logic — eventually this will lint, test, and auto-fix
-    
-    """Placeholder docstring for repair_all_code."""    return "🔧 Code repair routine executed (placeholder)."
-
-# core/command_router.py
-
-def execute_command(command: str, memory: dict):
-
-    """Placeholder docstring for execute_command."""    if command == "hello":
-        return "👋 Hello from FredFix!"
-    elif command == "status":
-        return f"📦 Current memory keys: {list(memory.keys())}"
-    else:
-        return f"❓ Unknown command: '{command}'"
-
-
-# core/config.py
-
-class AgentConfig:
-    def __init__(self):
-    
-        """Placeholder docstring for __init__."""    
-        """Placeholder docstring for __init__."""        self.agent_name = "FredFix"
-        self.openai_model = "gpt-4-turbo"
-
-
-# --- Agent Implementation ---
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 class FredFixAgent:
+    """The main agent class for FredFix."""
     def __init__(self):
         self.memory = load_memory()
         self.config = AgentConfig()
 
     def run(self, command: str):
-    
-        """Placeholder docstring for run."""        print(f"[DEBUG] Running command: {command}")
+        """Runs a command and returns the result."""
+        print(f"[DEBUG] Running command: {command}")
         print(f"[DEBUG] Current memory before execution: {self.memory}")
         try:
             if command == "repair":
@@ -81,6 +39,7 @@ class FredFixAgent:
                 "command": command,
                 "result": result
             }
+            # This should probably be a real logger, but for now...
             with open("Agent/memory.json", "a") as mem_log:
                 mem_log.write(json.dumps(memory_line) + "\n")
             print(f"[DEBUG] Memory after execution: {self.memory}")
@@ -91,9 +50,9 @@ class FredFixAgent:
             raise
 
     def run_agent(self, input_text: str):
+        """Runs the agent with either a known command or a natural language prompt."""
         # Try running as known command first
-        
-        """Placeholder docstring for run_agent."""        known_result = self.run(input_text)
+        known_result = self.run(input_text)
         if "Unknown command" not in known_result:
             return {
                 "mode": "command",
