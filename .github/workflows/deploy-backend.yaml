@@ -10,20 +10,23 @@ on:
 
 jobs:
   deploy:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v1'
+        uses: 'google-github-actions/auth@v2'
         with:
-          workload_identity_provider: 'projects/YOUR_PROJECT_ID/locations/global/workloadIdentityPools/YOUR_POOL_ID/providers/YOUR_PROVIDER_ID'
-          service_account: 'YOUR_SERVICE_ACCOUNT@YOUR_PROJECT_ID.iam.gserviceaccount.com'
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
       - name: 'Submit build to Cloud Build'
-        uses: 'google-github-actions/submit-cloud-build@v1'
+        uses: 'google-github-actions/submit-cloud-build@v2'
         with:
-          project: 'YOUR_PROJECT_ID'
-          gcloud_version: 'latest'
+          project: ${{ secrets.GCP_PROJECT_ID }}
           config: 'cloudbuild.yaml'
