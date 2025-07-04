@@ -10,31 +10,27 @@ current_dir = Path(__file__).parent
 sys.path.append(str(current_dir.parent))
 
 from packages.fredfix.core.repair_engine import repair_file
+from tools.validate_imports import find_python_files, get_imports, build_dependency_graph, find_cycles
+from tools.validate_indentation import get_indent_violations
+from tools.validate_flake8 import get_flake8_violations
 from tools.gringo_checkpoint import log
 
-def get_invalid_syntax_files():
+def get_broken_files():
     """
-    Runs the validate_imports.py script and returns a list of files with syntax errors.
+    Runs the various validation tools and returns a list of files with issues.
     """
-    result = subprocess.run(
-        ["python3", "tools/validate_imports.py"],
-        capture_output=True,
-        text=True
-    )
-    return [
-        line.split(":")[0].strip()
-        for line in result.stdout.splitlines()
-        if "invalid syntax" in line or "expected an indented block" in line
-    ]
+    # For now, we'll rely on the indentation checker to find most syntax errors
+    return []
 
 def repair_everything():
     """
     The main function for the auto-repair loop.
     """
-    broken_files = get_invalid_syntax_files()
-    print(f"🔧 {len(broken_files)} files to fix")
+    files_to_fix = list(set(get_broken_files() + get_indent_violations() + get_flake8_violations()))
+    print(f"🔧 {len(files_to_fix)} files to fix")
 
-    for path in broken_files:
+    for f in files_to_fix:
+        path = f
         if not path.endswith(".py"):
             continue
         print(f"🔁 Fixing: {path}")

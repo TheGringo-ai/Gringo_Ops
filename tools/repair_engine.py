@@ -1,6 +1,7 @@
 from tools.openai_review import repair_file
 import os
 import json
+import subprocess
 
 SKIP_LIST = "memory/skip_list.json"
 
@@ -17,9 +18,15 @@ def run_auto_repair(file_path=None):
         if file_path:
             if should_skip(file_path):
                 return f"⏩ Skipped {file_path}"
-            repair_file(file_path)
+            # First, run ruff to fix what it can
+            subprocess.run(["ruff", "check", file_path, "--fix"], check=True)
+            # Then, run black to format the file
+            subprocess.run(["black", file_path], check=True)
             return f"✅ Repaired {file_path}"
         else:
-            return repair_file(repo_path=os.path.expanduser("~/Projects/GringoOps"))
+            # If no file is specified, repair the whole project
+            subprocess.run(["ruff", "check", ".", "--fix"], check=True)
+            subprocess.run(["black", "."], check=True)
+            return "✅ Repaired all files."
     except Exception as e:
         return f"❌ Failed: {e}"
