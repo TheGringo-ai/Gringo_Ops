@@ -1,0 +1,26 @@
+{
+  "name": "gringoops",
+  "version": "1.0.0",
+  "description": "GringoOps is a modular AI developer platform designed to streamline the creation, management, and deployment of full-stack AI-powered tools through natural language prompts. It empowers developers to rapidly prototype and scale AI applications with ease.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheGringo-ai/Gringo_Ops.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/TheGringo-ai/Gringo_Ops/issues"
+  },
+  "homepage": "https://github.com/TheGringo-ai/Gringo_Ops#readme"
+}

@@ -43,3 +43,11 @@ if prompt := st.chat_input("What can I help you with?"):
     
     # Add assistant message to history
     st.session_state.messages.append({"role": "assistant", "content": response_content})
+
+# --- Upgrade Button ---
+if st.session_state.get("limit_reached"):
+    st.warning("You have reached your command limit for this month.")
+    if st.button("Upgrade to ChatterFix Team ($49/mo)"):
+        # This is a placeholder for the real Stripe integration
+        # In a real app, you would get the user's ID token and call your Firebase Function
+        st.success("Upgrade functionality coming soon!")
