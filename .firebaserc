@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "gringos"
-  }
+  },
+  "targets": {
+    "chatterfix-ui": {
+      "hosting": {
+        "chatterfix-ai": [
+          "chatterfix-ai"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

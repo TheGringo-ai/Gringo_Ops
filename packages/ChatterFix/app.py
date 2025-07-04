@@ -1,7 +1,13 @@
 import streamlit as st
-from pages import Work_Orders
+from pages import Chat
 
-st.set_page_config(page_title="ChatterFix", layout="wide")
+st.set_page_config(
+    page_title="ChatterFix - The AI-Powered CMMS",
+    page_icon="🔧",
+    layout="wide",
+)
 
-# TODO: Add sidebar nav in the future
-Work_Orders.render_work_orders_page()
+# This will be the main page
+Chat
+
+st.sidebar.success("Select a module above.")
