@@ -1,7 +1,6 @@
 # Import OpenAI and set API key
 import openai
 import os
-import json
 from datetime import datetime
 
 from .memory import load_memory, save_memory
@@ -34,14 +33,6 @@ class FredFixAgent:
             })
 
             save_memory(self.memory)
-            memory_line = {
-                "timestamp": datetime.utcnow().isoformat(),
-                "command": command,
-                "result": result
-            }
-            # This should probably be a real logger, but for now...
-            with open("Agent/memory.json", "a") as mem_log:
-                mem_log.write(json.dumps(memory_line) + "\n")
             print(f"[DEBUG] Memory after execution: {self.memory}")
             print(f"[DEBUG] Command result: {result}")
             return result
@@ -78,19 +69,10 @@ class FredFixAgent:
             })
             save_memory(self.memory)
 
-            # Log JSONL entry
-            memory_line = {
-                "timestamp": datetime.utcnow().isoformat(),
-                "command": input_text,
-                "result": ai_result
-            }
-            with open("Agent/memory.json", "a") as mem_log:
-                mem_log.write(json.dumps(memory_line) + "\n")
-
             return {
                 "mode": "ai_prompt",
                 "output": ai_result,
-                "timestamp": memory_line["timestamp"]
+                "timestamp": datetime.utcnow().isoformat()
             }
 
         except Exception as e:
