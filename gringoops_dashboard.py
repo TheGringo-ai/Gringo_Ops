@@ -143,6 +143,13 @@ with tab4:
             except Exception as e:
                 st.error(f"Full code repair failed: {e}")
 
+    with st.expander("🧠 Dev Log"):
+        try:
+            with open("docs/gringoops-dev-journal.md") as f:
+                st.code(f.read())
+        except FileNotFoundError:
+            st.warning("Dev journal not found.")
+
     def is_process_running(keyword):
         """Checks if a process with a given keyword in its command line is running."""
         for proc in psutil.process_iter(['pid', 'cmdline']):
