@@ -10,13 +10,14 @@ from .config import AgentConfig
 
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
-class FredFixAgent:
-    """The main agent class for FredFix."""
+class ChatterBotAgent:
+    """The main agent class for ChatterFix."""
     def __init__(self, user_id="default_user"):
-        """Initializes the FredFixAgent."""
+        """Initializes the ChatterBotAgent."""
         self.user_id = user_id
         self.memory = load_memory(user_id=self.user_id)
         self.config = AgentConfig()
+        self.config.agent_name = "ChatterBot"
 
     def run(self, command: str):
         """Runs a command and returns the result."""
@@ -58,7 +59,7 @@ class FredFixAgent:
             response = openai.ChatCompletion.create(
                 model=self.config.openai_model,
                 messages=[
-                    {"role": "system", "content": "You are FredFix, an AI assistant."},
+                    {"role": "system", "content": "You are ChatterBot, an AI assistant for maintenance and operations."},
                     {"role": "user", "content": input_text}
                 ]
             )
@@ -88,18 +89,18 @@ class FredFixAgent:
 if __name__ == "__main__":
     import sys
     try:
-        print("📣 Starting FredFix Agent...")
-        agent = FredFixAgent()
+        print("📣 Starting ChatterBot Agent...")
+        agent = ChatterBotAgent()
         print("✅ Agent initialized.")
 
         if len(sys.argv) > 1:
             command = " ".join(sys.argv[1:])
         else:
-            command = input("Enter command for FredFix: ")
+            command = input("Enter command for ChatterBot: ")
 
         print(f"▶️ Running command: {command}")
         output = agent.run(command)
-        print(f"\n✅ FredFix Agent Output:\n{output}")
+        print(f"\n✅ ChatterBot Agent Output:\n{output}")
 
     except Exception as e:
-        print(f"❌ FredFix encountered an error: {e}")
+        print(f"❌ ChatterBot encountered an error: {e}")

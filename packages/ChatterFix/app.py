@@ -14,7 +14,7 @@ if not st.session_state.logged_in:
     st.switch_page("pages/1_Login.py")
 
 # Main App
-st.sidebar.title("Navigation")
+st.sidebar.title("ChatterBot Navigation")
 page = st.sidebar.radio("Go to", ["Chat", "Work Orders"])
 
 if page == "Chat":

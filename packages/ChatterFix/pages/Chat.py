@@ -7,10 +7,11 @@ sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 from packages.fredfix.core.agent import FredFixAgent
 
-st.set_page_config(page_title="ChatterFix Chat", page_icon="🤖")
+st.set_page_config(page_title="ChatterBot - ChatterFix", page_icon="🤖")
 
-st.title("ChatterFix AI Assistant")
+st.title("ChatterBot AI Assistant")
 st.write("Ask me anything about your maintenance tasks, or give me a command!")
+st.info("Try this: `create work order The conveyor belt is making a loud squeaking noise.`")
 
 # Initialize agent and chat history
 if 'fredfix_agent' not in st.session_state:
