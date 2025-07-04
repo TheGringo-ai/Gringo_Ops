@@ -3,6 +3,7 @@ GringoOps AI Auto-Repair Execution Loop
 """
 import sys
 from pathlib import Path
+import subprocess
 
 # Add the tools directory to the Python path
 current_dir = Path(__file__).parent
@@ -14,6 +15,8 @@ from packages.fredfix.core.repair_engine import repair_file
 from tools.validate_imports import find_python_files, get_imports, build_dependency_graph, find_cycles
 from tools.validate_indentation import get_indent_violations
 from tools.validate_flake8 import get_flake8_violations
+from tools.repair_engine import run_auto_repair
+from tools.gringo_checkpoint import log
 
 def get_broken_files():
     """
@@ -39,12 +42,29 @@ def repair_everything():
     print(f"🔧 {len(files_to_fix)} files to fix")
 
     for f in files_to_fix:
-        print(f"🔁 Fixing: {f}")
-        try:
-            repair_file(f)
-            print(f"✅ Success: {f}")
-        except Exception as e:
-            print(f"❌ Failed: {f} — {e}")
+        result = run_auto_repair(f)
+        print(result)
+        log(f"🛠️ {result}")
+
+def run_tests():
+    """Runs pytest and reports the results."""
+    print("\n--- Running Tests ---")
+    try:
+        result = subprocess.run(["pytest"], capture_output=True, text=True)
+        if result.returncode == 0:
+            print("✅ Tests passed after repairs.")
+            log("✅ Tests passed after repairs.")
+        else:
+            print("❌ Tests FAILED after repairs:")
+            print(result.stdout)
+            log("❌ Tests FAILED after repairs.")
+    except FileNotFoundError:
+        print("Error: pytest is not installed or not in the system's PATH.")
+        log("Error: pytest is not installed or not in the system's PATH.")
+    except Exception as e:
+        print(f"An unexpected error occurred while running tests: {e}")
+        log(f"An unexpected error occurred while running tests: {e}")
 
 if __name__ == "__main__":
     repair_everything()
+    run_tests()
