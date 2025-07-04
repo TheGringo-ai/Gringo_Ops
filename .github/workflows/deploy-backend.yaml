@@ -56,7 +56,7 @@ jobs:
           python3 Gringo_Ops/review_agent.py --auto-fix --memory --memory-backend firestore --gcp-project-id ${{ env.GCP_PROJECT_ID }}
 
       - name: 'Submit build to Cloud Build'
-        uses: 'google-github-actions/cloud-build@v1'
+        uses: 'google-github-actions/cloud-build@v1.0.0'
         with:
           project_id: ${{ env.GCP_PROJECT_ID }}
           config: 'cloudbuild.yaml'
