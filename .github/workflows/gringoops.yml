@@ -1,0 +1,20 @@
+name: GringoOps Auto Repair
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+      - name: Run Auto Repair + Test
+        run: python3 tools/copilot_loop.py

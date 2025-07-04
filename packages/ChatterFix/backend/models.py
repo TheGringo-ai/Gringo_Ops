@@ -92,3 +92,22 @@ class ProductionOrder(BaseModel):
     scheduled_start: Optional[datetime] = None
     scheduled_end: Optional[datetime] = None
     STATUS_OPTIONS: ClassVar[list[str]] = ["scheduled", "in_progress", "completed", "cancelled"]
+
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Optional
+
+@dataclass
+class WorkOrder:
+    id: int
+    title: str
+    description: str
+    status: str
+    priority: str
+    assigned_to: str
+    created_at: datetime
+    due_date: Optional[datetime]
+
+ def broken_function():
+     """This function's indentation is intentionally broken for testing."""
+print("broken")
