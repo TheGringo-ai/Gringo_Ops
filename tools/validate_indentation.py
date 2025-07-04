@@ -8,7 +8,7 @@ def get_indent_violations():
     bad_files = []
     for root, _, files in os.walk("."):
         for f in files:
-            if f.endswith(".py"):
+            if f.endswith(".py") and "venv" not in root:
                 file_path = os.path.join(root, f)
                 try:
                     with open(file_path, "r", encoding="utf-8") as src:

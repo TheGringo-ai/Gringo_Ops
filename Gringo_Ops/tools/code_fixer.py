@@ -41,10 +41,16 @@ class CodeFixer:
 
             file_fixes = []
             for issue in issues:
-                if "missing a docstring" in issue:
+                issue_type = issue.get('type')
+                if issue_type == 'missing_docstring':
                     fix = self._generate_docstring_fix(file_path, issue, source_code, tree)
                     if fix:
                         file_fixes.append(fix)
+                # Add other fix types here in the future
+                # elif issue_type == 'security_risk':
+                #     fix = self._generate_security_fix(issue)
+                #     if fix:
+                #         file_fixes.append(fix)
             
             if file_fixes:
                 fixes[file_path] = file_fixes
@@ -56,15 +62,13 @@ class CodeFixer:
         Generates a fix for a missing docstring issue using AST.
         This ensures that the docstring is inserted correctly without breaking the code.
         """
-        try:
-            # Extract function name from the issue string, e.g., "Function 'my_func' is missing a docstring."
-            function_name = issue.split("'")[1]
-        except IndexError:
-            logger.warning(f"Could not parse function name from issue: '{issue}' in {file_path}")
+        item_name = issue.get('item_name')
+        if not item_name:
+            logger.warning(f"Could not find item name in issue: {issue} in {file_path}")
             return None
 
         for node in ast.walk(tree):
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and node.name == function_name:
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and node.name == item_name:
                 # Check if a docstring already exists. If so, skip.
                 if ast.get_docstring(node):
                     continue
@@ -89,14 +93,15 @@ class CodeFixer:
 
                 # Create the placeholder docstring with the correct indentation.
                 docstring_indent = ' ' * indentation
-                placeholder_docstring = f'{docstring_indent}"""Placeholder docstring for {function_name}."""\n'
+                placeholder_docstring = f'{docstring_indent}"""Placeholder docstring for {item_name}."""'
 
                 return {
                     "line_number": insertion_line,
                     "original_code": "", # Not replacing, just inserting
                     "new_code": placeholder_docstring,
-                    "type": "INSERT_BEFORE" # Insert before the first line of the body
+                    "type": "INSERT_BEFORE", # Insert before the first line of the body
+                    "original_issue": issue['description']
                 }
         
-        logger.warning(f"Could not find function '{function_name}' in AST for {file_path}")
+        logger.warning(f"Could not find AST node for '{item_name}' in {file_path}")
         return None

@@ -40,7 +40,7 @@ def find_cycles(graph):
     cycles = []
 
     def visit(node):
-        if node in visited:
+        """Placeholder docstring for visit."""        if node in visited:
             return
         visited.add(node)
         path.add(node)

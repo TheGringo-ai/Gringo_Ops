@@ -31,11 +31,11 @@ app.add_middleware(
 agent = FredFixAgent()
 
 class CommandRequest(BaseModel):
-    command: str
+    """Placeholder docstring for CommandRequest."""    command: str
 
 # Dependency for API key authentication
 def verify_api_key(x_api_key: str = None):
-    if not API_KEY:
+    """Placeholder docstring for verify_api_key."""    if not API_KEY:
         logger.warning("FRED_FIX_API_KEY not set in environment!")
         return
     if x_api_key != API_KEY:
@@ -46,7 +46,7 @@ from fastapi import Header, Depends, HTTPException
 
 @app.post("/run")
 async def run_command(req: CommandRequest, x_api_key: str = Header(None)):
-    verify_api_key(x_api_key)
+    """Placeholder docstring for run_command."""    verify_api_key(x_api_key)
     try:
         result = agent.run_agent(req.command)
         return {"result": result}
@@ -56,12 +56,12 @@ async def run_command(req: CommandRequest, x_api_key: str = Header(None)):
 
 # --- ChatterFix /chat endpoint template ---
 class ChatRequest(BaseModel):
-    message: str
+    """Placeholder docstring for ChatRequest."""    message: str
     user_id: str = None
 
 @app.post("/chat")
 async def chat_endpoint(req: ChatRequest, x_api_key: str = Header(None)):
-    verify_api_key(x_api_key)
+    """Placeholder docstring for chat_endpoint."""    verify_api_key(x_api_key)
     try:
         # Placeholder: route to FredFixAgent or ChatterFix logic
         response = agent.run_agent(req.message)
@@ -72,4 +72,4 @@ async def chat_endpoint(req: ChatRequest, x_api_key: str = Header(None)):
 
 @app.get("/")
 async def root():
-    return {"status": "ok", "message": "FredFix AI Agent API is running."}
+    """Placeholder docstring for root."""    return {"status": "ok", "message": "FredFix AI Agent API is running."}

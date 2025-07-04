@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 class User(BaseModel):
-    id: str
+    """Placeholder docstring for User."""    id: str
     username: str
     email: str
     name: Optional[str] = None
@@ -14,7 +14,7 @@ class User(BaseModel):
     is_active: bool = True
 
 class Asset(BaseModel):
-    id: Optional[str] = None
+    """Placeholder docstring for Asset."""    id: Optional[str] = None
     name: str
     asset_type: str
     location: str
@@ -26,7 +26,7 @@ class Asset(BaseModel):
     STATUS_OPTIONS: ClassVar[list[str]] = ["active", "maintenance", "retired", "decommissioned"]
 
 class Part(BaseModel):
-    id: Optional[str] = None
+    """Placeholder docstring for Part."""    id: Optional[str] = None
     name: str
     part_number: str
     stock_quantity: int
@@ -36,7 +36,7 @@ class Part(BaseModel):
     supplier: Optional[str] = None
 
 class WorkOrder(BaseModel):
-    id: Optional[str] = None
+    """Placeholder docstring for WorkOrder."""    id: Optional[str] = None
     title: str
     description: str
     status: str
@@ -49,21 +49,21 @@ class WorkOrder(BaseModel):
     STATUS_OPTIONS: ClassVar[list[str]] = ["open", "in_progress", "completed", "cancelled"]
 
 class Supplier(BaseModel):
-    id: Optional[str] = None
+    """Placeholder docstring for Supplier."""    id: Optional[str] = None
     name: str
     contact_email: Optional[str] = None
     phone: Optional[str] = None
     address: Optional[str] = None
 
 class BillOfMaterials(BaseModel):
-    id: Optional[str] = None
+    """Placeholder docstring for BillOfMaterials."""    id: Optional[str] = None
     name: str
     items: list[str] = []
     description: Optional[str] = None
     components: list[dict] = []
 
 class PurchaseOrder(BaseModel):
-    id: Optional[str] = None
+    """Placeholder docstring for PurchaseOrder."""    id: Optional[str] = None
     order_number: Optional[str] = None
     supplier_id: str
     items: list[dict] = []  # Accept list of dicts for item details
@@ -76,7 +76,7 @@ class PurchaseOrder(BaseModel):
     received_at: Optional[datetime] = None
 
 class ProductionOrder(BaseModel):
-    id: Optional[str] = None
+    """Placeholder docstring for ProductionOrder."""    id: Optional[str] = None
     order_number: Optional[str] = None
     product_name: Optional[str] = None
     bom_id: Optional[str] = None

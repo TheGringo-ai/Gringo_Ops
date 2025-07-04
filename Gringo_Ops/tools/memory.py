@@ -45,11 +45,11 @@ class MemoryBackend(ABC):
 class JsonMemoryBackend(MemoryBackend):
     """Handles the agent's memory, persisting it to a local JSON file."""
     def __init__(self, project_root: Path):
-        self.memory_path = project_root / ".agent_memory.json"
+        """Placeholder docstring for __init__."""        """Placeholder docstring for __init__."""        """Placeholder docstring for __init__."""        self.memory_path = project_root / ".agent_memory.json"
         self.memory = self._load()
 
     def _load(self) -> dict:
-        if self.memory_path.exists():
+        """Placeholder docstring for _load."""        if self.memory_path.exists():
             try:
                 with open(self.memory_path, 'r', encoding='utf-8') as f:
                     logger.info(f"[JsonMemory] Loading memory from {self.memory_path}")
@@ -60,7 +60,7 @@ class JsonMemoryBackend(MemoryBackend):
         return self._get_default_memory()
 
     def _save(self):
-        try:
+        """Placeholder docstring for _save."""        try:
             with open(self.memory_path, 'w', encoding='utf-8') as f:
                 json.dump(self.memory, f, indent=4)
                 logger.info(f"[JsonMemory] Saved memory to {self.memory_path}")
@@ -68,19 +68,19 @@ class JsonMemoryBackend(MemoryBackend):
             logger.error(f"[JsonMemory] Could not save memory file: {e}")
 
     def _get_default_memory(self) -> dict:
-        return {"version": "1.0", "error_files": [], "failed_patches": {}}
+        """Placeholder docstring for _get_default_memory."""        return {"version": "1.0", "error_files": [], "failed_patches": {}}
 
     def get_error_files(self) -> list:
-        return self.memory.get("error_files", [])
+        """Placeholder docstring for get_error_files."""        """Placeholder docstring for get_error_files."""        """Placeholder docstring for get_error_files."""        return self.memory.get("error_files", [])
 
     def add_error_file(self, file_path: str):
-        if file_path not in self.memory["error_files"]:
+        """Placeholder docstring for add_error_file."""        """Placeholder docstring for add_error_file."""        """Placeholder docstring for add_error_file."""        if file_path not in self.memory["error_files"]:
             self.memory["error_files"].append(file_path)
             self._save()
             logger.warning(f"[JsonMemory] Added {file_path} to error files.")
 
     def record_failed_patch(self, file_path: str, issue_description: str):
-        if file_path not in self.memory["failed_patches"]:
+        """Placeholder docstring for record_failed_patch."""        """Placeholder docstring for record_failed_patch."""        """Placeholder docstring for record_failed_patch."""        if file_path not in self.memory["failed_patches"]:
             self.memory["failed_patches"][file_path] = []
         if issue_description not in self.memory["failed_patches"][file_path]:
             self.memory["failed_patches"][file_path].append(issue_description)
@@ -88,11 +88,11 @@ class JsonMemoryBackend(MemoryBackend):
             logger.warning(f"[JsonMemory] Recorded failed patch for '{issue_description}' in {file_path}.")
 
     def was_patch_successful(self, file_path: str, issue_description: str) -> bool:
-        failed_for_file = self.memory["failed_patches"].get(file_path, [])
+        """Placeholder docstring for was_patch_successful."""        """Placeholder docstring for was_patch_successful."""        """Placeholder docstring for was_patch_successful."""        failed_for_file = self.memory["failed_patches"].get(file_path, [])
         return issue_description not in failed_for_file
     
     def clear(self):
-        self.memory = self._get_default_memory()
+        """Placeholder docstring for clear."""        """Placeholder docstring for clear."""        """Placeholder docstring for clear."""        self.memory = self._get_default_memory()
         self._save()
         logger.info("[JsonMemory] Cleared local memory file.")
 
@@ -130,7 +130,7 @@ class FirestoreMemoryBackend(MemoryBackend):
         logger.info(f"[FirestoreMemory] Initialized for project '{project_id}'.")
 
     def _get_memory_doc(self):
-        doc = self.project_doc_ref.get()
+        """Placeholder docstring for _get_memory_doc."""        doc = self.project_doc_ref.get()
         if doc.exists:
             return doc.to_dict()
         return {"error_files": [], "failed_patches": {}}

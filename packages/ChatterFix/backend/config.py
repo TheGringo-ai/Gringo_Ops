@@ -30,7 +30,7 @@ AUTO_RESOLVE_MODEL = os.getenv("DEFAULT_AI_MODEL", "").lower()
 
 # Helper: prompt user to resolve model disagreement
 def resolve_conflict(openai_output, gemini_output):
-    if AUTO_RESOLVE_MODEL in ['o', 'g']:
+    """Placeholder docstring for resolve_conflict."""    if AUTO_RESOLVE_MODEL in ['o', 'g']:
         print(f"\n⚙️ AUTO-RESOLVE ENABLED: Using {'OpenAI' if AUTO_RESOLVE_MODEL == 'o' else 'Gemini'} by default.")
         return AUTO_RESOLVE_MODEL
 

@@ -4,7 +4,7 @@ import os
 
 # --- Sidebar Agent Navigation ---
 def agent_sidebar(selected_agent=None):
-    st.sidebar.title("🛠️ AI Operations Hub")
+    """Placeholder docstring for agent_sidebar."""    st.sidebar.title("🛠️ AI Operations Hub")
     st.sidebar.markdown("---")
     # Agent icons (replace with your own icons if desired)
     agent_icons = {
@@ -44,6 +44,6 @@ def agent_sidebar(selected_agent=None):
 
 # --- Notification Utility ---
 def add_notification(msg):
-    if "notifications" not in st.session_state:
+    """Placeholder docstring for add_notification."""    if "notifications" not in st.session_state:
         st.session_state["notifications"] = []
     st.session_state["notifications"].append(msg)

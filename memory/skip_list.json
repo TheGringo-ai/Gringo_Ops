@@ -1,0 +1,7 @@
+{
+  "skip": [
+    "packages/chatterfix/frontend/node_modules/",
+    "packages/chatterfix/frontend/pages/legacy_file.py",
+    "pages/5_user_profile.py"
+  ]
+}

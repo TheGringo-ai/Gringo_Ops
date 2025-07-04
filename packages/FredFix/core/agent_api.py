@@ -12,13 +12,13 @@ app = FastAPI()
 agent = FredFixAgent()
 
 class CommandRequest(BaseModel):
-    command: str
+    """Placeholder docstring for CommandRequest."""    command: str
 
 @app.post("/run")
 async def run_command(req: CommandRequest):
-    result = agent.run_agent(req.command)
+    """Placeholder docstring for run_command."""    result = agent.run_agent(req.command)
     return result
 
 @app.get("/")
 async def root():
-    return {"status": "ok", "message": "FredFix AI Agent API is running."}
+    """Placeholder docstring for root."""    return {"status": "ok", "message": "FredFix AI Agent API is running."}

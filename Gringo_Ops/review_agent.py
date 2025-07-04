@@ -134,7 +134,7 @@ class ReviewAgent:
             print("[Memory] Recorded failed patches. They will be skipped in the future.")
 
 def main():
-    """Placeholder docstring for main."""
+    """Main function to run the review agent."""
     parser = argparse.ArgumentParser(description="GringoOps - Automated Code Review Agent")
     parser.add_argument(
         "--path",
@@ -147,6 +147,7 @@ def main():
     parser.add_argument("--memory", action="store_true", help="Enable the agent's memory to skip previously failed operations.")
     parser.add_argument("--memory-backend", default='json', choices=['json', 'firestore'], help="The backend to use for memory.")
     parser.add_argument("--gcp-project-id", default=None, help="The GCP project ID to use for the Firestore memory backend.")
+    parser.add_argument("--scope", default=".", help="The directory to scan.")
     args = parser.parse_args()
 
     try:

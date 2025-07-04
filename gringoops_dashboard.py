@@ -143,7 +143,12 @@ with tab4:
             except Exception as e:
                 st.error(f"Full code repair failed: {e}")
 
-    with st.expander("🧠 Dev Log"):
+    if st.button("🛠 Run Full Auto-Repair"):
+        with st.spinner("Running agent loop..."):
+            result = subprocess.run(["python", "tools/copilot_loop.py"], capture_output=True, text=True)
+            st.code(result.stdout)
+
+    with st.expander("📓 Dev Journal"):
         try:
             with open("docs/gringoops-dev-journal.md") as f:
                 st.code(f.read())

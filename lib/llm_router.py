@@ -12,7 +12,7 @@ GEMINI_KEY = get_key("gemini")
 
 # Sends prompt to the selected LLM and optionally speaks the result aloud using Gringo VoiceStrip.
 def use_provider():
-    if OPENAI_KEY:
+    """Placeholder docstring for use_provider."""    if OPENAI_KEY:
         return "openai"
     elif GEMINI_KEY:
         return "gemini"
