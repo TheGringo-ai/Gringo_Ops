@@ -32,3 +32,8 @@ gcp-service-account-key.json
 # Reports
 code_analysis_report.json
 .agent_memory.json
+
+# Terraform files
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
