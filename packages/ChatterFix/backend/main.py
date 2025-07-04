@@ -1,34 +1,41 @@
-from flask import Flask, jsonify
-from . import database
+from fastapi import FastAPI, HTTPException
+from google.cloud import firestore
+import os
+import sys
 
+# Add the utils directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../utils')))
+from logging_config import setup_logging
 
-app = Flask(__name__)
+# Set up structured logging
+logger = setup_logging()
 
-@app.route("/")
+app = FastAPI()
+
+db = firestore.Client()
+
+@app.get("/")
 def index():
-    return jsonify({"status": "ok", "message": "Welcome to the ChatterFix API!"})
+    logger.info("Root endpoint was called.")
+    return {"status": "ok", "message": "Welcome to the ChatterFix API!"}
 
-@app.route("/firestore-test")
+@app.get("/firestore-test")
 def firestore_test():
     """An endpoint to explicitly test the Firestore connection."""
+    logger.info("Firestore test endpoint was called.")
     try:
-        # The get_db function will handle initialization on the first call
-        db = database.get_db()
         doc_ref = db.collection("debug").document("ping")
-        doc_ref.set({"status": "ok", "timestamp": "now"})
-        # Verify the write
+        doc_ref.set({"status": "ok", "timestamp": firestore.SERVER_TIMESTAMP})
         doc = doc_ref.get()
         if doc.exists:
-            return jsonify({"status": "success", "message": "Successfully connected to Firestore and performed a write/read operation. ✅"})
+            logger.info("Firestore connection test successful.")
+            return {"status": "success", "message": "Successfully connected to Firestore and performed a write/read operation. ✅"}
         else:
-             return jsonify({"status": "error", "message": "Write operation seemed to succeed, but could not read the document back."}), 500
+            logger.error("Firestore write operation failed.")
+            raise HTTPException(status_code=500, detail="Write operation seemed to succeed, but could not read the document back.")
 
-    except ConnectionError as ce:
-        return jsonify({"status": "error", "message": f"Failed to connect to Firestore: {str(ce)}"}), 500
     except Exception as e:
-        # Catch other potential exceptions from google-cloud-firestore
-        return jsonify({"status": "error", "message": f"An unexpected error occurred: {str(e)}"}), 500
+        logger.error(f"An unexpected error occurred during Firestore test: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
-# This allows running the app locally for testing
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=True)
+# The Gunicorn server in the Dockerfile will run this app.

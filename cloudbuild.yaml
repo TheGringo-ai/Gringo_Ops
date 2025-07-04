@@ -1,11 +1,11 @@
 steps:
 # Build the container image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-f', 'packages/chatterfix/Dockerfile', '-t', 'gcr.io/$PROJECT_ID/chatterfix-backend:$COMMIT_SHA', './packages/chatterfix']
+  args: ['build', '-f', 'packages/chatterfix/Dockerfile', '-t', 'gcr.io/$PROJECT_ID/chatterfix-backend:$_COMMIT_SHA', './packages/chatterfix']
 
 # Push the container image to Container Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/$PROJECT_ID/chatterfix-backend:$COMMIT_SHA']
+  args: ['push', 'gcr.io/$PROJECT_ID/chatterfix-backend:$_COMMIT_SHA']
 
 # Deploy container image to Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -14,11 +14,14 @@ steps:
   - 'run'
   - 'deploy'
   - 'chatterfix-backend'
-  - '--image=gcr.io/$PROJECT_ID/chatterfix-backend:$COMMIT_SHA'
+  - '--image=gcr.io/$PROJECT_ID/chatterfix-backend:$_COMMIT_SHA'
   - '--region=us-central1'
   - '--platform=managed'
   - '--allow-unauthenticated'
+  - '--service-account=$_SERVICE_ACCOUNT'
   - '--set-secrets=GEMINI_API_KEY=GEMINI_API_KEY:latest,FIREBASE_KEY_JSON=FIREBASE_KEY_JSON:latest'
 
 images:
-- 'gcr.io/$PROJECT_ID/chatterfix-backend:$COMMIT_SHA'
+- 'gcr.io/$PROJECT_ID/chatterfix-backend:$_COMMIT_SHA'
+
+timeout: "1200s" # 20-minute timeout to prevent stuck builds

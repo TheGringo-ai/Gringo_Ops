@@ -19,6 +19,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Log pre-build
+        run: echo "Starting Cloud Build..."
+
       - name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v2'
         with:
@@ -30,3 +33,7 @@ jobs:
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           config: 'cloudbuild.yaml'
+          substitutions: _COMMIT_SHA=${{ github.sha }},_SERVICE_ACCOUNT=${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Log post-build
+        run: echo "Cloud Build completed"
