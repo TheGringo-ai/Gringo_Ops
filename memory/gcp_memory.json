@@ -1,0 +1,70 @@
+{
+  "service_accounts": {
+    "chatterfix-ui@appspot.gserviceaccount.com": [],
+    "partner@chatterfix-ui.iam.gserviceaccount.com": [
+      {
+        "members": [
+          "serviceAccount:firebase-adminsdk-fbsvc@chatterfix-ui.iam.gserviceaccount.com"
+        ],
+        "role": "roles/iam.serviceAccountCreator"
+      },
+      {
+        "members": [
+          "principalSet://iam.googleapis.com/projects/487771372565/locations/global/workloadIdentityPools/github-pool/attribute.repository/TheGringo-ai/Gringo_Ops"
+        ],
+        "role": "roles/iam.workloadIdentityUser"
+      },
+      {
+        "members": [
+          "user:yoyofred@gringosgambit.com"
+        ],
+        "role": "roles/owner"
+      }
+    ],
+    "fredfix-ai@chatterfix-ui.iam.gserviceaccount.com": [],
+    "firebase-app-hosting-compute@chatterfix-ui.iam.gserviceaccount.com": [],
+    "chatterfix-api@chatterfix-ui.iam.gserviceaccount.com": [],
+    "chatterfix-deploy-sa@chatterfix-ui.iam.gserviceaccount.com": [],
+    "github-action-937446762@chatterfix-ui.iam.gserviceaccount.com": [
+      {
+        "members": [
+          "principalSet://iam.googleapis.com/projects/487771372565/locations/global/workloadIdentityPools/github-final-pool/attribute.repository/TheGringo-ai/Chatterfix",
+          "principalSet://iam.googleapis.com/projects/487771372565/locations/global/workloadIdentityPools/github-pool/attribute.repository/TheGringo-ai/ChatterFix"
+        ],
+        "role": "roles/iam.workloadIdentityUser"
+      }
+    ],
+    "chatterfix-app-sa@chatterfix-ui.iam.gserviceaccount.com": [
+      {
+        "members": [
+          "user:fred.taylor@gmail.com"
+        ],
+        "role": "roles/iam.serviceAccountUser"
+      }
+    ],
+    "opsbot@chatterfix-ui.iam.gserviceaccount.com": [],
+    "firebase-adminsdk-fbsvc@chatterfix-ui.iam.gserviceaccount.com": [
+      {
+        "members": [
+          "user:yoyofred@gringosgambit.com"
+        ],
+        "role": "roles/iam.serviceAccountUser"
+      }
+    ],
+    "487771372565-compute@developer.gserviceaccount.com": [
+      {
+        "members": [
+          "serviceAccount:partner@chatterfix-ui.iam.gserviceaccount.com"
+        ],
+        "role": "roles/iam.serviceAccountUser"
+      }
+    ],
+    "agent-service-account@chatterfix-ui.iam.gserviceaccount.com": [],
+    "linesmart-ai@chatterfix-ui.iam.gserviceaccount.com": [],
+    "agent-core@chatterfix-ui.iam.gserviceaccount.com": [],
+    "integrator@chatterfix-ui.iam.gserviceaccount.com": []
+  },
+  "api_usage": {
+    "error": "Failed to get API usage: ERROR: (gcloud.services.operations) Invalid choice: 'list'.\nMaybe you meant:\n  gcloud network-services operations list\n  gcloud services list\n  gcloud services operations describe\n  gcloud services operations wait\n  gcloud network-services operations cancel\n  gcloud network-services operations describe\n  gcloud network-services operations wait\n  gcloud iam service-accounts list\n\nTo search the help text of gcloud commands, run:\n  gcloud help -- SEARCH_TERMS\n"
+  }
+}

@@ -164,6 +164,14 @@ with tab4:
         except FileNotFoundError:
             st.warning("Dev journal not found.")
 
+    with st.expander("🔑 GCP Service Account Permissions"):
+        try:
+            with open("memory/gcp_memory.json") as f:
+                gcp_memory = json.load(f)
+                st.json(gcp_memory)
+        except FileNotFoundError:
+            st.info("GCP memory file not found. Run the repair loop to generate it.")
+
     def is_process_running(keyword):
         """Checks if a process with a given keyword in its command line is running."""
         for proc in psutil.process_iter(['pid', 'cmdline']):

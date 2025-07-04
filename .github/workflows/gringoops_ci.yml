@@ -1,0 +1,32 @@
+name: GringoOps Autonomous CI
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run GringoOps Auto-Repair
+        run: python3 tools/agent_scheduler.py
+      
+      - name: Run Gated Deploy
+        run: python3 tools/auto_deploy.py
+        env:
+          GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}

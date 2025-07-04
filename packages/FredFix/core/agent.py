@@ -12,8 +12,10 @@ openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 class FredFixAgent:
     """The main agent class for FredFix."""
-    def __init__(self):
-        self.memory = load_memory()
+    def __init__(self, user_id="default_user"):
+        """Initializes the FredFixAgent."""
+        self.user_id = user_id
+        self.memory = load_memory(user_id=self.user_id)
         self.config = AgentConfig()
 
     def run(self, command: str):
@@ -32,7 +34,7 @@ class FredFixAgent:
                 "result": result
             })
 
-            save_memory(self.memory)
+            save_memory(self.memory, user_id=self.user_id)
             print(f"[DEBUG] Memory after execution: {self.memory}")
             print(f"[DEBUG] Command result: {result}")
             return result
@@ -67,7 +69,7 @@ class FredFixAgent:
                 "command": input_text,
                 "result": ai_result
             })
-            save_memory(self.memory)
+            save_memory(self.memory, user_id=self.user_id)
 
             return {
                 "mode": "ai_prompt",
