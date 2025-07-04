@@ -3,7 +3,8 @@
 import subprocess
 
 def deploy_model(model_name):
-    print(f"🚀 Deploying Hugging Face model: {model_name}")
+
+    """Placeholder docstring for deploy_model."""    print(f"🚀 Deploying Hugging Face model: {model_name}")
 
     # Simulate deployment process (replace with actual deployment logic)
     try:

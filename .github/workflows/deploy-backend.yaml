@@ -1,5 +1,10 @@
 name: Deploy Backend to Cloud Run
 
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+  GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+
 on:
   push:
     branches:
@@ -7,13 +12,19 @@ on:
     paths:
       - 'packages/chatterfix/**'
       - '.github/workflows/deploy-backend.yaml'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run build and push without deploying'
+        required: true
+        default: true
+        type: boolean
 
 jobs:
   deploy:
     permissions:
       contents: 'read'
       id-token: 'write'
-
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,15 +36,33 @@ jobs:
       - name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v2'
         with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run GringoOps Review Agent
+        env:
+          GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        run: |
+          python3 Gringo_Ops/review_agent.py --auto-fix --memory --memory-backend firestore --gcp-project-id ${{ env.GCP_PROJECT_ID }}
 
       - name: 'Submit build to Cloud Build'
         uses: 'google-github-actions/cloud-build@v1'
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          project_id: ${{ env.GCP_PROJECT_ID }}
           config: 'cloudbuild.yaml'
-          substitutions: _COMMIT_SHA=${{ github.sha }},_SERVICE_ACCOUNT=${{ secrets.GCP_SERVICE_ACCOUNT }}
-
-      - name: Log post-build
-        run: echo "Cloud Build completed"
+          substitutions: |
+            _COMMIT_SHA=${{ github.sha }}
+            _SERVICE_ACCOUNT=${{ env.GCP_SERVICE_ACCOUNT }}
+            _DRY_RUN=${{ github.event.inputs.dry_run || 'false' }}
+            _GEMINI_API_KEY_VERSION=1
+            _FIREBASE_KEY_JSON_VERSION=1

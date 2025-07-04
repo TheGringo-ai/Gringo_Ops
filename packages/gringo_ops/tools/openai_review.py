@@ -5,7 +5,8 @@ import os
 from openai import OpenAI
 
 def review(target="FredFix/core/agent.py", supervised=False):
-    api_key = os.getenv("OPENAI_API_KEY")
+
+    """Placeholder docstring for review."""    api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         raise EnvironmentError("OPENAI_API_KEY environment variable not set.")
     

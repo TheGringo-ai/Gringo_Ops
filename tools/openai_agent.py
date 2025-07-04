@@ -1,5 +1,3 @@
-
-
 import os
 import datetime
 from pathlib import Path
@@ -14,6 +12,7 @@ if not api_key:
 client = OpenAI(api_key=api_key)
 
 def query_model(prompt, model="gpt-4-turbo", temperature=None, max_tokens=None, top_p=None):
+    """Queries the OpenAI model with the given prompt."""
     # Use environment variables as fallback if parameters aren't provided
     temperature = temperature or float(os.getenv("OPENAI_TEMPERATURE", "0.7"))
     top_p = top_p or float(os.getenv("OPENAI_TOP_P", "0.95"))

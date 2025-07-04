@@ -7,7 +7,8 @@ class JsonFormatter(logging.Formatter):
     Formats log records as a JSON string.
     """
     def format(self, record):
-        log_record = {
+    
+        """Placeholder docstring for format."""        log_record = {
             "timestamp": self.formatTime(record, self.datefmt),
             "level": record.levelname,
             "message": record.getMessage(),

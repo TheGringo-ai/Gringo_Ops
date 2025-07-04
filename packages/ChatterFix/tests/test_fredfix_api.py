@@ -6,7 +6,8 @@ FREDFIX_API_URL = os.getenv("FREDFIX_API_URL", "https://fredfix-agent-4877713725
 FRED_FIX_API_KEY = os.getenv("FRED_FIX_API_KEY", "test-key")
 
 def test_fredfix_run_endpoint():
-    payload = {"command": "Test prompt", "model": "openai"}
+
+    """Placeholder docstring for test_fredfix_run_endpoint."""    payload = {"command": "Test prompt", "model": "openai"}
     headers = {"x-api-key": FRED_FIX_API_KEY}
     resp = requests.post(f"{FREDFIX_API_URL}/run", json=payload, headers=headers, timeout=30)
     assert resp.status_code == 200

@@ -3,7 +3,8 @@ import speech_recognition as sr
 import subprocess
 
 def listen():
-    recognizer = sr.Recognizer()
+
+    """Placeholder docstring for listen."""    recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         print("🎙️ Speak now...")
         audio = recognizer.listen(source)
@@ -15,7 +16,8 @@ def listen():
         print(f"🛑 API error: {e}")
 
 def main():
-    while True:
+
+    """Placeholder docstring for main."""    while True:
         command = listen()
         if not command:
             continue

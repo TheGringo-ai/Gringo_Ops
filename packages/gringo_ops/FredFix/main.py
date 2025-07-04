@@ -5,13 +5,15 @@ from keychain import get_key
 
 class FredFixAgent:
     def __init__(self):
-        self.api_key = get_key("openai") or os.environ.get("OPENAI_API_KEY")
+    
+        """Placeholder docstring for __init__."""        self.api_key = get_key("openai") or os.environ.get("OPENAI_API_KEY")
         if not self.api_key:
             raise ValueError("❌ API key not found. Set it in keychain or environment.")
         print("🔑 API Key loaded successfully.")
 
     def scan_project(self, root="."):
-        py_files = []
+    
+        """Placeholder docstring for scan_project."""        py_files = []
         for subdir, _, files in os.walk(root):
             for file in files:
                 if file.endswith(".py"):
@@ -19,7 +21,8 @@ class FredFixAgent:
         return py_files
 
     def review_file(self, path):
-        with open(path, "r") as f:
+    
+        """Placeholder docstring for review_file."""        with open(path, "r") as f:
             content = f.read()
 
         try:

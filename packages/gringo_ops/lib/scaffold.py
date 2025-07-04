@@ -21,7 +21,8 @@ TEMPLATES = {
 }
 
 def scaffold(project_root, template_name):
-    if template_name not in TEMPLATES:
+
+    """Placeholder docstring for scaffold."""    if template_name not in TEMPLATES:
         raise ValueError("❌ Unknown template")
 
     created = []

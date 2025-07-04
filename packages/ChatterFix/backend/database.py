@@ -8,7 +8,8 @@ from firebase_admin import credentials, firestore
 firebase_app = None
 
 def init_db():
-    global firebase_app
+
+    """Placeholder docstring for init_db."""    global firebase_app
     if not firebase_app:
         if os.environ.get("FIRESTORE_EMULATOR_HOST"):
             # No credentials needed for emulator
@@ -29,7 +30,8 @@ def get_db():
     return firestore.client()
 
 def add_document(collection_name, data, doc_id=None):
-    db = get_db()
+
+    """Placeholder docstring for add_document."""    db = get_db()
     if doc_id:
         db.collection(collection_name).document(doc_id).set(data)
         return doc_id
@@ -37,22 +39,26 @@ def add_document(collection_name, data, doc_id=None):
     return doc_ref.id
 
 def get_document(collection_name, doc_id):
-    db = get_db()
+
+    """Placeholder docstring for get_document."""    db = get_db()
     doc = db.collection(collection_name).document(doc_id).get()
     if doc.exists:
         return doc.to_dict()
     return None
 
 def update_document(collection_name, doc_id, updates):
-    db = get_db()
+
+    """Placeholder docstring for update_document."""    db = get_db()
     db.collection(collection_name).document(doc_id).update(updates)
 
 def get_collection(collection_name):
-    db = get_db()
+
+    """Placeholder docstring for get_collection."""    db = get_db()
     docs = db.collection(collection_name).stream()
     return [doc.to_dict() for doc in docs]
 
 def get_collection_where(collection_name, field, op, value):
-    db = get_db()
+
+    """Placeholder docstring for get_collection_where."""    db = get_db()
     docs = db.collection(collection_name).where(field, op, value).stream()
     return [doc.to_dict() for doc in docs]

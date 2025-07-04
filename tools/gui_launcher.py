@@ -26,6 +26,7 @@ for group in config.get("groups", []):
         GROUPS[group_name].append(pname)
 
 def run_project(name, path):
+    """Launches the specified project."""
     expanded_path = os.path.expanduser(path)
     print(f"Launching {name} from {expanded_path}")
     if expanded_path.endswith(".py") and "streamlit" in expanded_path.lower():
@@ -36,6 +37,7 @@ def run_project(name, path):
 
 class ToolTip:
     def __init__(self, widget, text):
+        """Initializes the ToolTip."""
         self.widget = widget
         self.text = text
         self.tipwindow = None
@@ -45,23 +47,28 @@ class ToolTip:
         self.widget.bind("<Leave>", self.leave)
 
     def enter(self, event=None):
+        """Schedules the tooltip to appear."""
         self.schedule()
 
     def leave(self, event=None):
+        """Unschedules the tooltip and hides it."""
         self.unschedule()
         self.hidetip()
 
     def schedule(self):
+        """Schedules the tooltip to appear after a delay."""
         self.unschedule()
         self.id = self.widget.after(500, self.showtip)
 
     def unschedule(self):
+        """Unschedules the tooltip."""
         id_ = self.id
         self.id = None
         if id_:
             self.widget.after_cancel(id_)
 
     def showtip(self, event=None):
+        """Displays the tooltip."""
         if self.tipwindow or not self.text:
             return
         x, y, cx, cy = self.widget.bbox("insert")
@@ -76,6 +83,7 @@ class ToolTip:
         label.pack(ipadx=1)
 
     def hidetip(self):
+        """Hides the tooltip."""
         tw = self.tipwindow
         self.tipwindow = None
         if tw:

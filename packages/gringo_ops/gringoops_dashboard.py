@@ -11,7 +11,8 @@ with tab1:
     st.title("🧠 GringoOps Control Center")
 
     def is_process_running(keyword):
-        for proc in psutil.process_iter(['pid', 'cmdline']):
+    
+        """Placeholder docstring for is_process_running."""        for proc in psutil.process_iter(['pid', 'cmdline']):
             try:
                 if any(keyword in str(arg) for arg in proc.info['cmdline']):
                     return proc.info['pid']

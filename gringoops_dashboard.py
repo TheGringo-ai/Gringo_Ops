@@ -33,6 +33,7 @@ with tab1:
     st.header("Tool Launcher & Monitor")
 
     def is_process_running(keyword):
+        """Checks if a process with a given keyword in its command line is running."""
         for proc in psutil.process_iter(['pid', 'cmdline']):
             try:
                 cmdline = proc.info.get('cmdline')

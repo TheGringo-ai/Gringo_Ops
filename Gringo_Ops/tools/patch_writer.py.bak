@@ -1,0 +1,95 @@
+import difflib
+import shutil
+import os
+from pathlib import Path
+
+class PatchWriter:
+    """
+    Applies generated code patches to files, with safety features like
+    snapshotting, validation, and rollback.
+    """
+    def __init__(self, fixes):
+        self.fixes = fixes
+
+    def apply_patches(self, dry_run=True, interactive=False):
+        """
+        Applies the patches to the files.
+
+        Args:
+            dry_run (bool): If True, prints the changes without writing to disk.
+            interactive (bool): If True, asks for user confirmation before applying each patch.
+        """
+        for file_path, file_fixes in self.fixes.items():
+            if not file_fixes:
+                continue
+
+            print(f"--- Patching file: {file_path} ---")
+            
+            if dry_run:
+                self._apply_dry_run(file_path, file_fixes)
+            else:
+                self._apply_for_real(file_path, file_fixes, interactive)
+
+            print("-------------------------------------")
+
+    def _apply_dry_run(self, file_path, file_fixes):
+        """
+        Prints the intended changes for a single file as a diff.
+        """
+        try:
+            with open(file_path, 'r') as f:
+                original_lines = f.readlines()
+            
+            modified_lines = original_lines[:]
+            # Sort fixes by line number in reverse to handle insertions correctly
+            sorted_fixes = sorted(file_fixes, key=lambda x: x['line_number'], reverse=True)
+
+            for fix in sorted_fixes:
+                line_num = fix['line_number']
+                if fix['type'] == 'INSERT_AFTER':
+                    modified_lines.insert(line_num, fix['new_code'].replace(fix['original_code'], ''))
+
+            diff = difflib.unified_diff(original_lines, modified_lines, fromfile=f'{file_path} (original)', tofile=f'{file_path} (patched)')
+            for line in diff:
+                print(line, end='')
+
+        except Exception as e:
+            print(f"[PatchWriter] Error generating diff for {file_path}: {e}")
+
+    def _apply_for_real(self, file_path, file_fixes, interactive):
+        """
+        Applies the changes to a single file with snapshot and rollback.
+        """
+        backup_path = f"{file_path}.bak"
+        try:
+            shutil.copyfile(file_path, backup_path)
+
+            if interactive:
+                self._apply_dry_run(file_path, file_fixes)
+                response = input(f"Apply this patch to {file_path}? [y/N] ")
+                if response.lower() != 'y':
+                    print("Skipping patch.")
+                    os.remove(backup_path)
+                    return
+
+            # Sort fixes by line number in reverse to avoid line number shifts during insertion
+            sorted_fixes = sorted(file_fixes, key=lambda x: x['line_number'], reverse=True)
+
+            with open(file_path, 'r') as f:
+                lines = f.readlines()
+
+            for fix in sorted_fixes:
+                line_num = fix['line_number']
+                if fix['type'] == 'INSERT_AFTER':
+                    lines.insert(line_num, fix['new_code'].replace(fix['original_code'], ''))
+
+            with open(file_path, 'w') as f:
+                f.writelines(lines)
+            
+            print(f"Successfully patched {len(file_fixes)} issues in {file_path}")
+            # Here you would run validation
+
+        except Exception as e:
+            print(f"[PatchWriter] Error applying patch to {file_path}: {e}")
+            print(f"[PatchWriter] Rolling back changes from {backup_path}")
+            shutil.move(backup_path, file_path)

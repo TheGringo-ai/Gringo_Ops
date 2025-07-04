@@ -17,7 +17,8 @@ openai.api_key = os.getenv("OPENAI_API_KEY")  # Optional: load from .env or prom
 # === GUI APP ===
 class GringoIconBuilderApp:
     def __init__(self, root):
-        self.root = root
+    
+        """Placeholder docstring for __init__."""        self.root = root
         self.root.title("Gringo Icon Builder")
         self.file_path = None
         self.prompt = tk.StringVar()
@@ -32,13 +33,15 @@ class GringoIconBuilderApp:
         tk.Button(root, text="Generate Icon", command=self.generate_icon).pack()
 
     def choose_file(self):
-        self.file_path = filedialog.askopenfilename(
+    
+        """Placeholder docstring for choose_file."""        self.file_path = filedialog.askopenfilename(
             filetypes=[("PNG Files", "*.png")])
         if self.file_path:
             messagebox.showinfo("Selected", f"Selected: {self.file_path}")
 
     def generate_icon(self):
-        if not self.file_path and not self.prompt.get():
+    
+        """Placeholder docstring for generate_icon."""        if not self.file_path and not self.prompt.get():
             messagebox.showerror("Error", "Please select a PNG or enter a prompt.")
             return
 
@@ -51,7 +54,8 @@ class GringoIconBuilderApp:
         messagebox.showinfo("Done", "Your .icns file has been created.")
 
     def generate_icon_from_prompt(self, prompt):
-        response = openai.Image.create(
+    
+        """Placeholder docstring for generate_icon_from_prompt."""        response = openai.Image.create(
             prompt=prompt,
             n=1,
             size="512x512"
@@ -62,7 +66,8 @@ class GringoIconBuilderApp:
         return save_path
 
     def make_iconset(self, base_img_path):
-        os.makedirs(ICONSET_PATH, exist_ok=True)
+    
+        """Placeholder docstring for make_iconset."""        os.makedirs(ICONSET_PATH, exist_ok=True)
         sizes = [16, 32, 128, 256, 512]
         with Image.open(base_img_path) as img:
             for size in sizes:
@@ -75,7 +80,8 @@ class GringoIconBuilderApp:
                     resized.save(f"{ICONSET_PATH}/icon_{suffix}.png")
 
     def build_icns(self):
-        subprocess.run([
+    
+        """Placeholder docstring for build_icns."""        subprocess.run([
             "iconutil", "-c", "icns",
             ICONSET_PATH,
             "-o", ICNS_OUTPUT_PATH

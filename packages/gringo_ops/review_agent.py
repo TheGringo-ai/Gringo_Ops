@@ -4,7 +4,8 @@ from openai import OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def review_file(filepath):
-    with open(filepath, 'r') as f:
+
+    """Placeholder docstring for review_file."""    with open(filepath, 'r') as f:
         code = f.read()
 
     response = client.chat.completions.create(

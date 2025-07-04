@@ -16,7 +16,8 @@ db = firestore.Client()
 
 @app.get("/")
 def index():
-    logger.info("Root endpoint was called.")
+
+    """Placeholder docstring for index."""    logger.info("Root endpoint was called.")
     return {"status": "ok", "message": "Welcome to the ChatterFix API!"}
 
 @app.get("/firestore-test")

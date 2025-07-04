@@ -13,7 +13,8 @@ from unittest.mock import MagicMock
 # We create a fake 'streamlit' module and add it to sys.modules.
 class MockStreamlit:
     def __init__(self):
-        self.session_state = {}
+    
+        """Placeholder docstring for __init__."""        self.session_state = {}
         self.stop = MagicMock(side_effect=SystemExit) # Make stop raise an exception
         self.rerun = MagicMock()
         self.switch_page = MagicMock()

@@ -8,6 +8,7 @@ from tools.huggingface_agent import query_model as hf_query
 from tools.memory import write_to_memory, save_diff_summary
 
 def autopatch_run(args, provider="openai"):
+    """Runs the autopatch agent on the target file."""
     conf = load_config()
     if not args.target:
         # Auto-scan all Python files in root if no target is provided
@@ -123,6 +124,7 @@ def autopatch_run(args, provider="openai"):
         print(f"❌ Failed to save diff summary: {e}")
 
 def main():
+    """Main function for the autopatch agent."""
     import argparse
 
     parser = argparse.ArgumentParser(description="Run AutoPatchBoy refactor agent.")

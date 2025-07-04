@@ -4,7 +4,8 @@ try:
     from streamlit_extras.switch_page_button import switch_page
 except ImportError:
     def switch_page(page_name):
-        st.session_state["_rerun_target"] = page_name
+    
+        """Placeholder docstring for switch_page."""        st.session_state["_rerun_target"] = page_name
         st.experimental_rerun()
 
 # Page setup for embedded use

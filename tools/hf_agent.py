@@ -12,12 +12,14 @@ TEMPERATURE = float(os.getenv("HF_TEMPERATURE", "0.4"))
 TOP_P = float(os.getenv("HF_TOP_P", "0.9"))
 
 def get_secret(secret_id: str) -> str:
+    """Retrieves a secret from Google Secret Manager."""
     client = secretmanager.SecretManagerServiceClient()
     name = f"projects/{PROJECT_ID}/secrets/{secret_id}/versions/latest"
     response = client.access_secret_version(request={"name": name})
     return response.payload.data.decode("utf-8")
 
 def ask_huggingface(prompt: str, model_id: str = MODEL_ID, max_tokens: int = MAX_TOKENS, temperature: float = TEMPERATURE, top_p: float = TOP_P) -> str:
+    """Queries the Hugging Face Inference API."""
     token = get_secret("huggingface-api-key")
     client = InferenceClient(token=token)
 

@@ -46,3 +46,11 @@ dist/
 
 # Python wheels
 *.whl
+
+# Ignore sensitive files
+gcp-service-account-key.json
+.env
+
+# Ignore reports
+code_analysis_report.json
+.agent_memory.json

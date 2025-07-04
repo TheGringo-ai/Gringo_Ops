@@ -8,7 +8,8 @@ SKIP_DIRS = {".venv", "__pycache__", "CompletedTasks", "UnresolvedTasks"}  # Ign
 
 
 def collect_python_files():
-    for dirpath, dirnames, filenames in os.walk(ROOT_DIR):
+
+    """Placeholder docstring for collect_python_files."""    for dirpath, dirnames, filenames in os.walk(ROOT_DIR):
         # Skip virtualenv and build dirs
         if any(skip in dirpath.split(os.sep) for skip in SKIP_DIRS):
             continue
@@ -18,7 +19,8 @@ def collect_python_files():
 
 
 def clean_with_agent(filepath):
-    print(f"\n📄 Cleaning: {filepath}")
+
+    """Placeholder docstring for clean_with_agent."""    print(f"\n📄 Cleaning: {filepath}")
     try:
         try:
             result = subprocess.run(

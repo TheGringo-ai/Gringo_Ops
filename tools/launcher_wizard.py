@@ -30,6 +30,7 @@ else:
     FIREBASE_INITIALIZED = False
 
 def upload_config_to_firestore(config):
+    """Uploads the launcher configuration to Firestore."""
     if not FIREBASE_AVAILABLE:
         return
     try:
@@ -41,6 +42,7 @@ def upload_config_to_firestore(config):
         st.error(f"Failed to upload configuration to Firestore: {e}")
 
 def download_config_from_firestore():
+    """Downloads the launcher configuration from Firestore."""
     if not FIREBASE_AVAILABLE:
         st.error("Firebase is not available.")
         return None
@@ -57,6 +59,7 @@ def download_config_from_firestore():
         return None
 
 def load_config():
+    """Loads the launcher configuration from the local JSON file."""
     try:
         if os.path.exists(CONFIG_PATH):
             with open(CONFIG_PATH, "r") as f:
@@ -68,6 +71,7 @@ def load_config():
         return None
 
 def save_config(config):
+    """Saves the launcher configuration to the local JSON file and uploads it to Firestore."""
     try:
         with open(CONFIG_PATH, "w") as f:
             json.dump(config, f, indent=4)
@@ -76,6 +80,7 @@ def save_config(config):
         st.error(f"Error saving configuration: {e}")
 
 def main():
+    """Main function for the Launcher Wizard Streamlit app."""
     st.sidebar.image(LOGO_PATH, use_column_width=True)
     st.sidebar.title("User Role Selection")
     theme = st.sidebar.radio("Select Theme:", ["Light", "Dark"])

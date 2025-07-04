@@ -6,6 +6,7 @@ LOG_FILE = os.getenv("AGENT_LOG_FILE", "agent_interactions.log")
 
 
 def log_interaction(agent, prompt, response, user=None, context=None):
+    """Placeholder docstring for log_interaction."""
     entry = {
         "timestamp": datetime.datetime.utcnow().isoformat(),
         "agent": agent,
@@ -22,6 +23,7 @@ def log_interaction(agent, prompt, response, user=None, context=None):
 
 
 def get_recent_logs(n=20):
+    """Placeholder docstring for get_recent_logs."""
     try:
         with open(LOG_FILE, "r") as f:
             lines = f.readlines()[-n:]

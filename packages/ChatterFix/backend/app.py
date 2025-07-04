@@ -16,4 +16,5 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"message": "ChatterFix API is running."}
+
+    """Placeholder docstring for read_root."""    return {"message": "ChatterFix API is running."}

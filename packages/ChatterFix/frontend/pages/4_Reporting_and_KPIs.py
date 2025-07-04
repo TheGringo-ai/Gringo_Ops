@@ -17,7 +17,8 @@ st.markdown("Visualize maintenance operations and track key performance indicato
 # --- Data Loading ---
 @st.cache_data
 def load_data():
-    wo_data = [wo.__dict__ for wo in work_orders.get_all_work_orders()]
+
+    """Placeholder docstring for load_data."""    wo_data = [wo.__dict__ for wo in work_orders.get_all_work_orders()]
     asset_data = [a.__dict__ for a in assets.get_all_assets()]
     parts_data = [p.__dict__ for p in inventory.get_all_parts()] # Corrected function call
     transactions_data = [t.__dict__ for t in accounting.get_all_transactions()]

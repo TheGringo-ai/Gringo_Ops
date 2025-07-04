@@ -5,7 +5,8 @@ from tools.config import load_config
 from tools.logger import log_markdown
 
 def autopatch_run(args):
-    conf = load_config()
+
+    """Placeholder docstring for autopatch_run."""    conf = load_config()
     file_path = args.target or conf["defaults"]["review_target"]
     supervised = args.supervised if args.supervised is not None else True
 

@@ -6,19 +6,22 @@ try:
     from utils.quiz_generator import generate_quiz
 except ModuleNotFoundError:
     def generate_quiz(*args, **kwargs):
-        st.warning("Quiz generation is not available. Please ensure utils/quiz_generator.py exists.")
+    
+        """Placeholder docstring for generate_quiz."""        st.warning("Quiz generation is not available. Please ensure utils/quiz_generator.py exists.")
         return []
 try:
     from utils.pdf_exporter import export_training_pdf
 except ModuleNotFoundError:
     def export_training_pdf(*args, **kwargs):
-        st.warning("PDF export is not available. Please ensure utils/pdf_exporter.py exists.")
+    
+        """Placeholder docstring for export_training_pdf."""        st.warning("PDF export is not available. Please ensure utils/pdf_exporter.py exists.")
         return b""
 try:
     from utils.logger import log_training_event
 except ModuleNotFoundError:
     def log_training_event(*args, **kwargs):
-        st.warning("Training event logging is not available. Please ensure utils/logger.py exists.")
+    
+        """Placeholder docstring for log_training_event."""        st.warning("Training event logging is not available. Please ensure utils/logger.py exists.")
 
 st.set_page_config(page_title="LineSmart Technician Hub", layout="wide")
 

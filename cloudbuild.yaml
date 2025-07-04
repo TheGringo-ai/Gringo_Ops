@@ -1,27 +1,61 @@
+substitutions:
+  _DRY_RUN: 'false' # Default to a real deploy
+  _COMMIT_SHA: 'latest' # Default for local testing, will be overridden by trigger
+  _SERVICE_ACCOUNT: 'chatterfix-backend@gringo-ops.iam.gserviceaccount.com'
+  _GEMINI_API_KEY_VERSION: '1'
+  _FIREBASE_KEY_JSON_VERSION: '1'
+
 steps:
 # Build the container image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-f', 'packages/chatterfix/Dockerfile', '-t', 'gcr.io/$PROJECT_ID/chatterfix-backend:$_COMMIT_SHA', './packages/chatterfix']
+  args: ['build', '-f', 'packages/chatterfix/Dockerfile', '-t', 'gcr.io/$PROJECT_ID/chatterfix-backend:${_COMMIT_SHA}', './packages/chatterfix']
 
 # Push the container image to Container Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/$PROJECT_ID/chatterfix-backend:$_COMMIT_SHA']
+  args: ['push', 'gcr.io/$PROJECT_ID/chatterfix-backend:${_COMMIT_SHA}']
 
-# Deploy container image to Cloud Run
+# Deploy container image to Cloud Run (Dry Run)
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: gcloud
+  id: 'Dry Run Deploy'
+  entrypoint: 'bash'
   args:
-  - 'run'
-  - 'deploy'
-  - 'chatterfix-backend'
-  - '--image=gcr.io/$PROJECT_ID/chatterfix-backend:$_COMMIT_SHA'
-  - '--region=us-central1'
-  - '--platform=managed'
-  - '--allow-unauthenticated'
-  - '--service-account=$_SERVICE_ACCOUNT'
-  - '--set-secrets=GEMINI_API_KEY=GEMINI_API_KEY:latest,FIREBASE_KEY_JSON=FIREBASE_KEY_JSON:latest'
+  - '-c'
+  - |
+    if [[ "$_DRY_RUN" == "true" ]]; then
+      echo "Performing a DRY RUN deployment..."
+      gcloud run deploy chatterfix-backend \
+        --image=gcr.io/$PROJECT_ID/chatterfix-backend:${_COMMIT_SHA} \
+        --region=us-central1 \
+        --platform=managed \
+        --allow-unauthenticated \
+        --service-account=$_SERVICE_ACCOUNT \
+        --set-secrets=GEMINI_API_KEY=GEMINI_API_KEY:${_GEMINI_API_KEY_VERSION},FIREBASE_KEY_JSON=FIREBASE_KEY_JSON:${_FIREBASE_KEY_JSON_VERSION} \
+        --dry-run
+    else
+      echo "Skipping dry run."
+    fi
+  
+# Deploy container image to Cloud Run (Actual Deploy)
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'Actual Deploy'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    if [[ "$_DRY_RUN" != "true" ]]; then
+      echo "Performing an ACTUAL deployment..."
+      gcloud run deploy chatterfix-backend \
+        --image=gcr.io/$PROJECT_ID/chatterfix-backend:${_COMMIT_SHA} \
+        --region=us-central1 \
+        --platform=managed \
+        --allow-unauthenticated \
+        --service-account=$_SERVICE_ACCOUNT \
+        --set-secrets=GEMINI_API_KEY=GEMINI_API_KEY:${_GEMINI_API_KEY_VERSION},FIREBASE_KEY_JSON=FIREBASE_KEY_JSON:${_FIREBASE_KEY_JSON_VERSION}
+    else
+      echo "Skipping actual deploy because this is a dry run."
+    fi
 
 images:
-- 'gcr.io/$PROJECT_ID/chatterfix-backend:$_COMMIT_SHA'
+- 'gcr.io/$PROJECT_ID/chatterfix-backend:${_COMMIT_SHA}'
 
 timeout: "1200s" # 20-minute timeout to prevent stuck builds

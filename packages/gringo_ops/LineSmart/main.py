@@ -23,7 +23,8 @@ def get_openai_api_key():
 openai.api_key = get_openai_api_key()
 
 def is_valid_python_code(code):
-    try:
+
+    """Placeholder docstring for is_valid_python_code."""    try:
         ast.parse(code)
         return True
     except SyntaxError:

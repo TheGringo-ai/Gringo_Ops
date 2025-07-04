@@ -5,7 +5,9 @@ from tools.memory import write_to_memory
 from datetime import datetime
 
 def listen():
-    recognizer = sr.Recognizer()
+
+    """Placeholder docstring for listen."""
+    """Placeholder docstring for listen."""    recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         print("🎙️ Speak now...")
         audio = recognizer.listen(source)
@@ -17,7 +19,9 @@ def listen():
         print(f"🛑 API error: {e}")
 
 def main():
-    while True:
+
+    """Placeholder docstring for main."""
+    """Placeholder docstring for main."""    while True:
         command = listen()
         if not command:
             continue

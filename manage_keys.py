@@ -2,6 +2,7 @@ import subprocess
 import argparse
 
 def add_key(service, value):
+    """Adds or updates a key in the keychain."""
     subprocess.run([
         "security", "add-generic-password",
         "-a", "fredtaylor",
@@ -12,6 +13,7 @@ def add_key(service, value):
     print(f"✅ Key '{service}' added or updated.")
 
 def delete_key(service):
+    """Deletes a key from the keychain."""
     subprocess.run([
         "security", "delete-generic-password",
         "-s", service
@@ -19,6 +21,7 @@ def delete_key(service):
     print(f"🗑️ Key '{service}' deleted.")
 
 def read_key(service):
+    """Reads a key from the keychain."""
     result = subprocess.run([
         "security", "find-generic-password",
         "-s", service,

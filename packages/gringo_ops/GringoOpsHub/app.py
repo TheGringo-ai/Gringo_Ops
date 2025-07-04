@@ -18,7 +18,8 @@ webrtc_streamer(
 
 @st.cache_resource
 def load_whisper_model():
-    import whisper
+
+    """Placeholder docstring for load_whisper_model."""    import whisper
     return whisper.load_model("base")
 st.title("🧠 GringoOps Productivity Hub")
 st.markdown("Launch tools or record audio for Whisper-based transcription.")

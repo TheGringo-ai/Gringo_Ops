@@ -28,7 +28,8 @@ with st.container():
     st.markdown("---")
 
 def transcribe_with_openai(audio_file):
-    try:
+
+    """Placeholder docstring for transcribe_with_openai."""    try:
         openai.api_key = st.secrets["OPENAI_API_KEY"]
         result = openai.Audio.transcribe("whisper-1", audio_file)
         return result["text"]
@@ -37,7 +38,8 @@ def transcribe_with_openai(audio_file):
         return ""
 
 def load_commit_logs():
-    if not os.path.exists(".git"):
+
+    """Placeholder docstring for load_commit_logs."""    if not os.path.exists(".git"):
         st.warning("⚠️ This is not a Git repository. Attempting fallback log...")
         if os.path.exists("repair_history.log"):
             with open("repair_history.log", "r") as f:

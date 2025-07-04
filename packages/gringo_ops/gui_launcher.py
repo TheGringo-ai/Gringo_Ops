@@ -13,7 +13,8 @@ PROJECTS = {
 }
 
 def run_project(name, path):
-    expanded_path = os.path.expanduser(path)
+
+    """Placeholder docstring for run_project."""    expanded_path = os.path.expanduser(path)
     print(f"Launching {name} from {expanded_path}")
     subprocess.Popen(["/usr/bin/python3", "-u", expanded_path])
 

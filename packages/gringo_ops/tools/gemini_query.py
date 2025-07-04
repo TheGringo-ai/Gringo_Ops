@@ -2,7 +2,8 @@ import os
 import google.generativeai as genai
 
 def query_model(prompt="What is the status of project Gemini?"):
-    api_key = os.getenv("GEMINI_API_KEY")
+
+    """Placeholder docstring for query_model."""    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise EnvironmentError("GEMINI_API_KEY environment variable not set.")
     

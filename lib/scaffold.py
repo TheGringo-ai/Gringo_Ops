@@ -21,6 +21,7 @@ TEMPLATES = {
 }
 
 def scaffold(project_root, template_name):
+    """Scaffolds a new project from a template."""
     if template_name not in TEMPLATES:
         raise ValueError("❌ Unknown template")
 

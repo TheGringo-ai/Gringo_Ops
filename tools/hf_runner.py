@@ -6,6 +6,7 @@ from huggingface_hub import HfApi, Repository
 logging.basicConfig(level=logging.INFO)
 
 def deploy_model(model_name, model_path=None):
+    """Deploys a model to Hugging Face Hub."""
     if model_path is None:
         model_path = os.path.join("models", model_name)
     print(f"🚀 Deploying Hugging Face model: {model_name} from {model_path}")
@@ -32,6 +33,7 @@ def deploy_model(model_name, model_path=None):
         return f"Deployment failed: {e}"
 
 def cli_deploy(model_name, model_path=None):
+    """Archives and deploys a model from the command line."""
     if model_path is None:
         model_path = os.path.join("models", model_name)
     archive_name = f"{model_name}.tar.gz"
@@ -51,6 +53,7 @@ def cli_deploy(model_name, model_path=None):
         return f"Archiving or deployment failed: {e}"
 
 def launch_upload_tab():
+    """Launches the Streamlit tab for model uploading."""
     import streamlit as st
 
     st.header("Upload and Deploy Hugging Face Model")

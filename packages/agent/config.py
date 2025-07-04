@@ -3,6 +3,7 @@ import os
 import yaml
 
 def get_key(service: str) -> str:
+    """Placeholder docstring for get_key."""
     result = subprocess.run(
         ['security', 'find-generic-password', '-s', service, '-w'],
         stdout=subprocess.PIPE,
@@ -30,6 +31,7 @@ for name in ["OPENAI_API_KEY", "GEMINI_API_KEY", "HUGGINGFACE_API_KEY", "GITHUB_
         print(str(e))
 
 def load_user_config(config_path="gringoops_config.yaml") -> dict:
+    """Placeholder docstring for load_user_config."""
     if os.path.exists(config_path):
         with open(config_path, "r") as file:
             try:

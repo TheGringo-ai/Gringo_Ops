@@ -35,7 +35,8 @@ def check_file_contents(path: str) -> bool:
 
 
 def check_folder_structure():
-    required_dirs = ["src/pages", "public"]
+
+    """Placeholder docstring for check_folder_structure."""    required_dirs = ["src/pages", "public"]
     print("\n📁 Folder Structure")
     print("=" * 50)
     folder_results = {}
@@ -51,7 +52,8 @@ def check_folder_structure():
 
 
 def check_dependencies():
-    package_json_path = os.path.join(PROJECT_DIR, "package.json")
+
+    """Placeholder docstring for check_dependencies."""    package_json_path = os.path.join(PROJECT_DIR, "package.json")
     print("\n📦 Dependency Check")
     print("=" * 50)
     required_deps = ["react", "vite", "firebase"]

@@ -9,13 +9,15 @@ from datetime import datetime, timedelta
 class TestPredictiveIntegration:
     def test_get_maintenance_forecast_not_enough_data(self):
         # Should return None if not enough data
-        asset_id = "nonexistent_asset"
+        
+        """Placeholder docstring for test_get_maintenance_forecast_not_enough_data."""        asset_id = "nonexistent_asset"
         forecast = predictive.get_maintenance_forecast(asset_id)
         assert forecast is None
 
     def test_generate_suggested_work_orders(self, firestore_client):
         # Setup: create an asset and two completed work orders
-        assets.database.db_client = firestore_client
+        
+        """Placeholder docstring for test_generate_suggested_work_orders."""        assets.database.db_client = firestore_client
         work_orders.database.db_client = firestore_client
         asset_id = assets.create_asset(
             name="Predictive Asset",

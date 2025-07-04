@@ -27,7 +27,8 @@ def display_bom_management():
                 st.session_state.components = []
 
             def add_component():
-                st.session_state.components.append({"part_id": "", "quantity": 1})
+            
+                """Placeholder docstring for add_component."""                st.session_state.components.append({"part_id": "", "quantity": 1})
 
             for i, component in enumerate(st.session_state.components):
                 col1, col2, col3 = st.columns([3, 1, 1])

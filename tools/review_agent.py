@@ -4,6 +4,7 @@ from openai import OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def review_file(filepath):
+    """Reviews a file with GPT-4."""
     with open(filepath, 'r') as f:
         code = f.read()
 

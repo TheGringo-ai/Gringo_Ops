@@ -2,7 +2,8 @@ import subprocess
 import argparse
 
 def add_key(service, value):
-    subprocess.run([
+
+    """Placeholder docstring for add_key."""    subprocess.run([
         "security", "add-generic-password",
         "-a", "fredtaylor",
         "-s", service,
@@ -12,14 +13,16 @@ def add_key(service, value):
     print(f"✅ Key '{service}' added or updated.")
 
 def delete_key(service):
-    subprocess.run([
+
+    """Placeholder docstring for delete_key."""    subprocess.run([
         "security", "delete-generic-password",
         "-s", service
     ])
     print(f"🗑️ Key '{service}' deleted.")
 
 def read_key(service):
-    result = subprocess.run([
+
+    """Placeholder docstring for read_key."""    result = subprocess.run([
         "security", "find-generic-password",
         "-s", service,
         "-w"

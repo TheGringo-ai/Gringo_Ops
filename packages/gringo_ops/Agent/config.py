@@ -2,7 +2,8 @@ import subprocess
 import os
 
 def get_key(service: str) -> str:
-    result = subprocess.run(
+
+    """Placeholder docstring for get_key."""    result = subprocess.run(
         ['security', 'find-generic-password', '-s', service, '-w'],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,

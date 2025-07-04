@@ -11,6 +11,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "your-fallback-key")
 genai.configure(api_key=GEMINI_API_KEY)
 
 def query_model(prompt: str, record_to_memory: bool = False, model_name: str = "gemini-pro") -> str:
+    """Queries the Gemini model with the given prompt."""
     try:
         temperature = float(os.getenv("GEMINI_TEMPERATURE", "0.7"))
         top_p = float(os.getenv("GEMINI_TOP_P", "0.9"))
@@ -32,6 +33,7 @@ def query_model(prompt: str, record_to_memory: bool = False, model_name: str = "
         return error_msg
 
 def write_to_memory(prompt: str, result: str, model_name: str = "gemini-pro", temperature: float = 0.7, top_p: float = 0.9, max_tokens: int = 1024, file_path: str = None, old_content: str = None, new_content: str = None):
+    """Writes the prompt and result to the memory log."""
     memory_path = os.path.expanduser("~/Desktop/Gringomem/gemini_memory.log")
     os.makedirs(os.path.dirname(memory_path), exist_ok=True)
     with open(memory_path, 'a', encoding='utf-8') as f:

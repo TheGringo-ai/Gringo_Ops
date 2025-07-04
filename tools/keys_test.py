@@ -5,6 +5,7 @@ from google.cloud import secretmanager
 
 
 def get_secret(secret_id):
+    """Retrieves a secret from Google Secret Manager."""
     client = secretmanager.SecretManagerServiceClient()
     name = f"projects/487771372565/secrets/{secret_id}/versions/latest"
     response = client.access_secret_version(request={"name": name})
@@ -12,6 +13,7 @@ def get_secret(secret_id):
 
 
 def show_key(label, key):
+    """Prints a key, redacting most of it."""
     if key and len(key) > 10:
         print(f"✅ {label}: {key[:6]}...{key[-4:]}")
     else:
@@ -19,6 +21,7 @@ def show_key(label, key):
 
 
 def init_firebase():
+    """Initializes the Firebase Admin SDK."""
     print("\n🔐 Initializing Firebase Admin...")
     try:
         firebase_json = get_secret("chatterfix-service-account")
@@ -30,6 +33,7 @@ def init_firebase():
 
 
 def test_keys():
+    """Tests all the keys in Secret Manager."""
     print("\n🔑 Verifying Secret Manager Keys...\n")
 
     try:

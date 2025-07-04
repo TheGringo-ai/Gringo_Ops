@@ -16,7 +16,8 @@ def use_provider():
         return None
 
 def send_prompt(prompt, model="gpt-4"):
-    provider = use_provider()
+
+    """Placeholder docstring for send_prompt."""    provider = use_provider()
     if provider == "openai":
         import openai
         openai.api_key = OPENAI_KEY

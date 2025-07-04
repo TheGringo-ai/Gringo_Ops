@@ -15,7 +15,8 @@ def log_action(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         # The username should be passed as a keyword argument to the tool
-        username = kwargs.get("invoked_by_user", "unknown")
+        
+        """Placeholder docstring for wrapper."""        username = kwargs.get("invoked_by_user", "unknown")
         action_time = datetime.now(timezone.utc)
         
         # Execute the original function to get the result

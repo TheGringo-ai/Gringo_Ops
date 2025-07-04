@@ -20,6 +20,7 @@ def use_provider():
         return None
 
 def send_prompt(prompt, model="gpt-4"):
+    """Sends a prompt to the appropriate LLM and returns the response."""
     provider = use_provider()
     if provider == "openai":
         import openai
@@ -47,9 +48,11 @@ def send_prompt(prompt, model="gpt-4"):
 class LLMRouter:
     """Router for LLM providers (OpenAI, Gemini, etc)."""
     def __init__(self):
+        """Initializes the LLM router."""
         self.provider = use_provider()
 
     def send(self, prompt, model="gpt-4"):
+        """Sends the prompt using the configured provider."""
         return send_prompt(prompt, model)
 
 # Example usage

@@ -9,6 +9,7 @@ from pathlib import Path
 
 
 def review_file(target, supervised=False):
+    """Reviews a file with GPT-4 Turbo."""
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         raise EnvironmentError("OPENAI_API_KEY environment variable not set.")
@@ -59,6 +60,7 @@ def review_file(target, supervised=False):
 
 
 def append_to_memory(model, file_path, prompt, response):
+    """Appends a review to the memory log."""
     memory_path = Path.home() / "Desktop/Gringomem/memory.json"
     memory_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -84,6 +86,7 @@ def append_to_memory(model, file_path, prompt, response):
 
 
 def review(target="FredFix/core/agent.py", supervised=False):
+    """Reviews a file or all Python files in a directory."""
     # If target is a directory, review all .py files inside (non-recursive)
     if os.path.isdir(target):
         py_files = glob.glob(os.path.join(target, "*.py"))
@@ -97,6 +100,7 @@ def review(target="FredFix/core/agent.py", supervised=False):
 
 
 def main():
+    """Main function for the code reviewer."""
     parser = argparse.ArgumentParser(description="Review Python code using GPT-4.")
     parser.add_argument("target", help="Path to Python file or folder to review")
     parser.add_argument("--supervised", action="store_true", help="Prompt before saving review log")
