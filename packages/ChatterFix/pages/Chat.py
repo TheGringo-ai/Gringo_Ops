@@ -13,14 +13,10 @@ st.title("ChatterFix AI Assistant")
 st.write("Ask me anything about your maintenance tasks, or give me a command!")
 
 # Initialize agent and chat history
-if "logged_in" in st.session_state and st.session_state.logged_in:
+if 'fredfix_agent' not in st.session_state:
+    # Get user email if logged in, otherwise use a default
     user_email = st.session_state.get("user_email", "default_user")
-    if 'fredfix_agent' not in st.session_state:
-        st.session_state.fredfix_agent = FredFixAgent(user_id=user_email)
-else:
-    st.warning("Please log in to use the chat.")
-    st.stop()
-
+    st.session_state.fredfix_agent = FredFixAgent(user_id=user_email)
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
