@@ -4,10 +4,22 @@ __pycache__/
 
 # Virtual environments
 .venv/
+venv/
+env/
 
-# Environment config
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.whl
+
+# IDE / Editor config
+.vscode/
+
+# Environment config / Secrets
 .env
 .env.*
+gcp-service-account-key.json
 
 # MacOS junk
 .DS_Store
@@ -17,40 +29,6 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 
-# VSCode config (optional)
-.vscode/
-
-# Additional virtualenv folders
-venv/
-env/
-
-# Build artifacts
-build/
-dist/
-*.egg-info/
-
-# Python wheels
-*.whl
-
-# VSCode project settings
-.vscode/
-
-# Virtual environments
-venv/
-env/
-
-# Build artifacts
-build/
-dist/
-*.egg-info/
-
-# Python wheels
-*.whl
-
-# Ignore sensitive files
-gcp-service-account-key.json
-.env
-
-# Ignore reports
+# Reports
 code_analysis_report.json
 .agent_memory.json
