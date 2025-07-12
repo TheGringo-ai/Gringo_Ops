@@ -1,0 +1,12 @@
+from FredFix.core.memory import MemoryManager
+
+memory = MemoryManager(log_file_path="memory.json")  # Use proper JSON log path
+session_id = memory.start_session("FredFix Launch Protocol")
+
+memory.log_event("Session started", {"session_id": session_id})
+
+# Example log injection points (to be reused in other modules)
+memory.log_event("Agent selected", {"agent": "FredFix"})
+memory.log_event("Chain loaded", {"chain": "system_autopilot"})
+memory.log_event("Tool executed", {"tool": "summarize_script", "target": "agent.py"})
+memory.log_event("User command", {"command": "run_chain", "args": ["system_autopilot"]})

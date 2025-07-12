@@ -3,6 +3,10 @@ from utils.translation import translate_text
 from utils.quiz_generator import generate_quiz
 from utils.pdf_exporter import export_training_pdf
 from utils.logger import log_training_event
+from shared.memory import MemoryLogger
+
+memory = MemoryLogger(source="LineSmart Dashboard")
+memory.log_event("Dashboard launched")
 
 st.set_page_config(page_title="LineSmart Technician Hub", layout="wide")
 
@@ -23,12 +27,14 @@ with st.expander("📄 Upload Training Material"):
     uploaded_file = st.file_uploader(translate("Upload a source document"), type=["pdf", "docx", "txt"])
     if uploaded_file:
         st.success(translate("Document uploaded successfully."))
+        memory.log_event("Training material uploaded", {"filename": uploaded_file.name})
 
 # Quiz Generator
 with st.expander("🧠 Generate Training Quiz"):
     if uploaded_file:
         if st.button(translate("Generate Quiz")):
             questions = generate_quiz(uploaded_file.read().decode("utf-8"))
+            memory.log_event("Quiz generated", {"technician": name or "unknown"})
             for q in questions:
                 st.markdown(f"**Q:** {q['question']}")
                 for option in q['options']:
@@ -41,6 +47,7 @@ with st.expander("📥 Export Training Summary as PDF"):
     if uploaded_file and name:
         if st.button(translate("Export Training PDF")):
             pdf_bytes = export_training_pdf(name, department, equipment, uploaded_file.read())
+            memory.log_event("Training PDF exported", {"technician": name})
             st.download_button(
                 label=translate("Download Training PDF"),
                 data=pdf_bytes,
@@ -53,6 +60,7 @@ with st.expander("✅ Log Technician Training"):
     if name and uploaded_file:
         if st.button(translate("Log Training Completion")):
             log_training_event(name, equipment)
+            memory.log_event("Training logged", {"technician": name, "equipment": equipment})
             st.success(translate("Training logged successfully."))
     else:
         st.warning(translate("Technician name and training document required."))

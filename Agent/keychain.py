@@ -1,4 +1,3 @@
-import os
 import subprocess
 
 def get_key(service_name: str) -> str:

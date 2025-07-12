@@ -1,6 +1,5 @@
-# Import OpenAI and set API key path
-import openai
-openai.api_key_path = ".openai_key.txt"  # Or your preferred secret store path
+# Import OpenAI (optional) and subprocess for local model execution
+import subprocess
 # core/memory.py
 
 import json
@@ -72,7 +71,8 @@ class FredFixAgent:
                 "command": command,
                 "result": result
             }
-            with open("Agent/memory.json", "a") as mem_log:
+            log_path = Path(__file__).parent / "agent_memory.json"
+            with open(log_path, "a") as mem_log:
                 mem_log.write(json.dumps(memory_line) + "\n")
             print(f"[DEBUG] Memory after execution: {self.memory}")
             print(f"[DEBUG] Command result: {result}")
@@ -81,7 +81,7 @@ class FredFixAgent:
             print(f"[ERROR] Exception during command execution: {e}")
             raise
 
-    def run_agent(self, input_text: str):
+    def run_agent(self, input_text: str, model: str = None):
         # Try running as known command first
         known_result = self.run(input_text)
         if "Unknown command" not in known_result:
@@ -93,14 +93,12 @@ class FredFixAgent:
 
         # Otherwise, treat as natural language prompt
         try:
-            response = openai.ChatCompletion.create(
-                model=self.config.openai_model,
-                messages=[
-                    {"role": "system", "content": "You are FredFix, an AI assistant."},
-                    {"role": "user", "content": input_text}
-                ]
-            )
-            ai_result = response.choices[0].message.content.strip()
+            # Try local model with Ollama first
+            prompt = f"You are FredFix, an AI assistant.\n\nUser: {input_text}"
+            # If model is passed (e.g., "llama2", "codellama"), it overrides the default
+            selected_model = model or "mistral"
+            result = subprocess.run(["ollama", "run", selected_model], input=prompt, text=True, capture_output=True)
+            ai_result = result.stdout.strip()
 
             # Save to memory
             self.memory.setdefault("history", []).append({
@@ -109,27 +107,61 @@ class FredFixAgent:
             })
             save_memory(self.memory)
 
-            # Log JSONL entry
             memory_line = {
                 "timestamp": datetime.utcnow().isoformat(),
                 "command": input_text,
                 "result": ai_result
             }
-            with open("Agent/memory.json", "a") as mem_log:
+            log_path = Path(__file__).parent / "agent_memory.json"
+            with open(log_path, "a") as mem_log:
                 mem_log.write(json.dumps(memory_line) + "\n")
 
             return {
-                "mode": "ai_prompt",
+                "mode": "local_model",
                 "output": ai_result,
                 "timestamp": memory_line["timestamp"]
             }
 
-        except Exception as e:
-            return {
-                "mode": "error",
-                "error": str(e),
-                "timestamp": datetime.utcnow().isoformat()
-            }
+        except Exception:
+            try:
+                # Fallback to OpenAI if local fails
+                import openai
+                openai.api_key_path = ".openai_key.txt"
+                response = openai.ChatCompletion.create(
+                    model=self.config.openai_model,
+                    messages=[
+                        {"role": "system", "content": "You are FredFix, an AI assistant."},
+                        {"role": "user", "content": input_text}
+                    ]
+                )
+                ai_result = response.choices[0].message.content.strip()
+
+                self.memory.setdefault("history", []).append({
+                    "command": input_text,
+                    "result": ai_result
+                })
+                save_memory(self.memory)
+
+                memory_line = {
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "command": input_text,
+                    "result": ai_result
+                }
+                log_path = Path(__file__).parent / "agent_memory.json"
+                with open(log_path, "a") as mem_log:
+                    mem_log.write(json.dumps(memory_line) + "\n")
+
+                return {
+                    "mode": "openai_fallback",
+                    "output": ai_result,
+                    "timestamp": memory_line["timestamp"]
+                }
+            except Exception as fallback_error:
+                return {
+                    "mode": "error",
+                    "error": f"Local and OpenAI failed: {fallback_error}",
+                    "timestamp": datetime.utcnow().isoformat()
+                }
 
 
 if __name__ == "__main__":
@@ -150,3 +182,9 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(f"❌ FredFix encountered an error: {e}")
+
+# Exportable run_agent function for dashboard use
+def run_agent(input_text: str, model: str = None):
+    return FredFixAgent().run_agent(input_text, model)
+
+__all__ = ["FredFixAgent", "run_agent"]

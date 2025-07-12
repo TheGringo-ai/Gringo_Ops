@@ -6,8 +6,23 @@ import tempfile
 import datetime
 import shutil
 from openai import OpenAI
+import json
+MEMORY_PATH = os.path.expanduser("~/Projects/GringoOps/shared/memory.json")
 
 st.set_page_config(page_title="🧠 GringoOps Hub", layout="wide")
+
+if not os.path.exists(MEMORY_PATH):
+    with open(MEMORY_PATH, "w") as f:
+        json.dump([], f)
+
+with st.sidebar.expander("📜 Memory Timeline"):
+    try:
+        with open(MEMORY_PATH) as f:
+            logs = json.load(f)
+            for entry in reversed(logs[-10:]):
+                st.markdown(f"**{entry['timestamp']}** — `{entry['event']}`")
+    except Exception as e:
+        st.warning(f"Could not load memory: {e}")
 
 webrtc_streamer(
     key="audio",
@@ -32,6 +47,8 @@ TOOLS = {
     "🔧 FredFix Dev Agent": "~/Projects/GringoOps/FredFix/main.py",
     "🚄 Bullet Train": "~/Projects/GringoOps/BulletTrain/main.py"
 }
+
+selected_model = st.sidebar.selectbox("🧠 AI Model", ["gpt-4", "mistral", "llama"])
 
 with st.sidebar:
     st.header("🚀 Tool Launcher")
@@ -86,6 +103,16 @@ if 'fredfix_memory' not in st.session_state:
     st.session_state.fredfix_memory = []
 
 if fredfix_cmd:
+    with open(MEMORY_PATH, "r+") as f:
+        logs = json.load(f)
+        logs.append({
+            "timestamp": datetime.datetime.now().isoformat(),
+            "event": "FredFix Command",
+            "data": fredfix_cmd
+        })
+        f.seek(0)
+        json.dump(logs, f, indent=2)
+
     st.session_state.fredfix_memory.append({"timestamp": datetime.datetime.now().isoformat(), "command": fredfix_cmd})
     st.success(f"Command logged: {fredfix_cmd}")
 
@@ -113,6 +140,16 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 chat_prompt = st.chat_input("Ask your dev assistant...")
 
 if chat_prompt:
+    with open(MEMORY_PATH, "r+") as f:
+        logs = json.load(f)
+        logs.append({
+            "timestamp": datetime.datetime.now().isoformat(),
+            "event": "AI Chat Prompt",
+            "data": chat_prompt
+        })
+        f.seek(0)
+        json.dump(logs, f, indent=2)
+
     with st.chat_message("user"):
         st.markdown(chat_prompt)
     with st.chat_message("assistant"):
@@ -122,7 +159,7 @@ if chat_prompt:
                     response = ""
                     container = st.empty()
                     completion = client.chat.completions.create(
-                        model="gpt-4",
+                        model=selected_model,
                         messages=[{"role": "user", "content": chat_prompt}],
                         stream=True,
                     )

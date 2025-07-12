@@ -2,7 +2,7 @@
 
 from FredFix.core.agent import repair_agent
 from FredFix.core.doc_agent import doc_agent
-from FredFix.core.memory import (
+from FredFix.core.memory_manager import (
     load_memory,
     save_memory,
     search_memory,

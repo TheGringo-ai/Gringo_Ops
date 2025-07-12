@@ -1,0 +1,6 @@
+You are a helpful AI code assistant. 
+Fix the following Python code and explain the changes in comments.
+Fix any errors, refactor for readability, and add comments to explain.
+--- START CODE ---
+{{code}}
+--- END CODE ---

@@ -1,6 +1,6 @@
 import streamlit as st
 from BulletTrain.services import run_auto_repair, sync_agents, transcribe_backlog
-from FredFix.core.memory import MemoryManager
+from FredFix.core.memory_manager import MemoryManager
 
 st.set_page_config(page_title="🚄 Bullet Train Launcher", layout="wide")
 
@@ -18,6 +18,10 @@ with col1:
         try:
             result = run_auto_repair()
             st.success(f"Auto-repair finished: {result}")
+            memory.log_event("Tool run", {
+                "tool": "auto_repair",
+                "result": str(result)
+            })
         except Exception as e:
             st.error(f"Error during auto-repair: {str(e)}")
 
@@ -26,6 +30,10 @@ with col2:
         try:
             result = sync_agents()
             st.success(f"Agent sync complete: {result}")
+            memory.log_event("Tool run", {
+                "tool": "sync_agents",
+                "result": str(result)
+            })
         except Exception as e:
             st.error(f"Error during agent sync: {str(e)}")
 
@@ -34,6 +42,10 @@ with col3:
         try:
             result = transcribe_backlog()
             st.success(f"Transcription complete: {result}")
+            memory.log_event("Tool run", {
+                "tool": "transcribe_backlog",
+                "result": str(result)
+            })
         except Exception as e:
             st.error(f"Error during transcription: {str(e)}")
 
@@ -45,7 +57,7 @@ st.subheader("🔁 Agent Memory")
 if st.button("🔁 View Agent Memory"):
     mem_log = memory.load_memory()
     with st.expander("🧠 Memory Log"):
-        st.code(mem_log, language="markdown")
+        st.code(f"Session ID: {memory.session_id}\n\n{mem_log}", language="markdown")
 
 # Plugin Loader Section
 import importlib

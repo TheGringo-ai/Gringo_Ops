@@ -1,4 +1,3 @@
-
 import os
 import platform
 import subprocess
@@ -6,7 +5,6 @@ from typing import Optional
 
 try:
     from google.cloud import secretmanager
-    from google.auth.exceptions import DefaultCredentialsError
     GCP_ENABLED = True
 except ImportError:
     GCP_ENABLED = False
@@ -61,3 +59,21 @@ for key in REQUIRED_KEYS:
         SECRETS[key] = load_secret(key)
     except Exception as e:
         print(e)
+
+
+# === GringoOps: Command & Logging Config ===
+from pathlib import Path
+import logging
+
+# Directory where command scripts are stored
+COMMANDS_DIR = Path(__file__).parent / "commands"
+
+# Logging utility
+def log(message: str):
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
+    logging.info(message)
+
+# Feature flags for model providers
+USE_OPENAI = True      # Optional fallback
+USE_GEMINI = False     # Disabled
+USE_LOCAL_MODELS = True  # Preferred

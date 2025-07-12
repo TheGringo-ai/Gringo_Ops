@@ -1,60 +1,48 @@
-import sys
-import os
-import json
-from lib.keychain import get_key
+import streamlit as st
+from pathlib import Path
+from FredFix.tools.apply_patch import lint_file, lint_folder
+from FredFix.tools.summarize_script import summarize_code
+from FredFix.tools.refactor_script import refactor_with_llm
+from FredFix.tools.generate_unittests import generate_unittests
+from FredFix.tools.generate_readme import generate_readme
+from FredFix.core.memory import MemoryManager
+memory = MemoryManager(shared=True)
 
-class TYAgent:
-    def __init__(self):
-        self.api_key = get_key("openai") or os.environ.get("OPENAI_API_KEY")
-        if not self.api_key:
-            raise ValueError("❌ API key not found. Set it in keychain or environment.")
-        print("🔑 API Key loaded successfully.")
+def render_dev_tools_ui():
+    memory.log_event("Dev Tools UI loaded")
+    st.markdown("### 🛠️ Developer Tools")
+    selected_tool = st.selectbox("Choose a tool", ["lint", "lint_folder", "summarize", "refactor", "generate_unittests", "generate_readme"])
+    selected_file = st.text_input("Target file or folder")
+    model_override = st.text_input("Model override (optional)", "")
 
-    def scan_project(self, root="."):
-        py_files = []
-        for subdir, _, files in os.walk(root):
-            for file in files:
-                if file.endswith(".py"):
-                    py_files.append(os.path.join(subdir, file))
-        return py_files
-
-    def review_file(self, path):
-        with open(path, "r") as f:
-            content = f.read()
-
+    if st.button("Run Dev Tool"):
         try:
-            import openai
-            openai.api_key = self.api_key
+            model = model_override.strip() or "mistral"
+            memory.log_event("Dev tool run", {
+                "tool": selected_tool,
+                "target": selected_file,
+                "model": model
+            })
+            result = ""
 
-            response = openai.ChatCompletion.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": "You are a Python code reviewer."},
-                    {"role": "user", "content": f"Review and suggest improvements:\n{content}"}
-                ]
-            )
-            print(f"🧠 Review for {path}:\n")
-            print(response.choices[0].message["content"])
-            # Save AI review to log
-            with open("repair_log.txt", "a") as log:
-                log.write(f"\n🛠️ Repair for {path}\n")
-                log.write(response.choices[0].message["content"] + "\n")
-            import json
-            memory_entry = {
-                "filename": path,
-                "event": "ai_review",
-                "output": response.choices[0].message["content"]
-            }
-            with open("Agent/memory.json", "a") as mem_log:
-                mem_log.write(json.dumps(memory_entry) + "\n")
+            if selected_tool == "lint":
+                result = lint_file(selected_file)
+            elif selected_tool == "lint_folder":
+                result = lint_folder(selected_file)
+            elif selected_tool == "summarize":
+                code = Path(selected_file).read_text()
+                result = summarize_code(code, model)
+            elif selected_tool == "refactor":
+                code = Path(selected_file).read_text()
+                result = refactor_with_llm(code, model)
+            elif selected_tool == "generate_unittests":
+                code = Path(selected_file).read_text()
+                result = generate_unittests(code, model)
+            elif selected_tool == "generate_readme":
+                code = Path(selected_file).read_text()
+                result = generate_readme(code, model)
+
+            st.code(result)
         except Exception as e:
-            print(f"❌ Failed to review {path}: {e}")
-
-if __name__ == "__main__":
-    agent = TYAgent()
-    files = agent.scan_project()
-    print(f"🧠 TY found {len(files)} Python files.")
-
-    for path in files:
-        print(f"\n📄 Reviewing: {path}")
-        agent.review_file(path)
+            st.error(f"❌ Tool execution failed: {e}")
+            memory.log_event("Dev tool error", {"error": str(e)})
